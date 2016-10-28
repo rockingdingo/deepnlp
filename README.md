@@ -1,4 +1,4 @@
-About 'deepnlp' package
+About 'deepnlp'
 ========
 Deep Learning NLP Pipeline implemented on Tensorflow purely by python.
 Following the 'simplicity' rule, this project aims to provide an easy python version implementation of NLP pipeline based on Tensorflow platform.
@@ -50,12 +50,21 @@ Installation
     pip install deepnlp
 ```
 
-* Download source: https://pypi.python.org/pypi/deepnlp/0.1.1
+* Download source: https://pypi.python.org/pypi/deepnlp/0.1.2
 ```python
     # linux, run the script:
-    tar zxvf deepnlp-0.1.1.tar.gz
-    cd deepnlp-0.1.1
+    tar zxvf deepnlp-0.1.2.tar.gz
+    cd deepnlp-0.1.2
     python setup.py install
+```
+
+* Running Test scripts
+```python
+    # linux, run the script:
+    cd test
+    python test_segmenter.py
+    python test_pipeline.py
+    # Check if output is correct
 ```
 
 Tutorial
@@ -63,7 +72,7 @@ Tutorial
 Set Coding
 设置编码
 ```python
-#encoding=utf-8
+#coding=utf-8
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
