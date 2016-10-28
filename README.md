@@ -50,7 +50,7 @@ Installation
     pip install deepnlp
 ```
 
-* Download source: https://pypi.python.org/pypi/deepnlp/0.1.2
+* Download source deepnlp-0.1.2.tar.gz: https://pypi.python.org/pypi/deepnlp
 ```python
     # linux, run the script:
     tar zxvf deepnlp-0.1.2.tar.gz
@@ -165,7 +165,7 @@ https://taku910.github.io/crfpp/#download
 ...train_word_tag.txt
 ```
 
-1. Prepare corpus
+#### Prepare corpus
 Split your data into train.txt and test.txt with format of one sentence per each line: "word1 word2 ...".
 Put train.txt and test.txt under folder ../deepnlp/segment/data
 Run data_util.py to convert data file to word_tag format and get train_word_tag.txt;
@@ -181,11 +181,11 @@ For Chinese, we are using 4 tags representing: 'B' Begnning , 'M' Middle, 'E' En
 python data_util.py train.txt train_word_tag.txt
 ```
 
-2. Define template file needed by CRF++
+#### Define template file needed by CRF++
 Sample Template file is included in the package
 You can specift the unigram and bigram feature template needed by CRF++
 
-3. Train model using CRF++ module
+#### Train model using CRF++ module
 ```shell
 # Train Model Using CRF++ command
 crf_learn -f 3 -c 4.0 ${LOCAL_PATH}/data/template ${LOCAL_PATH}/data/train_word_tag.txt crf_model
@@ -204,7 +204,7 @@ crf_learn -f 3 -c 4.0 ${LOCAL_PATH}/data/template ${LOCAL_PATH}/data/train_word_
 ...test.txt
 ../ckpt
 ```
-1. Prepare corpus
+#### Prepare corpus
 First, prepare your corpus and split into 3 files: 'train.txt', 'dev.txt', 'test.txt'.
 Each line in the file represents one annotated sentence, in this format: "word1/tag1 word2/tag2 ...", separated by white space.
 
@@ -217,24 +217,24 @@ POS/NN tagging/NN is/VBZ now/RB done/VBN in/IN the/DT context/NN of/IN computati
 充满/v  希望/n  的/u  新/a  世纪/n  ——/w  一九九八年/t  新年/t  讲话/n  （/w  附/v  图片/n  １/m  张/q  ）/w  
 ```
 
-2. Specifying data_path
+#### Specifying data_path
 So model can find training data files. Download the source of package and put all three corpus files in the folder ../deepnlp/pos/data
 you can change data_path setting in reader.py and pos_model.py
 
-3. Running script
+#### Running script
 ```python
 python pos_model.py
 ```
-4. Trained model can be found under folder ../deepnlp/pos/ckpt
+#### Trained model can be found under folder ../deepnlp/pos/ckpt
 
 ###NER model
-1. Prepare corpus the same way as POS
-2. Put data files in folder ../deepnlp/ner/data
-3. Running script
+#### Prepare corpus the same way as POS
+#### Put data files in folder ../deepnlp/ner/data
+#### Running script
 ```python
 python ner_model.py
 ```
-4. The trained model can be found under folder ../deepnlp/ner/ckpt
+#### The trained model can be found under folder ../deepnlp/ner/ckpt
 
 中文简介
 ========
