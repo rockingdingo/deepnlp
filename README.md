@@ -1,9 +1,7 @@
 About 'deepnlp'
 ========
-Deep Learning NLP Pipeline implemented on Tensorflow purely by python.
-Following the 'simplicity' rule, this project aims to provide an easy python version implementation of NLP pipeline based on Tensorflow platform.
-It serves the same purpose as Google SyntaxNet but is easier to install, read and extend(purely in python), which also require fewer dependency. 
-(Installing Bazel on my machine is painful...)
+Deep Learning NLP Pipeline implemented on Tensorflow.
+Following the 'simplicity' rule, this project aims to use the deep learning library of Tensorflow platform to implement new NLP pipeline. You can extend the project to train models with your corpus/languages. Pretrained models of Chinese corpus are also distributed.
 
 Brief Introduction
 ========
