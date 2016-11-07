@@ -321,11 +321,11 @@ deepnlp项目是基于Tensorflow平台的一个python版本的NLP套装, 目的�
     pip install deepnlp
 ```
 
-* 从源码安装, 下载deepnlp-0.1.1.tar.gz文件: https://pypi.python.org/pypi/deepnlp
+* 从源码安装, 下载deepnlp-0.1.3.tar.gz文件: https://pypi.python.org/pypi/deepnlp
 ```python
     # linux, run the script:
-    tar zxvf deepnlp-0.1.1.tar.gz
-    cd deepnlp-0.1.1
+    tar zxvf deepnlp-0.1.3.tar.gz
+    cd deepnlp-0.1.3
     python setup.py install
 ```
 
