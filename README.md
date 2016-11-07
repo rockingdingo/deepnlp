@@ -50,11 +50,11 @@ Installation
     pip install deepnlp
 ```
 
-* Download source deepnlp-0.1.2.tar.gz: https://pypi.python.org/pypi/deepnlp
+* Download source deepnlp-0.1.3.tar.gz: https://pypi.python.org/pypi/deepnlp
 ```python
     # linux, run the script:
-    tar zxvf deepnlp-0.1.2.tar.gz
-    cd deepnlp-0.1.2
+    tar zxvf deepnlp-0.1.3.tar.gz
+    cd deepnlp-0.1.3
     python setup.py install
 ```
 
@@ -63,7 +63,7 @@ Installation
     # linux, run the script:
     cd test
     python test_segmenter.py
-    python test_pipeline.py
+    python test_pos_zh.py
     # Check if output is correct
 ```
 
@@ -129,7 +129,7 @@ tagging = tagger.predict(words)  # input: unicode coding
 for (w,t) in tagging:
     str = w + "/" + t
     print (str.encode('utf-8'))
- 
+
 #Results
 #我/r 爱/v 吃/v 北京/ns 烤鸭/n
 
@@ -269,9 +269,13 @@ you can change data_path setting in reader.py and pos_model.py
 
 #### Running script
 ```python
-python pos_model.py en # training English model, data files in .../data/en folder
+python pos_model.py en # LSTM model English
 
-python pos_model.py zh # training Chinese model, data files in .../data/zh folder
+python pos_model.py zh # LSTM model Chinese
+
+python pos_model_bilstm.py en # Bi-LSTM model English
+
+python pos_model_bilstm.py zh # Bi-LSTM model Chinese
 
 ```
 #### Trained model can be found under folder ../deepnlp/pos/ckpt/'your_language_code'
