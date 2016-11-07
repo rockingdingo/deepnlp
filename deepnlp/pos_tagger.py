@@ -14,43 +14,44 @@ import numpy as np
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-from pos.pos_model import LargeConfig as POSConfig # Tensorflow LSTM model parameters config
-from pos.pos_model import POSTagger
+import pos.pos_model as pos_model
 import pos.reader as pos_reader
 
 # Get Path of installed package and model vocab and data file: deenlp/pos/data, deepnlp/pos/tmp
 import deepnlp
-pkg_path = (deepnlp.__path__)[0]
-pos_data_path = os.path.join(pkg_path, "pos/data") # POS vocabulary data path
-pos_ckpt_path = os.path.join(pkg_path, "pos/ckpt/pos.ckpt") # POS model checkpoint path
-# print ("pos_data_path: " + pos_ckpt_path)
+#pkg_path = (deepnlp.__path__)[0]
+pkg_path = os.path.dirname(os.path.abspath(__file__))
 
 class ModelLoader(object):
-
-    def __init__(self):
+    
+    def __init__(self, lang, data_path, ckpt_path):
+        self.lang = lang
+        self.data_path = data_path
+        self.ckpt_path = ckpt_path
         print("Starting new Tensorflow session...")
         self.session = tf.Session()
         print("Initializing pos_tagger class...")
-        self.pos_model = self._init_pos_model(self.session, pos_ckpt_path)
+        self.model = self._init_pos_model(self.session, self.ckpt_path)
 
     def predict(self, words):
         '''
         Coding: utf-8 for Chinese Characters
         Return tuples of [(word, tag),...]
         '''
-        tagging = self._predict_pos_tags(self.session, self.pos_model, words, pos_data_path)
+        tagging = self._predict_pos_tags(self.session, self.model, words, self.data_path)
         return tagging
     
     ## Initialize and Instance, Define Config Parameters for POS Tagger
     def _init_pos_model(self, session, ckpt_path):
         """Create POS Tagger model and initialize with random or load parameters in session."""
         # initilize config
-        config = POSConfig()
+        # config = POSConfig()   # Choose the config of language option
+        config = pos_model.get_config(self.lang)
         config.batch_size = 1
         config.num_steps = 1 # iterator one token per time
       
         with tf.variable_scope("pos_var_scope"):  #Need to Change in Pos_Tagger Save Function
-            model = POSTagger(is_training=True, config=config) # save object after is_training
+            model = pos_model.POSTagger(is_training=False, config=config) # save object after is_training
     
         if tf.gfile.Exists(ckpt_path):
             print("Loading model parameters from %s" % ckpt_path)
@@ -89,9 +90,11 @@ class ModelLoader(object):
             #print (logits)
         predict_tag = pos_reader.word_ids_to_sentence(data_path, predict_id)
         return zip(words, predict_tag)
+    
+def load_model(lang = 'zh'):
+    data_path = os.path.join(pkg_path, "pos/data", lang) # POS vocabulary data path
+    ckpt_path = os.path.join(pkg_path, "pos/ckpt", lang, "pos.ckpt") # POS model checkpoint path
+    #print (data_path)
+    #print (ckpt_path)
+    return ModelLoader(lang, data_path, ckpt_path)
 
-# Create Instance of PosTagger Model Loader
-ml = ModelLoader()
-
-# Define Global Function
-predict = ml.predict

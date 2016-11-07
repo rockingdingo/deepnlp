@@ -1,2 +1,0 @@
-model_checkpoint_path: "/mnt/python/tutorial/deepnlp/pos/ckpt/pos.ckpt"
-all_model_checkpoint_paths: "/mnt/python/tutorial/deepnlp/pos/ckpt/pos.ckpt"

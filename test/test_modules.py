@@ -4,11 +4,15 @@
 import sys,os
 import codecs
 import deepnlp.segmenter as segmenter
-import deepnlp.pos_tagger as pos_tagger
-import deepnlp.ner_tagger as ner_tagger
+from deepnlp import pos_tagger # module: pos_tagger
+from deepnlp import ner_tagger # module: ner_tagger
+
+# Create new tagger instance
+tagger_pos = pos_tagger.load_model(lang = 'zh')
+tagger_ner = ner_tagger.load_model(lang = 'zh')
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 # concatenate tuples into one string "w1/t1 w2/t2 ..."
 def _concat_tuples(tagging):
   TOKEN_BLANK = " "
@@ -29,8 +33,8 @@ for line in file:
 # output file
 fileOut = codecs.open(os.path.join(BASE_DIR, 'modules_test_results.txt'), 'w', encoding='utf-8')
 words = segmenter.seg(docs[0])
-pos_tagging = _concat_tuples(pos_tagger.predict(words))
-ner_tagging = _concat_tuples(ner_tagger.predict(words))
+pos_tagging = _concat_tuples(tagger_pos.predict(words))
+ner_tagging = _concat_tuples(tagger_ner.predict(words))
 
 fileOut.writelines(" ".join(words) + "\n")
 fileOut.writelines(pos_tagging + "\n")

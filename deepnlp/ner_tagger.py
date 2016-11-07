@@ -14,41 +14,42 @@ import numpy as np
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-from ner.ner_model import LargeConfig as nerConfig # Tensorflow LSTM model parameters config
-from ner.ner_model import NERTagger
+import ner.ner_model as ner_model
 import ner.reader as ner_reader
 
 import deepnlp
-pkg_path = (deepnlp.__path__)[0]
-ner_data_path = os.path.join(pkg_path, "ner/data") # NER vocabulary data path
-ner_ckpt_path = os.path.join(pkg_path, "ner/ckpt/ner.ckpt") # NER model ckpt path
+# pkg_path = (deepnlp.__path__)[0]
+pkg_path = os.path.dirname(os.path.abspath(__file__))
 
 class ModelLoader(object):
 
-    def __init__(self):
+    def __init__(self, lang, data_path, ckpt_path):
+        self.lang = lang
+        self.data_path = data_path
+        self.ckpt_path = ckpt_path
         print("Starting new Tensorflow session...")
         self.session = tf.Session()
         print("Initializing ner_tagger model...")
-        self.ner_model = self._init_ner_model(self.session, ner_ckpt_path)
-
+        self.model = self._init_ner_model(self.session, self.ckpt_path)
+    
     def predict(self, words):
         ''' 
         Coding: utf-8 for Chinese Characters
         Return tuples of [(word, tag),...]
         '''
-        tagging = self._predict_ner_tags(self.session, self.ner_model, words, ner_data_path)
+        tagging = self._predict_ner_tags(self.session, self.model, words, self.data_path)
         return tagging
     
     ## Define Config Parameters for NER Tagger
     def _init_ner_model(self, session, ckpt_path):
         """Create ner Tagger model and initialize or load parameters in session."""
         # initilize config
-        config = nerConfig()
+        config = ner_model.get_config(self.lang)
         config.batch_size = 1
         config.num_steps = 1 # iterator one token per time
-      
+        
         with tf.variable_scope("ner_var_scope"):
-            model = NERTagger(is_training=True, config=config) # save object after is_training
+            model = ner_model.NERTagger(is_training=True, config=config) # save object after is_training
     
         if tf.gfile.Exists(ckpt_path):
             print("Loading model parameters from %s" % ckpt_path)
@@ -86,8 +87,9 @@ class ModelLoader(object):
         predict_tag = ner_reader.word_ids_to_sentence(data_path, predict_id)
         return zip(words, predict_tag)
 
-# Create Instance of Model Loader
-ml = ModelLoader()
+        
+def load_model(lang = 'zh'):
+    data_path = os.path.join(pkg_path, "ner/data", lang) # NER vocabulary data path
+    ckpt_path = os.path.join(pkg_path, "ner/ckpt", lang, "ner.ckpt") # NER model checkpoint path
+    return ModelLoader(lang, data_path, ckpt_path)
 
-# Global Function
-predict = ml.predict

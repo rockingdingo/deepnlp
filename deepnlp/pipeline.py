@@ -16,19 +16,21 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 import segmenter as segmenter     # segmenter module
-import pos_tagger as pos_tagger   # pos module
-import ner_tagger as ner_tagger   # ner module
+import pos_tagger as pos_tagger   # pos tagger
+import ner_tagger as ner_tagger   # ner tagger
 
 import deepnlp
 pkg_path = (deepnlp.__path__)[0]
 
 class Pipeline(object):
 
-  def __init__(self):
+  def __init__(self, lang):
     print("Starting new Tensorflow session...")
     self.session = tf.Session()
     print("Loading pipeline modules...")
-  
+    self.tagger_pos = pos_tagger.load_model(lang) # class tagger_pos
+    self.tagger_ner = ner_tagger.load_model(lang) # class tagger_ner
+    
   def analyze(self, string):
     '''Return a list of three string output: segment, pos, ner'''
     res = []
@@ -53,12 +55,12 @@ class Pipeline(object):
   
   def tag_pos(self, words):
     ''' Return tuples of [(word, tag), ...]'''
-    tagging = pos_tagger.predict(words)
+    tagging = self.tagger_pos.predict(words)
     return tagging
 
   def tag_ner(self, words):
     ''' Return tuples of [(word, tag), ...]'''
-    tagging = ner_tagger.predict(words)
+    tagging = self.tagger_ner.predict(words)
     return tagging
   
   def parse(self, words):
@@ -77,12 +79,6 @@ def _concat_tuples(tagging):
   concat_str = TOKEN_BLANK.join(wl)
   return concat_str
 
+def load_model(lang = 'zh'):
+  return Pipeline(lang)
 
-# Create an Instance of Pipeline
-p = Pipeline()
-
-# Global Functions access by modules
-analyze = p.analyze
-segment = p.segment
-tag_pos = p.tag_pos
-tag_ner = p.tag_ner

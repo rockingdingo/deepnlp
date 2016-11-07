@@ -18,9 +18,9 @@ setup(
         'deepnlp': ['segment/data/crf_model', 
             'segment/data/template',
             'segment/train_crf.sh',
-            'pos/data/word_to_id', 'pos/data/tag_to_id', 'pos/ckpt/*',
-            'ner/data/word_to_id', 'ner/data/tag_to_id', 
-            #'ner/ckpt/*',
+            'pos/data/en/word_to_id', 'pos/data/en/tag_to_id', 'pos/ckpt/en/*',
+            'pos/data/zh/word_to_id', 'pos/data/zh/tag_to_id', 'pos/ckpt/zh/*',
+            'ner/data/zh/word_to_id', 'ner/data/zh/tag_to_id', 'ner/ckpt/zh/*',
         ],
     },
     classifiers=[

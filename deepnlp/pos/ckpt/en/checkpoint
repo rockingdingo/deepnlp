@@ -1,0 +1,2 @@
+model_checkpoint_path: "/mnt/pypi/deepnlp/deepnlp/pos/ckpt/en/pos.ckpt"
+all_model_checkpoint_paths: "/mnt/pypi/deepnlp/deepnlp/pos/ckpt/en/pos.ckpt"

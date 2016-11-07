@@ -19,9 +19,10 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-global UNKNOWN, EOS
+global UNKNOWN, EOS, DELIMITER
 UNKNOWN = "*"
 EOS = "<eos>"
+DELIMITER = " " # line delimiter
 
 def _read_words(filename):
   with tf.gfile.GFile(filename, "r") as f:
@@ -32,7 +33,7 @@ def _read_file(filename):
   words = []
   file = codecs.open(filename, encoding='utf-8')
   for line in file:
-    wordsplit = line.replace("\n","").split("  ")
+    wordsplit = line.replace("\n","").split(DELIMITER)
     sentences.append(wordsplit) # list(list(str))
     words.extend(wordsplit + [EOS+"/n"]) # list(str)
   return words, sentences
@@ -176,11 +177,11 @@ def main():
   """
   Test load_data method and iterator method
   """
-  data_path ="/mnt/python/tutorial/deepnlp/pos/data"
+  data_path ="/mnt/pypi/deepnlp/deepnlp/pos/data"
   print ("Data Path: " + data_path)
   train_word, train_tag, dev_word, dev_tag, test_word, test_tag, _ = load_data(data_path)
   
-  iter = iterator(train_word, train_tag, 1, 35)
+  iter = iterator(train_word, train_tag, 1, 30)
   count = 0
   for step, (x, y) in enumerate(iter):
     count +=1;

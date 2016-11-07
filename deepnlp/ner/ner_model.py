@@ -22,13 +22,16 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(parent_dir)
 import ner.reader as reader
 
+# language option python command line 'python ner_model.py zh'
+lang = "zh" if len(sys.argv)==1 else sys.argv[1] # default zh
 file_path = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(file_path, "data")
-train_dir = os.path.join(file_path, "ckpt")
+data_path = os.path.join(file_path, "data", lang)
+train_dir = os.path.join(file_path, "ckpt", lang)
 
 flags = tf.flags
 logging = tf.logging
 
+flags.DEFINE_string("ner_lang", lang, "ner language option for model config")
 flags.DEFINE_string("ner_data_path", data_path, "data_path")
 flags.DEFINE_string("ner_train_dir", train_dir, "Training directory.")
 flags.DEFINE_string("ner_scope_name", "ner_var_scope", "Variable scope of NER Model")
@@ -96,8 +99,8 @@ class NERTagger(object):
     self._final_state = state
     self._logits = logits
     
-    if not is_training:
-      return
+    #if not is_training:
+    #  return
 
     self._lr = tf.Variable(0.0, trainable=False)
     tvars = tf.trainable_variables()
@@ -148,7 +151,7 @@ class NERTagger(object):
     return self._train_op
 
 # NER Model Configuration, Set Target Num, and input vocab_Size
-class LargeConfig(object):
+class LargeConfigChinese(object):
   """Large config."""
   init_scale = 0.04
   learning_rate = 1.0
@@ -158,27 +161,37 @@ class LargeConfig(object):
   hidden_size = 128
   max_epoch = 14
   max_max_epoch = 55
-  keep_prob = 0.9
+  keep_prob = 0.95
   lr_decay = 1 / 1.15
   batch_size = 1 # single sample batch
   vocab_size = 52000
   target_num = 19  # NER Tag 17, n, nf, nc, ne, (name, start, continue, end) n, p, o, q (special), nz entity_name, nbz
 
-class TestConfig(object):
-  """Tiny config, for testing."""
-  init_scale = 0.1
+class LargeConfigEnglish(object):
+  """Large config."""
+  init_scale = 0.04
   learning_rate = 1.0
-  max_grad_norm = 1
-  num_layers = 1
-  num_steps = 2
-  hidden_size = 2
-  max_epoch = 1
-  max_max_epoch = 1
-  keep_prob = 1.0
-  lr_decay = 0.5
-  batch_size = 20
-  vocab_size = 10000
+  max_grad_norm = 10
+  num_layers = 2
+  num_steps = 30
+  hidden_size = 128
+  max_epoch = 14
+  max_max_epoch = 55
+  keep_prob = 0.95
+  lr_decay = 1 / 1.15
+  batch_size = 1 # single sample batch
+  vocab_size = 52000
+  target_num = 15  # NER Tag 17, n, nf, nc, ne, (name, start, continue, end) n, p, o, q (special), nz entity_name, nbz
 
+def get_config(lang):
+  if (lang == 'zh'):
+	return LargeConfigChinese()  
+  elif (lang == 'en'):
+    return LargeConfigEnglish()
+  # other lang options
+  
+  else :
+    return None
 
 def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
   """Runs the model on the given data."""
@@ -223,9 +236,9 @@ def main(_):
   # train_data, valid_data, test_data, _ = raw_data
   train_word, train_tag, dev_word, dev_tag, test_word, test_tag, vocabulary = raw_data
   
-  config = LargeConfig()
+  config = get_config(FLAGS.ner_lang)
   
-  eval_config = LargeConfig()
+  eval_config = get_config(FLAGS.ner_lang)
   eval_config.batch_size = 1
   eval_config.num_steps = 1
 

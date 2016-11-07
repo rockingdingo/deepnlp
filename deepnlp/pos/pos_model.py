@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 """ 
-POS tagger for building a LSTM based POS tagging model.
+pos tagger for building a LSTM based pos tagging model.
 """
 
 from __future__ import absolute_import
@@ -13,7 +13,7 @@ import numpy as np
 import tensorflow as tf
 import os
 
-import sys
+import sys, getopt
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -22,16 +22,21 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(parent_dir)
 import pos.reader as reader
 
+# language option python command line python pos_model.py en
+lang = "zh" if len(sys.argv)==1 else sys.argv[1] # default zh
 file_path = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(file_path, "data")  # path to find corpus vocab file
-train_dir = os.path.join(file_path, "ckpt")  # path to find model saved checkpoint file
+data_path = os.path.join(file_path, "data", lang)
+train_dir = os.path.join(file_path, "ckpt", lang)
 
 flags = tf.flags
 logging = tf.logging
 
+flags.DEFINE_string("pos_lang", lang, "pos language option for model config")
 flags.DEFINE_string("pos_data_path", data_path, "data_path")
 flags.DEFINE_string("pos_train_dir", train_dir, "Training directory.")
-flags.DEFINE_string("pos_scope_name", "pos_var_scope", "Define POS Tagging Variable Scope Name")
+flags.DEFINE_string("pos_scope_name", "pos_var_scope", "Variable scope of pos Model")
+
+print (train_dir)
 
 FLAGS = flags.FLAGS
 
@@ -39,7 +44,7 @@ def data_type():
   return tf.float32
 
 class POSTagger(object):
-  """The POS Tagger Model."""
+  """The pos Tagger Model."""
 
   def __init__(self, is_training, config):
     self.batch_size = batch_size = config.batch_size
@@ -91,24 +96,13 @@ class POSTagger(object):
         [tf.reshape(self._targets, [-1])],
         [tf.ones([batch_size * num_steps], dtype=data_type())])
     
-    # add accuracy evaluation
-    # print shape
-    #print ("logit shape")
-    #print (tf.argmax(logits, 1).get_shape())
-    #print ("target shape")
-    #print (tf.argmax(self._targets, 0).get_shape())
-    
-    correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(self._targets, 0))
-    accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-    
     # Fetch Reults in session.run()
     self._cost = cost = tf.reduce_sum(loss) / batch_size
     self._final_state = state
     self._logits = logits
-    self._accuracy = accuracy
     
-    if not is_training:
-      return
+    #if not is_training:
+    #  return
 
     self._lr = tf.Variable(0.0, trainable=False)
     tvars = tf.trainable_variables()
@@ -158,96 +152,67 @@ class POSTagger(object):
   def train_op(self):
     return self._train_op
 
-  @property
-  def accuracy(self):
-    return self._accuracy
-
-class SmallConfig(object):
-  """Small config."""
-  init_scale = 0.1
-  learning_rate = 1.0
-  max_grad_norm = 5
-  num_layers = 2
-  num_steps = 20
-  hidden_size = 200
-  max_epoch = 4
-  max_max_epoch = 13
-  keep_prob = 1.0
-  lr_decay = 0.5
-  batch_size = 20
-  vocab_size = 10000
-  target_num = 44
-
-class MediumConfig(object):
-  """Medium config."""
-  init_scale = 0.05
-  learning_rate = 1.0
-  max_grad_norm = 5
-  num_layers = 2
-  num_steps = 35
-  hidden_size = 650
-  max_epoch = 6
-  max_max_epoch = 39
-  keep_prob = 0.5
-  lr_decay = 0.8
-  batch_size = 20
-  vocab_size = 10000
-  target_num = 44
-
-
-class LargeConfig(object):
+# pos Model Configuration, Set Target Num, and input vocab_Size
+class LargeConfigChinese(object):
   """Large config."""
   init_scale = 0.04
-  learning_rate = 1.0
+  learning_rate = 0.5
   max_grad_norm = 10
   num_layers = 2
   num_steps = 30
   hidden_size = 128
-  max_epoch = 14 # max_epoch: learning rate start decay after max_epoch
-  max_max_epoch = 55 # total number of epoches
-  keep_prob = 0.9
+  max_epoch = 5
+  max_max_epoch = 55
+  keep_prob = 1.0
   lr_decay = 1 / 1.15
   batch_size = 1 # single sample batch
   vocab_size = 50000
-  target_num = 44
+  target_num = 44  # POS tagging for Chinese
 
-class TestConfig(object):
-  """Tiny config, for testing."""
-  init_scale = 0.1
-  learning_rate = 1.0
-  max_grad_norm = 1
-  num_layers = 1
-  num_steps = 2
-  hidden_size = 2
-  max_epoch = 1
-  max_max_epoch = 1
-  keep_prob = 1.0
-  lr_decay = 0.5
-  batch_size = 20
-  vocab_size = 10000
+class LargeConfigEnglish(object):
+  """Large config for English"""
+  init_scale = 0.04
+  learning_rate = 0.5
+  max_grad_norm = 10
+  num_layers = 2
+  num_steps = 30
+  hidden_size = 128
+  max_epoch = 5
+  max_max_epoch = 55
+  keep_prob = 1.0 # There is one dropout layer on input tensor also, don't set lower than 0.9
+  lr_decay = 1 / 1.15
+  batch_size = 1 # single sample batch
+  vocab_size = 50000
+  target_num = 81  # English: Brown Corpus tags
+
+def get_config(lang):
+  if (lang == 'zh'):
+	return LargeConfigChinese()  
+  elif (lang == 'en'):
+    return LargeConfigEnglish()
+  # other lang options
+  
+  else :
+    return None
 
 
 def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
   """Runs the model on the given data."""
   epoch_size = ((len(word_data) // model.batch_size) - 1) // model.num_steps
-  print ("Total Epoch_size/Sample Number of data is" + str(epoch_size))
-  
   start_time = time.time()
   costs = 0.0
   iters = 0
   state = session.run(model.initial_state)
-  for step, (x, y) in enumerate(reader.iterator(word_data, tag_data, model.batch_size, model.num_steps)):
-    # step: index from [0, epoch_size], Number of Samples
-    # Each step means model meet one sample
-    
-    fetches = [model.cost, model.final_state, model.logits, model.accuracy] # fetch 4 stats
+  for step, (x, y) in enumerate(reader.iterator(word_data, tag_data, model.batch_size,
+                                                    model.num_steps)):
+    fetches = [model.cost, model.final_state, eval_op]
     feed_dict = {}
     feed_dict[model.input_data] = x
     feed_dict[model.targets] = y
     for i, (c, h) in enumerate(model.initial_state):
       feed_dict[c] = state[i].c
       feed_dict[h] = state[i].h
-    cost, state, logits , _ = session.run(fetches, feed_dict)
+    cost, state, _ = session.run(fetches, feed_dict)
     costs += cost
     iters += model.num_steps
 
@@ -255,7 +220,6 @@ def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
       print("%.3f perplexity: %.3f speed: %.0f wps" %
             (step * 1.0 / epoch_size, np.exp(costs / iters),
              iters * model.batch_size / (time.time() - start_time)))
-      #print ("accuracy .3f", accuracy)
     
     # Save Model to CheckPoint when is_training is True
     if model.is_training:
@@ -267,18 +231,6 @@ def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
   return np.exp(costs / iters)
 
 
-def get_config():
-  if FLAGS.pos_model_config == "small":
-    return SmallConfig()
-  elif FLAGS.pos_model_config == "medium":
-    return MediumConfig()
-  elif FLAGS.pos_model_config == "large":
-    return LargeConfig()
-  elif FLAGS.pos_model_config == "test":
-    return TestConfig()
-  else:
-    raise ValueError("Invalid model: %s", FLAGS.pos_model_config)
-
 def main(_):
   if not FLAGS.pos_data_path:
     raise ValueError("No data files found in 'data_path' folder")
@@ -287,10 +239,9 @@ def main(_):
   # train_data, valid_data, test_data, _ = raw_data
   train_word, train_tag, dev_word, dev_tag, test_word, test_tag, vocabulary = raw_data
   
-  #config = get_config()
-  config = LargeConfig()
+  config = get_config(FLAGS.pos_lang)
   
-  eval_config = LargeConfig()
+  eval_config = get_config(FLAGS.pos_lang)
   eval_config.batch_size = 1
   eval_config.num_steps = 1
 
@@ -306,7 +257,7 @@ def main(_):
     # CheckPoint State
     ckpt = tf.train.get_checkpoint_state(FLAGS.pos_train_dir)
     if ckpt and tf.gfile.Exists(ckpt.model_checkpoint_path):
-      print("Reading model parameters from %s" % ckpt.model_checkpoint_path)
+      print("Loading model parameters from %s" % ckpt.model_checkpoint_path)
       m.saver.restore(session, ckpt.model_checkpoint_path)
     else:
       print("Created model with fresh parameters.")
@@ -325,7 +276,7 @@ def main(_):
       valid_perplexity = run_epoch(session, mvalid, dev_word, dev_tag, tf.no_op())
       print("Epoch: %d Valid Perplexity: %.3f" % (i + 1, valid_perplexity))
 
-    test_perplexity = run_epoch(session, mtest, test_word,test_tag, tf.no_op())
+    test_perplexity = run_epoch(session, mtest, test_word, test_tag, tf.no_op())
     print("Test Perplexity: %.3f" % test_perplexity)
 
 if __name__ == "__main__":

@@ -6,7 +6,8 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 print sys.getdefaultencoding()
 
-import deepnlp.pipeline as p
+from deepnlp import pipeline
+p = pipeline.load_model('zh')
 
 # concatenate tuples into one string "w1/t1 w2/t2 ..."
 def _concat_tuples(tagging):
