@@ -18,8 +18,8 @@ Modules
     * NER: LSTM/BI-LSTM/LSTM-CRF network, based on Tensorflow
 
 * Pre-trained Model
-    * Chinese: Segmentation, POS, NER
-    * English: To be released soon.
+    * Chinese: Segmentation, POS, NER (1998 china daily corpus)
+    * English: POS (brown corpus)
     * For your Specific Language, you can easily use the shell to train model with the corpus of your language choice.
 
 Installation
@@ -37,14 +37,14 @@ Installation
    pip install deepnlp
 
 * Install from source
-Download source deepnlp-0.1.2.tar.gz: https://pypi.python.org/pypi/deepnlp
+Download source deepnlp-0.1.3.tar.gz: https://pypi.python.org/pypi/deepnlp
 In linux, Run the script
 
 .. code-block:: python
    :linenos:
    
-   tar zxvf deepnlp-0.1.2.tar.gz
-   cd deepnlp-0.1.2
+   tar zxvf deepnlp-0.1.3.tar.gz
+   cd deepnlp-0.1.3
    python setup.py install
 
 
@@ -55,7 +55,7 @@ In linux, Run the script
    
    cd test
    python test_segmenter.py
-   python test_pipeline.py
+   python test_pos_zh.py
    # Check if output is correct
 
 Tutorial
@@ -96,20 +96,42 @@ POS
 
 .. code-block:: python
     :linenos:
-   
+    
+    ## English Model Brown Corpus
     import deepnlp.segmenter as segmenter
-    import deepnlp.pos_tagger as pos_tagger
+    from deepnlp import pos_tagger
+    tagger = pos_tagger.load_model(lang = 'en')  # Loading English model, lang code 'en'
 
     #Segmentation
-    text = "我爱吃北京烤鸭"
-    words = segmenter.seg(text.decode('utf-8'))  # chinese characters are using unicode in python 2.7
+    text = "I will see a funny movie"
+    words = text.split(" ")
     print (" ".join(words).encode('utf-8'))
 
     #POS Tagging
-    tagging = pos_tagger.predict(words)
+    tagging = tagger.predict(words)
     for (w,t) in tagging:
         str = w + "/" + t
         print (str.encode('utf-8'))
+
+
+    ## Chinese Model China Daily Corpus
+    import deepnlp.segmenter as segmenter
+    from deepnlp import pos_tagger
+    tagger = pos_tagger.load_model(lang = 'zh') # Loading Chinese model, lang code 'zh'
+
+    #Segmentation
+    text = "我爱吃北京烤鸭"
+    words = segmenter.seg(text.decode('utf-8')) # words in unicode coding
+    print (" ".join(words).encode('utf-8'))
+
+    #POS Tagging
+    tagging = tagger.predict(words)  # input: unicode coding
+    for (w,t) in tagging:
+        str = w + "/" + t
+        print (str.encode('utf-8'))
+
+    #Results
+    #我/r 爱/v 吃/v 北京/ns 烤鸭/n
 
 NER
 -------------
@@ -119,7 +141,8 @@ NER
     :linenos:
     
     import deepnlp.segmenter as segmenter
-    import deepnlp.ner_tagger as ner_tagger
+    from deepnlp import ner_tagger
+    tagger = ner_tagger.load_model(lang = 'zh') # Loading Chinese NER model
 
     #Segmentation
     text = "我爱吃北京烤鸭"
@@ -127,10 +150,13 @@ NER
     print (" ".join(words).encode('utf-8'))
 
     #NER tagging
-    tagging = ner_tagger.predict(words)
+    tagging = tagger.predict(words)
     for (w,t) in tagging:
         str = w + "/" + t
         print (str.encode('utf-8'))
+
+    #Results
+    #我/nt 爱/nt 吃/nt 北京/p 烤鸭/nt
 
 Pipeline
 -------------
@@ -138,7 +164,8 @@ Pipeline
 .. code-block:: python
     :linenos:
     
-    import deepnlp.pipeline as p
+    from deepnlp import pipeline
+    p = pipeline.load_model('zh')
 
     #Segmentation
     text = "我爱吃北京烤鸭"
@@ -147,6 +174,14 @@ Pipeline
     print (res[0].encode('utf-8'))
     print (res[1].encode('utf-8'))
     print (res[2].encode('utf-8'))
+
+    words = p.segment(text)
+    pos_tagging = p.tag_pos(words)
+    ner_tagging = p.tag_ner(words)
+
+    print (pos_tagging.encode('utf-8'))
+    print (ner_tagging.encode('utf-8'))
+
 
 Train your model
 ----------------
@@ -219,10 +254,17 @@ POS model
     ..pos_model.py
     ..reader.py
     ../data
-    ...train.txt
-    ...dev.txt
-    ...test.txt
+    .../en
+    ....train.txt
+    ....dev.txt
+    ....test.txt
+    .../zh
+    ....train.txt
+    ....dev.txt
+    ....test.txt
     ../ckpt
+    .../en
+    .../zh
 
 * Prepare corpus
 
@@ -239,18 +281,25 @@ POS/NN tagging/NN is/VBZ now/RB done/VBN in/IN the/DT context/NN of/IN computati
 
 * Specifying data_path
 
-So model can find training data files. Download the source of package and put all three corpus files in the folder ../deepnlp/pos/data
+So model can find training data files. Download the source of package and put all three corpus files in the folder ../deepnlp/pos/data/zh
+for your specific language option, create subfolders .../data/'your_language_code' and .../ckpt/'your_language_code'
 you can change data_path setting in reader.py and pos_model.py
 
 * Running script
 
 .. code-block:: python
     :linenos:
+    
+    python pos_model.py en # LSTM model English
 
-    python pos_model.py
+    python pos_model.py zh # LSTM model Chinese
+
+    python pos_model_bilstm.py en # Bi-LSTM model English
+
+    python pos_model_bilstm.py zh # Bi-LSTM model Chinese
 
     
-Trained model can be found under folder ../deepnlp/pos/ckpt
+Trained model can be found under folder ../deepnlp/pos/ckpt/'your_language_code'
 
 
 NER model
