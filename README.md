@@ -1,9 +1,8 @@
 About 'deepnlp'
-========
-Deep Learning NLP Pipeline implemented on Tensorflow purely by python.
-Following the 'simplicity' rule, this project aims to provide an easy python version implementation of NLP pipeline based on Tensorflow platform.
-It serves the same purpose as Google SyntaxNet but is easier to install, read and extend(purely in python), which also require fewer dependency. 
-(Installing Bazel on my machine is painful...)
+================
+Deep Learning NLP Pipeline implemented on Tensorflow. Following the 'simplicity' rule, this project aims to 
+use the deep learning library of Tensorflow platform to implement new NLP pipeline. You can extend the project to 
+train models with your corpus/languages. Pretrained models of Chinese corpus are also distributed.
 
 Brief Introduction
 ==================
@@ -35,26 +34,40 @@ Modules
 * Pre-trained Model
     * Chinese: Segmentation, POS, NER (1998 china daily corpus)
     * English: POS (brown corpus)
-    * For your Specific Language, you can easily use the shell to train model with the corpus of your language choice.
+    * For your Specific Language, you can easily use the script to train model with the corpus of your language choice.
 
 Installation
-========
+================
 * Requirements
-    * Tensorflow(>=0.10.0)   LSTM module in Tensorflow change a lot since 0.10.0 compared to previous versions
-    * CRF++ (>=0.54)         Download from: https://taku910.github.io/crfpp/
+    * Tensorflow(>=0.10.0)   Make sure to have the possibly latest release, many modules e.g. LSTM tuple states change a lot.
+    * CRF++ (>=0.54)         
+```Bash
+# Download CRF++-0.58.tar.gz from: https://taku910.github.io/crfpp/
+tar xzvf CRF++-0.58.tar.gz
+cd CRF++-0.58
+./configure
+./make && sudo make install
+```
+    * python2/python3        Both are supported, and the default coding is unicode for version compatibility reason
 
 * Pip
 ```python
     # windows: tensorflow is not supported on windows right now, so is deepnlp
     # linux, run the script:
+    
     pip install deepnlp
+    
+    # Due to pkg size restriction, english pos model, ner model files are not distributed on pypi
+    # You can download the pre-trained model files from github and put in your installation directory .../site-packages/.../deepnlp/...
+    # model files: ../pos/ckpt/en/pos.ckpt  ; ../ner/ckpt/zh/ner.ckpt
+    
 ```
 
-* Download source deepnlp-0.1.3.tar.gz: https://pypi.python.org/pypi/deepnlp
+* Download latest source e.g. deepnlp-0.1.5.tar.gz: https://pypi.python.org/pypi/deepnlp
 ```python
     # linux, run the script:
-    tar zxvf deepnlp-0.1.3.tar.gz
-    cd deepnlp-0.1.3
+    tar zxvf deepnlp-0.1.5.tar.gz
+    cd deepnlp-0.1.5
     python setup.py install
 ```
 
@@ -62,6 +75,7 @@ Installation
 ```python
     # linux, run the script:
     cd test
+    python test_pos_en.py
     python test_segmenter.py
     python test_pos_zh.py
     # Check if output is correct
@@ -71,22 +85,24 @@ Tutorial
 ========
 Set Coding
 设置编码
+For python2, the default coding is ascii not unicode, use __future__ module to make it compatible with python3
 ```python
 #coding=utf-8
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-print sys.getdefaultencoding()
+from __future__ import unicode_literals # compatible with python3 unicode
+
 ```
 
 Segmentation
------
+---------------
 分词模块
 ```python
-import deepnlp.segmenter as segmenter
+#coding=utf-8
+from __future__ import unicode_literals
+
+from deepnlp import segmenter
 
 text = "我爱吃北京烤鸭"
-segList = segmenter.seg(text.decode('utf-8')) # python 2: function input: unicode, return unicode
+segList = segmenter.seg(text)
 text_seg = " ".join(segList)
 
 print (text.encode('utf-8'))
@@ -97,14 +113,16 @@ POS
 -----
 词性标注
 ```python
-## English Model Brown Corpus
-import deepnlp.segmenter as segmenter
+#coding:utf-8
+from __future__ import unicode_literals
+
+## English Model
 from deepnlp import pos_tagger
-tagger = pos_tagger.load_model(lang = 'en')  # Loading English model, lang code 'en'
+tagger = pos_tagger.load_model(lang = 'en')  # Loading English model, lang code 'en', English Model Brown Corpus
 
 #Segmentation
 text = "I will see a funny movie"
-words = text.split(" ")
+words = text.split(" ")     # unicode
 print (" ".join(words).encode('utf-8'))
 
 #POS Tagging
@@ -114,14 +132,17 @@ for (w,t) in tagging:
     print (str.encode('utf-8'))
 
 
-## Chinese Model China Daily Corpus
-import deepnlp.segmenter as segmenter
+#coding:utf-8
+from __future__ import unicode_literals
+
+## Chinese Model
+from deepnlp import segmenter
 from deepnlp import pos_tagger
-tagger = pos_tagger.load_model(lang = 'zh') # Loading Chinese model, lang code 'zh'
+tagger = pos_tagger.load_model(lang = 'zh') # Loading Chinese model, lang code 'zh', China Daily Corpus
 
 #Segmentation
 text = "我爱吃北京烤鸭"
-words = segmenter.seg(text.decode('utf-8')) # words in unicode coding
+words = segmenter.seg(text) # words in unicode coding
 print (" ".join(words).encode('utf-8'))
 
 #POS Tagging
@@ -139,14 +160,16 @@ NER
 -----
 命名实体识别
 ```python
+#coding:utf-8
+from __future__ import unicode_literals
 
-import deepnlp.segmenter as segmenter
+from deepnlp import segmenter
 from deepnlp import ner_tagger
 tagger = ner_tagger.load_model(lang = 'zh') # Loading Chinese NER model
 
 #Segmentation
 text = "我爱吃北京烤鸭"
-words = segmenter.seg(text.decode('utf-8'))
+words = segmenter.seg(text)
 print (" ".join(words).encode('utf-8'))
 
 #NER tagging
@@ -163,12 +186,15 @@ for (w,t) in tagging:
 Pipeline
 -----
 ```python
+#coding:utf-8
+from __future__ import unicode_literals
+
 from deepnlp import pipeline
 p = pipeline.load_model('zh')
 
 #Segmentation
 text = "我爱吃北京烤鸭"
-res = p.analyze(text.decode('utf-8'))
+res = p.analyze(text)
 
 print (res[0].encode('utf-8'))
 print (res[1].encode('utf-8'))
@@ -321,11 +347,11 @@ deepnlp项目是基于Tensorflow平台的一个python版本的NLP套装, 目的�
     pip install deepnlp
 ```
 
-* 从源码安装, 下载deepnlp-0.1.3.tar.gz文件: https://pypi.python.org/pypi/deepnlp
+* 从源码安装, 下载deepnlp-0.1.5.tar.gz文件: https://pypi.python.org/pypi/deepnlp
 ```python
     # linux, run the script:
-    tar zxvf deepnlp-0.1.3.tar.gz
-    cd deepnlp-0.1.3
+    tar zxvf deepnlp-0.1.5.tar.gz
+    cd deepnlp-0.1.5
     python setup.py install
 ```
 

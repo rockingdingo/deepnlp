@@ -1,10 +1,8 @@
 #coding:utf-8
-#Set Default codec coding to utf-8 to print chinese correctly
+from __future__ import unicode_literals # compatible with python3 unicode
+
 import sys,os
 import codecs
-reload(sys)
-sys.setdefaultencoding('utf-8')
-print sys.getdefaultencoding()
 
 from deepnlp import pipeline
 p = pipeline.load_model('zh')
@@ -14,7 +12,7 @@ def _concat_tuples(tagging):
   TOKEN_BLANK = " "
   wl = [] # wordlist
   for (x, y) in tagging:
-    wl.append(str(x + "/" + y))
+    wl.append(x + "/" + y) # unicode
   concat_str = TOKEN_BLANK.join(wl)
   return concat_str
 

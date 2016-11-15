@@ -1,25 +1,26 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
-
 '''
 NER module global function 'predict'
 @author: xichen ding
-@date: 2016-10-27
+@date: 2016-11-15
 '''
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals # compatible with python3 unicode coding
 
 import sys, os
 import tensorflow as tf
 import numpy as np
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
-import ner.ner_model as ner_model
-import ner.reader as ner_reader
-
-import deepnlp
-# pkg_path = (deepnlp.__path__)[0]
+# adding pos submodule to sys.path, compatible with py3 absolute_import
 pkg_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(pkg_path)
+
+from ner import ner_model as ner_model
+from ner import reader as ner_reader
 
 class ModelLoader(object):
 
@@ -87,7 +88,6 @@ class ModelLoader(object):
         predict_tag = ner_reader.word_ids_to_sentence(data_path, predict_id)
         return zip(words, predict_tag)
 
-        
 def load_model(lang = 'zh'):
     data_path = os.path.join(pkg_path, "ner/data", lang) # NER vocabulary data path
     ckpt_path = os.path.join(pkg_path, "ner/ckpt", lang, "ner.ckpt") # NER model checkpoint path

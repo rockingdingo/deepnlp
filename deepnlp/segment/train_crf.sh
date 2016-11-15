@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOCAL_PATH="`pwd`"
+LOCAL_PATH="$(cd `dirname $0`; pwd)"
 echo 'Prepare Training Data File: train_word_tag.txt'
 python data_util.py ${LOCAL_PATH}/data/train.txt ${LOCAL_PATH}/data/train_word_tag.txt
 python data_util.py ${LOCAL_PATH}/data/test.txt ${LOCAL_PATH}/data/test_word_tag.txt

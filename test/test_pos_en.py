@@ -1,12 +1,6 @@
 #coding:utf-8
+from __future__ import unicode_literals
 
-#Set Default codec coding to utf-8 to print chinese correctly
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-print sys.getdefaultencoding()
-
-import deepnlp.segmenter as segmenter
 from deepnlp import pos_tagger
 tagger = pos_tagger.load_model(lang = 'en')  # Loading English model, lang code 'en'
 

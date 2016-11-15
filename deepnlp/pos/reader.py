@@ -6,27 +6,19 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals # compatible with python3 unicode
 
 import collections
-import os
+import sys, os
 import codecs
 
 import numpy as np
 import tensorflow as tf
 
-
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
 global UNKNOWN, EOS, DELIMITER
 UNKNOWN = "*"
 EOS = "<eos>"
 DELIMITER = " " # line delimiter
-
-def _read_words(filename):
-  with tf.gfile.GFile(filename, "r") as f:
-    return f.read().replace("\n", "").split()
 
 def _read_file(filename):
   sentences = [] # list(list(str))
@@ -73,9 +65,12 @@ def _build_vocab(filename):
   return word_to_id, tag_to_id
 
 def _save_vocab(dict, path):
-  with tf.gfile.GFile(path, mode="wb") as file:
-    for k, v in dict.items():
-      file.write(str(k) + "\t" + str(v) + b"\n")
+  # save utf-8 code dictionary
+  file = codecs.open(path, "w", encoding='utf-8')
+  for k, v in dict.items():
+    # k is unicode, v is int
+    line = k + "\t" + str(v) + "\n" # unicode
+    file.write(line)
 
 def _read_vocab(path):
   # read utf-8 code
@@ -86,23 +81,22 @@ def _read_vocab(path):
     vocab_dict[pair[0]] = int(pair[1])
   return vocab_dict
 
-
 def sentence_to_word_ids(data_path, words):
   word_to_id = _read_vocab(os.path.join(data_path, "word_to_id"))
-  wordArray = [word_to_id[w] if word_to_id.has_key(w) else word_to_id[UNKNOWN] for w in words]
+  wordArray = [word_to_id[w] if w in word_to_id else word_to_id[UNKNOWN] for w in words]
   return wordArray
 
 def word_ids_to_sentence(data_path, ids):
   tag_to_id = _read_vocab(os.path.join(data_path, "tag_to_id"))
   id_to_tag = {id:tag for tag, id in tag_to_id.items()}
-  tagArray = [id_to_tag[i] if id_to_tag.has_key(i) else id_to_tag[0] for i in ids]
+  tagArray = [id_to_tag[i] if i in id_to_tag else id_to_tag[0] for i in ids]
   return tagArray
 
 def _file_to_word_ids(filename, word_to_id, tag_to_id):
   words, sentences = _read_file(filename)
   word, tag = _split_word_tag(words)
-  wordArray = [word_to_id[w] if word_to_id.has_key(w) else word_to_id[UNKNOWN] for w in word]
-  tagArray = [tag_to_id[t] if tag_to_id.has_key(t) else tag_to_id[UNKNOWN] for t in tag]
+  wordArray = [word_to_id[w] if w in word_to_id else word_to_id[UNKNOWN] for w in word]
+  tagArray = [tag_to_id[t] if t in tag_to_id else tag_to_id[UNKNOWN] for t in tag]
   return wordArray, tagArray
 
 def load_data(data_path=None):
@@ -177,7 +171,7 @@ def main():
   """
   Test load_data method and iterator method
   """
-  data_path ="/mnt/pypi/deepnlp/deepnlp/pos/data"
+  data_path ="/mnt/pypi/deepnlp/deepnlp/pos/data/zh"
   print ("Data Path: " + data_path)
   train_word, train_tag, dev_word, dev_tag, test_word, test_tag, _ = load_data(data_path)
   

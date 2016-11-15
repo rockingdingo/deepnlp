@@ -28,23 +28,38 @@ Installation
     * Tensorflow(>=0.10.0)   LSTM module in Tensorflow change a lot since 0.10.0 compared to previous versions
     * CRF++ (>=0.54)         Download from: https://taku910.github.io/crfpp/
 
+.. code-block:: python
+    :linenos:
+   
+    tar xzvf CRF++-0.58.tar.gz
+    cd CRF++-0.58
+    ./configure
+    ./make && sudo make install
+
+    * python2/python3        Both are supported, and the default coding is unicode for version compatibility reason
+
 * Pip
 .. code-block:: python
-   :linenos:
+    :linenos:
    
-   # windows: tensorflow is not supported on windows right now, so isn't deepnlp
-   # linux, run the script:
-   pip install deepnlp
-
+    # windows: tensorflow is not supported on windows right now, so isn't deepnlp
+    # linux, run the script:
+    pip install deepnlp
+    
+    # Due to pkg size restriction, english pos model, ner model files are not distributed on pypi
+    # You can download the pre-trained model files from github and put in your installation directory .../site-packages/.../deepnlp/...
+    # model files: ../pos/ckpt/en/pos.ckpt  ; ../ner/ckpt/zh/ner.ckpt
+    
+    
 * Install from source
-Download source deepnlp-0.1.3.tar.gz: https://pypi.python.org/pypi/deepnlp
+Download source deepnlp-0.1.5.tar.gz: https://pypi.python.org/pypi/deepnlp
 In linux, Run the script
 
 .. code-block:: python
    :linenos:
    
-   tar zxvf deepnlp-0.1.3.tar.gz
-   cd deepnlp-0.1.3
+   tar zxvf deepnlp-0.1.5.tar.gz
+   cd deepnlp-0.1.5
    python setup.py install
 
 
@@ -63,31 +78,32 @@ Tutorial
 
 Set Coding
 设置编码
+For python2, the default coding is ascii not unicode, use __future__ module to make it compatible with python3
 
 .. code-block:: python
-   :linenos:
+    :linenos:
    
-   #coding=utf-8
-   import sys
-   reload(sys)
-   sys.setdefaultencoding('utf-8')
-   print sys.getdefaultencoding()
+    #coding=utf-8
+    from __future__ import unicode_literals # compatible with python3 unicode
 
 Segmentation
 -------------
 分词模块
 
 .. code-block:: python
-   :linenos:
+    :linenos:
    
-   import deepnlp.segmenter as segmenter
+    #coding=utf-8
+    from __future__ import unicode_literals
 
-   text = "我爱吃北京烤鸭"
-   segList = segmenter.seg(text.decode('utf-8')) # python 2: function input: unicode, return unicode
-   text_seg = " ".join(segList)
+    from deepnlp import segmenter
 
-   print (text.encode('utf-8'))
-   print (text_seg.encode('utf-8'))
+    text = "我爱吃北京烤鸭"
+    segList = segmenter.seg(text)
+    text_seg = " ".join(segList)
+
+    print (text.encode('utf-8'))
+    print (text_seg.encode('utf-8'))
 
 
 POS
@@ -97,14 +113,16 @@ POS
 .. code-block:: python
     :linenos:
     
-    ## English Model Brown Corpus
-    import deepnlp.segmenter as segmenter
+    #coding:utf-8
+    from __future__ import unicode_literals
+
+    ## English Model
     from deepnlp import pos_tagger
-    tagger = pos_tagger.load_model(lang = 'en')  # Loading English model, lang code 'en'
+    tagger = pos_tagger.load_model(lang = 'en')  # Loading English model, lang code 'en', English Model Brown Corpus
 
     #Segmentation
     text = "I will see a funny movie"
-    words = text.split(" ")
+    words = text.split(" ")     # unicode
     print (" ".join(words).encode('utf-8'))
 
     #POS Tagging
@@ -114,14 +132,17 @@ POS
         print (str.encode('utf-8'))
 
 
-    ## Chinese Model China Daily Corpus
-    import deepnlp.segmenter as segmenter
+    #coding:utf-8
+    from __future__ import unicode_literals
+
+    ## Chinese Model
+    from deepnlp import segmenter
     from deepnlp import pos_tagger
-    tagger = pos_tagger.load_model(lang = 'zh') # Loading Chinese model, lang code 'zh'
+    tagger = pos_tagger.load_model(lang = 'zh') # Loading Chinese model, lang code 'zh', China Daily Corpus
 
     #Segmentation
     text = "我爱吃北京烤鸭"
-    words = segmenter.seg(text.decode('utf-8')) # words in unicode coding
+    words = segmenter.seg(text) # words in unicode coding
     print (" ".join(words).encode('utf-8'))
 
     #POS Tagging
@@ -140,13 +161,16 @@ NER
 .. code-block:: python
     :linenos:
     
-    import deepnlp.segmenter as segmenter
+    #coding:utf-8
+    from __future__ import unicode_literals
+
+    from deepnlp import segmenter
     from deepnlp import ner_tagger
     tagger = ner_tagger.load_model(lang = 'zh') # Loading Chinese NER model
 
     #Segmentation
     text = "我爱吃北京烤鸭"
-    words = segmenter.seg(text.decode('utf-8'))
+    words = segmenter.seg(text)
     print (" ".join(words).encode('utf-8'))
 
     #NER tagging
@@ -164,12 +188,15 @@ Pipeline
 .. code-block:: python
     :linenos:
     
+    #coding:utf-8
+    from __future__ import unicode_literals
+
     from deepnlp import pipeline
     p = pipeline.load_model('zh')
 
     #Segmentation
     text = "我爱吃北京烤鸭"
-    res = p.analyze(text.decode('utf-8'))
+    res = p.analyze(text)
 
     print (res[0].encode('utf-8'))
     print (res[1].encode('utf-8'))
@@ -341,6 +368,17 @@ deepnlp项目是基于Tensorflow平台的一个python版本的NLP套装, 目的�
     * Tensorflow(>=0.10.0)   Tensorflow 0.10.0 里的LSTM模块和以前版本相比有较大变化，所以尽量以最新的为基准；
     * CRF++ (>=0.54)         可以从 https://taku910.github.io/crfpp/ 下载安装
 
+.. code-block:: python
+    :linenos:
+   
+    tar xzvf CRF++-0.58.tar.gz
+    cd CRF++-0.58
+    ./configure
+    ./make && sudo make install
+
+    * python2/python3        Both are supported, and the default coding is unicode for version compatibility reason
+
+
 * Pip 安装
 
 .. code-block:: python
@@ -351,14 +389,14 @@ deepnlp项目是基于Tensorflow平台的一个python版本的NLP套装, 目的�
     pip install deepnlp
 
 
-* 从源码安装, 下载deepnlp-0.1.1.tar.gz文件: https://pypi.python.org/pypi/deepnlp
+* 从源码安装, 下载deepnlp-0.1.5.tar.gz文件: https://pypi.python.org/pypi/deepnlp
 
 .. code-block:: python
     :linenos:
     
     # linux, run the script:
-    tar zxvf deepnlp-0.1.1.tar.gz
-    cd deepnlp-0.1.1
+    tar zxvf deepnlp-0.1.5.tar.gz
+    cd deepnlp-0.1.5
     python setup.py install
 
 

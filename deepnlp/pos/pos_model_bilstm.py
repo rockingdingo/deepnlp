@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 """ 
-pos tagger for building a LSTM based pos tagging model.
+POS tagger for building a LSTM based POS tagging model.
 """
 
 from __future__ import absolute_import
@@ -18,11 +18,11 @@ pkg_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # .../dee
 sys.path.append(pkg_path)
 from pos import reader # absolute import
 
-# language option python command line 'python pos_model.py en'
+# language option python command line python pos_model.py en
 lang = "zh" if len(sys.argv)==1 else sys.argv[1] # default zh
 file_path = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(file_path, "data", lang)
-train_dir = os.path.join(file_path, "ckpt", lang)
+data_path = os.path.join(file_path, "data", lang)  # path to find corpus vocab file
+train_dir = os.path.join(file_path, "ckpt", lang)  # path to find model saved checkpoint file
 
 flags = tf.flags
 logging = tf.logging
@@ -30,86 +30,53 @@ logging = tf.logging
 flags.DEFINE_string("pos_lang", lang, "pos language option for model config")
 flags.DEFINE_string("pos_data_path", data_path, "data_path")
 flags.DEFINE_string("pos_train_dir", train_dir, "Training directory.")
-flags.DEFINE_string("pos_scope_name", "pos_var_scope", "Variable scope of pos Model")
+flags.DEFINE_string("pos_scope_name", "pos_var_scope", "Define POS Tagging Variable Scope Name")
 
+#print (train_dir)
 FLAGS = flags.FLAGS
 
 def data_type():
   return tf.float32
 
 class POSTagger(object):
-  """The pos Tagger Model."""
+  """The POS Tagger Model."""
 
   def __init__(self, is_training, config):
     self.batch_size = batch_size = config.batch_size
     self.num_steps = num_steps = config.num_steps
+    self.is_training = is_training
     size = config.hidden_size
     vocab_size = config.vocab_size
-    target_num = config.target_num # target output number
     
+    # Define input and target tensors
     self._input_data = tf.placeholder(tf.int32, [batch_size, num_steps])
     self._targets = tf.placeholder(tf.int32, [batch_size, num_steps])
-
-    # Check if Model is Training
-    self.is_training = is_training
     
-    # Slightly better results can be obtained with forget gate biases
-    # initialized to 1 but the hyperparameters of the model would need to be
-    # different than reported in the paper.
-    lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
-    if is_training and config.keep_prob < 1:
-      lstm_cell = tf.nn.rnn_cell.DropoutWrapper(
-          lstm_cell, output_keep_prob=config.keep_prob)
-    cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell] * config.num_layers, state_is_tuple=True)
-
-    self._initial_state = cell.zero_state(batch_size, data_type())
-
     with tf.device("/cpu:0"):
-      embedding = tf.get_variable(
-          "embedding", [vocab_size, size], dtype=data_type())
+      embedding = tf.get_variable("embedding", [vocab_size, size], dtype=data_type())
       inputs = tf.nn.embedding_lookup(embedding, self._input_data)
-
-    if is_training and config.keep_prob < 1:
-      inputs = tf.nn.dropout(inputs, config.keep_prob)
-
-    outputs = []
-    state = self._initial_state
-    with tf.variable_scope("pos_lstm"):
-      for time_step in range(num_steps):
-        if time_step > 0: tf.get_variable_scope().reuse_variables()
-        (cell_output, state) = cell(inputs[:, time_step, :], state)
-        outputs.append(cell_output)
-
-    output = tf.reshape(tf.concat(1, outputs), [-1, size])
-    softmax_w = tf.get_variable(
-        "softmax_w", [size, target_num], dtype=data_type())
-    softmax_b = tf.get_variable("softmax_b", [target_num], dtype=data_type())
-    logits = tf.matmul(output, softmax_w) + softmax_b
-    loss = tf.nn.seq2seq.sequence_loss_by_example(
-        [logits],
-        [tf.reshape(self._targets, [-1])],
-        [tf.ones([batch_size * num_steps], dtype=data_type())])
     
-    # Fetch Reults in session.run()
-    self._cost = cost = tf.reduce_sum(loss) / batch_size
-    self._final_state = state
-    self._logits = logits
+    if (config.bi_direction):  # BiLSTM
+      self._cost, self._logits = _bilstm_model(inputs, self._targets, config)
+    else:                      # LSTM
+      self._cost, self._logits, self._final_state, self._initial_state = _lstm_model(inputs, self._targets, config)
     
     #if not is_training:
     #  return
-
+    
+    # Gradients and SGD update operation for training the model.
     self._lr = tf.Variable(0.0, trainable=False)
     tvars = tf.trainable_variables()
-    grads, _ = tf.clip_by_global_norm(tf.gradients(cost, tvars),
-                                      config.max_grad_norm)
+    grads, _ = tf.clip_by_global_norm(tf.gradients(self._cost, tvars), config.max_grad_norm)
     optimizer = tf.train.GradientDescentOptimizer(self._lr)
-    self._train_op = optimizer.apply_gradients(zip(grads, tvars))
-
-    self._new_lr = tf.placeholder(
-        data_type(), shape=[], name="new_learning_rate")
+    # optimizer = tf.train.AdamOptimizer(learning_rate=self._lr).minimize(self._cost)
+    self._train_op = optimizer.apply_gradients(
+        zip(grads, tvars),
+        global_step=tf.contrib.framework.get_or_create_global_step())
+    
+    self._new_lr = tf.placeholder(data_type(), shape=[], name="new_learning_rate")
     self._lr_update = tf.assign(self._lr, self._new_lr)
     self.saver = tf.train.Saver(tf.all_variables())
-
 
   def assign_lr(self, session, lr_value):
     session.run(self._lr_update, feed_dict={self._new_lr: lr_value})
@@ -122,17 +89,17 @@ class POSTagger(object):
   def targets(self):
     return self._targets
 
-  @property
-  def initial_state(self):
-    return self._initial_state
+  #@property
+  #def initial_state(self):
+  #  return self._initial_state
 
   @property
   def cost(self):
     return self._cost
 
-  @property
-  def final_state(self):
-    return self._final_state
+  #@property
+  #def final_state(self):
+  #  return self._final_state
   
   @property
   def logits(self):
@@ -145,6 +112,11 @@ class POSTagger(object):
   @property
   def train_op(self):
     return self._train_op
+
+  @property
+  def accuracy(self):
+    return self._accuracy
+
 
 # pos Model Configuration, Set Target Num, and input vocab_Size
 class LargeConfigChinese(object):
@@ -162,6 +134,7 @@ class LargeConfigChinese(object):
   batch_size = 1 # single sample batch
   vocab_size = 50000
   target_num = 44  # POS tagging for Chinese
+  bi_direction = True # LSTM or BiLSTM
 
 class LargeConfigEnglish(object):
   """Large config for English"""
@@ -178,6 +151,7 @@ class LargeConfigEnglish(object):
   batch_size = 1 # single sample batch
   vocab_size = 50000
   target_num = 81  # English: Brown Corpus tags
+  bi_direction = True # LSTM or BiLSTM
 
 def get_config(lang):
   if (lang == 'zh'):
@@ -189,24 +163,111 @@ def get_config(lang):
   else :
     return None
 
+def _lstm_model(inputs, targets, config):
+    '''
+    @Use BasicLSTMCell and MultiRNNCell class to build LSTM model, 
+    @return logits, cost and others
+    '''
+    batch_size = config.batch_size
+    num_steps = config.num_steps
+    num_layers = config.num_layers
+    size = config.hidden_size
+    vocab_size = config.vocab_size
+    target_num = config.target_num # target output number    
+    
+    lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
+    cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell] * config.num_layers, state_is_tuple=True)
+    
+    initial_state = cell.zero_state(batch_size, data_type())
+    
+    outputs = []
+    state = initial_state
+    with tf.variable_scope("pos_lstm"):
+        for time_step in range(num_steps):
+            if time_step > 0: tf.get_variable_scope().reuse_variables()
+            (cell_output, state) = cell(inputs[:, time_step, :], state) # inputs[batch_size, time_step, hidden_size]
+            outputs.append(cell_output)
+    
+    output = tf.reshape(tf.concat(1, outputs), [-1, size]) # output dimension: time_step(30) * size(128)
+    softmax_w = tf.get_variable("softmax_w", [size, target_num], dtype=data_type())
+    softmax_b = tf.get_variable("softmax_b", [target_num], dtype=data_type())
+    logits = tf.matmul(output, softmax_w) + softmax_b
+    
+    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits, tf.reshape(targets, [-1]))
+    # loss = tf.nn.seq2seq.sequence_loss_by_example([logits],[tf.reshape(targets, [-1])], [tf.ones([batch_size * num_steps], dtype=data_type())])
+    cost = tf.reduce_sum(loss)/batch_size # loss [time_step]
+    
+    # adding extra statistics to monitor
+    correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(targets, 0))
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))    
+    return cost, logits, state, initial_state
+
+def _bilstm_model(inputs, targets, config):
+    '''
+    @Use BasicLSTMCell, MultiRNNCell, tf.nn.rnn_cell.BasicLSTMCell method to build LSTM model, 
+    @return logits, cost and others
+    '''
+    batch_size = config.batch_size
+    num_steps = config.num_steps
+    num_layers = config.num_layers
+    size = config.hidden_size
+    vocab_size = config.vocab_size
+    target_num = config.target_num # target output number    
+    
+    lstm_fw_cell = tf.nn.rnn_cell.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
+    lstm_bw_cell = tf.nn.rnn_cell.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
+        
+    cell_fw = tf.nn.rnn_cell.MultiRNNCell([lstm_fw_cell] * num_layers, state_is_tuple=True)
+    cell_bw = tf.nn.rnn_cell.MultiRNNCell([lstm_bw_cell] * num_layers, state_is_tuple=True)
+    
+    initial_state_fw = cell_fw.zero_state(batch_size, data_type())
+    initial_state_bw = cell_bw.zero_state(batch_size, data_type())
+    
+    # Split to get a list of 'n_steps' tensors of shape (batch_size, n_input)
+    inputs_list = [tf.squeeze(s, squeeze_dims=[1]) for s in tf.split(1, num_steps, inputs)]
+    
+    with tf.variable_scope("pos_bilstm"):
+        outputs, state_fw, state_bw = tf.nn.bidirectional_rnn(
+            cell_fw, cell_bw, inputs_list, initial_state_fw = initial_state_fw, 
+            initial_state_bw = initial_state_bw)
+    
+    # outputs is a length T list of output vectors, which is [batch_size, 2 * hidden_size]
+    # [time][batch][cell_fw.output_size + cell_bw.output_size]
+    
+    output = tf.reshape(tf.concat(1, outputs), [-1, size * 2])
+    # output has size: [T, size * 2]
+    #print("each output tensor shape:")
+    #print(output.get_shape())
+    
+    softmax_w = tf.get_variable("softmax_w", [size * 2, target_num], dtype=data_type())
+    softmax_b = tf.get_variable("softmax_b", [target_num], dtype=data_type())
+    logits = tf.matmul(output, softmax_w) + softmax_b
+    
+    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits, tf.reshape(targets, [-1]))
+    # loss = tf.nn.seq2seq.sequence_loss_by_example([logits],[tf.reshape(targets, [-1])], [tf.ones([batch_size * num_steps], dtype=data_type())])
+    cost = tf.reduce_sum(loss)/batch_size # loss [time_step]
+    return cost, logits
 
 def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
   """Runs the model on the given data."""
   epoch_size = ((len(word_data) // model.batch_size) - 1) // model.num_steps
+  # print ("Number of sample data in the epoch is: " + str(epoch_size))
+  
   start_time = time.time()
   costs = 0.0
   iters = 0
-  state = session.run(model.initial_state)
+  # state = session.run(model.initial_state)
+  
   for step, (x, y) in enumerate(reader.iterator(word_data, tag_data, model.batch_size,
                                                     model.num_steps)):
-    fetches = [model.cost, model.final_state, eval_op]
+    fetches = [model.cost, model.logits, eval_op]  # eval_op define the m.train_op or m.eval_op
     feed_dict = {}
     feed_dict[model.input_data] = x
     feed_dict[model.targets] = y
-    for i, (c, h) in enumerate(model.initial_state):
-      feed_dict[c] = state[i].c
-      feed_dict[h] = state[i].h
-    cost, state, _ = session.run(fetches, feed_dict)
+    #for i, (c, h) in enumerate(model.initial_state):
+    #  feed_dict[c] = state[i].c
+    #  feed_dict[h] = state[i].h
+    cost, logits, _ = session.run(fetches, feed_dict)
     costs += cost
     iters += model.num_steps
 
@@ -218,12 +279,11 @@ def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
     # Save Model to CheckPoint when is_training is True
     if model.is_training:
       if step % (epoch_size // 10) == 10:
-        checkpoint_path = os.path.join(FLAGS.pos_train_dir, "pos.ckpt")
+        checkpoint_path = os.path.join(FLAGS.pos_train_dir, "pos_bilstm.ckpt")
         model.saver.save(session, checkpoint_path)
         print("Model Saved... at time step " + str(step))
 
   return np.exp(costs / iters)
-
 
 def main(_):
   if not FLAGS.pos_data_path:
@@ -257,11 +317,11 @@ def main(_):
       session.run(tf.initialize_all_variables())
 
     # tf.initialize_all_variables().run()
-
+    
     for i in range(config.max_max_epoch):
       lr_decay = config.lr_decay ** max(i - config.max_epoch, 0.0)
       m.assign_lr(session, config.learning_rate * lr_decay)
-
+        
       print("Epoch: %d Learning rate: %.3f" % (i + 1, session.run(m.lr)))
       train_perplexity = run_epoch(session, m, train_word, train_tag, m.train_op,
                                    verbose=True)
@@ -269,7 +329,7 @@ def main(_):
       valid_perplexity = run_epoch(session, mvalid, dev_word, dev_tag, tf.no_op())
       print("Epoch: %d Valid Perplexity: %.3f" % (i + 1, valid_perplexity))
 
-    test_perplexity = run_epoch(session, mtest, test_word, test_tag, tf.no_op())
+    test_perplexity = run_epoch(session, mtest, test_word,test_tag, tf.no_op())
     print("Test Perplexity: %.3f" % test_perplexity)
 
 if __name__ == "__main__":

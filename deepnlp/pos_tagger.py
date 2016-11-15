@@ -1,26 +1,25 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
-
 '''
 POS module global function 'predict'
 @author: xichen ding
-@date: 2016-10-27
+@date: 2016-11-15
 '''
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals # compatible with python3 unicode coding
 
 import sys, os
 import tensorflow as tf
 import numpy as np
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
-import pos.pos_model as pos_model
-import pos.reader as pos_reader
-
-# Get Path of installed package and model vocab and data file: deenlp/pos/data, deepnlp/pos/tmp
-import deepnlp
-#pkg_path = (deepnlp.__path__)[0]
-pkg_path = os.path.dirname(os.path.abspath(__file__))
+# adding pos submodule to sys.path, compatible with py3 absolute_import
+pkg_path = os.path.dirname(os.path.abspath(__file__)) # .../deepnlp/
+sys.path.append(pkg_path)
+from pos import pos_model as pos_model
+from pos import reader as pos_reader
 
 class ModelLoader(object):
     
@@ -94,7 +93,5 @@ class ModelLoader(object):
 def load_model(lang = 'zh'):
     data_path = os.path.join(pkg_path, "pos/data", lang) # POS vocabulary data path
     ckpt_path = os.path.join(pkg_path, "pos/ckpt", lang, "pos.ckpt") # POS model checkpoint path
-    #print (data_path)
-    #print (ckpt_path)
     return ModelLoader(lang, data_path, ckpt_path)
 

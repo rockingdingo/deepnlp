@@ -1,18 +1,13 @@
 #coding:utf-8
+from __future__ import unicode_literals # compatible with python3 unicode
 
-#Set Default codec coding to utf-8
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-print sys.getdefaultencoding()
-
-import deepnlp.segmenter as segmenter
+from deepnlp import segmenter
 from deepnlp import ner_tagger
 tagger = ner_tagger.load_model(lang = 'zh')
 
 #Segmentation
 text = "我爱吃北京烤鸭"
-words = segmenter.seg(text.decode('utf-8'))
+words = segmenter.seg(text)
 print (" ".join(words).encode('utf-8'))
 
 #NER tagging

@@ -2,6 +2,8 @@
 #-*-coding:utf-8-*-
 
 # Chinese Characters: B(Begin),E(End),M(Middle),S(Single)
+from __future__ import unicode_literals # compatible with python3 unicode
+
 import codecs
 import sys
 

@@ -1,13 +1,13 @@
-#!/usr/bin/env python
-#coding:utf-8
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
 # B, M, E, S: Beginning, Middle, End, Single 4 tags
 
 import sys,os
 import CRFPP
 
-import deepnlp
-pkg_path = (deepnlp.__path__)[0]
-DEFAULT_MODEL = os.path.join(pkg_path, "segment/data/crf_model") # linear chain CRF model path
+# linear chain CRF model path, need str input, convert unicode to str
+pkg_path = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_MODEL = str(os.path.join(pkg_path, "segment/data/crf_model"))
 
 class Tokenizer(object):
 
@@ -49,6 +49,7 @@ class Tokenizer(object):
         return segList
 
 # Create Instance of a tokenizer
+# print (DEFAULT_MODEL)
 tk = Tokenizer(DEFAULT_MODEL)
 
 # Global functions for call

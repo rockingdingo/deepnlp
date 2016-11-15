@@ -1,9 +1,10 @@
 #coding:utf-8
-#Example for Sentences Segmentation
+from __future__ import unicode_literals
 
 import sys,os
 import codecs
-import deepnlp.segmenter as segmenter
+
+from deepnlp import segmenter
 from deepnlp import pos_tagger # module: pos_tagger
 from deepnlp import ner_tagger # module: ner_tagger
 
@@ -11,14 +12,14 @@ from deepnlp import ner_tagger # module: ner_tagger
 tagger_pos = pos_tagger.load_model(lang = 'zh')
 tagger_ner = ner_tagger.load_model(lang = 'zh')
 
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # concatenate tuples into one string "w1/t1 w2/t2 ..."
 def _concat_tuples(tagging):
   TOKEN_BLANK = " "
   wl = [] # wordlist
   for (x, y) in tagging:
-    wl.append(str(x + "/" + y))
+    wl.append(x + "/" + y)
   concat_str = TOKEN_BLANK.join(wl)
   return concat_str
 

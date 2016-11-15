@@ -1,26 +1,22 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
-""" 
+"""
 NER tagger for building a LSTM based NER tagging model.
 """
 
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
+from __future__ import unicode_literals # compatible with python3 unicode coding
 
 import time
 import numpy as np
 import tensorflow as tf
-import os
+import sys, os
 
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
-#import reader
-parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(parent_dir)
-import ner.reader as reader
+pkg_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # .../deepnlp/
+sys.path.append(pkg_path)
+from ner import reader # explicit relative import
 
 # language option python command line 'python ner_model.py zh'
 lang = "zh" if len(sys.argv)==1 else sys.argv[1] # default zh
@@ -185,7 +181,7 @@ class LargeConfigEnglish(object):
 
 def get_config(lang):
   if (lang == 'zh'):
-	return LargeConfigChinese()  
+    return LargeConfigChinese()  
   elif (lang == 'en'):
     return LargeConfigEnglish()
   # other lang options

@@ -1,26 +1,27 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
-
 '''
 Main Pipiline Access for Deepnlp modules, Loading all pre-trained models during initilization
 @author: xichen ding
 @date: 2016/10/9
 '''
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals # compatible with python3 unicode coding
+
 import sys, os
 import tensorflow as tf
 import numpy as np
 import CRFPP  # CRFPP for segmenting
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
+# compatible with python3 absolute_import
+from deepnlp import segmenter as segmenter     # segmenter module
+from deepnlp import pos_tagger as pos_tagger   # pos tagger
+from deepnlp import ner_tagger as ner_tagger   # ner tagger
 
-import segmenter as segmenter     # segmenter module
-import pos_tagger as pos_tagger   # pos tagger
-import ner_tagger as ner_tagger   # ner tagger
-
-import deepnlp
-pkg_path = (deepnlp.__path__)[0]
+pkg_path = os.path.dirname(os.path.abspath(__file__))
 
 class Pipeline(object):
 
@@ -75,7 +76,7 @@ def _concat_tuples(tagging):
   TOKEN_BLANK = " "
   wl = [] # wordlist
   for (x, y) in tagging:
-    wl.append(str(x + "/" + y))
+    wl.append(x + "/" + y) # unicode
   concat_str = TOKEN_BLANK.join(wl)
   return concat_str
 
