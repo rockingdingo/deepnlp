@@ -39,6 +39,7 @@ Modules
 Installation
 ================
 * Requirements
+    * python2/python3        Both are supported, and the default coding is unicode for version compatibility reason
     * Tensorflow(>=0.10.0)   Make sure to have the possibly latest release, many modules e.g. LSTM tuple states change a lot.
     * CRF++ (>=0.54)         
 ```Bash
@@ -48,7 +49,6 @@ cd CRF++-0.58
 ./configure
 ./make && sudo make install
 ```
-    * python2/python3        Both are supported, and the default coding is unicode for version compatibility reason
 
 * Pip
 ```python
