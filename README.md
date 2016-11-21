@@ -47,7 +47,7 @@ Installation
 tar xzvf CRF++-0.58.tar.gz
 cd CRF++-0.58
 ./configure
-./make && sudo make install
+make && sudo make install
 ```
 
 * Pip
