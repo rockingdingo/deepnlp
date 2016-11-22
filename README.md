@@ -41,13 +41,24 @@ Installation
 * Requirements
     * python2/python3        Both are supported, and the default coding is unicode for version compatibility reason
     * Tensorflow(>=0.10.0)   Make sure to have the possibly latest release, many modules e.g. LSTM tuple states change a lot.
-    * CRF++ (>=0.54)         
+    * CRF++ (>=0.54) 
+
 ```Bash
 # Download CRF++-0.58.tar.gz from: https://taku910.github.io/crfpp/
 tar xzvf CRF++-0.58.tar.gz
 cd CRF++-0.58
 ./configure
 make && sudo make install
+
+# Go to source subfolder python and install python api
+cd python
+python setup.py build
+python setup.py install
+ln -s /usr/local/lib/libcrfpp.so.0 /usr/lib/
+
+# Potential installation Errors: 
+ImportError: libcrfpp.so.0: cannot open shared object file: No such file or directory
+Remember to ln /usr/local/lib/libcrfpp.so.0 to /usr/lib/
 ```
 
 * Pip
