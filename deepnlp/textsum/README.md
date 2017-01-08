@@ -13,7 +13,7 @@
 中文教程
 =================
 textsum基于tensorflow (0.12.0)实现的Seq2Seq-attention模型, 来解决中文新闻标题自动生成的任务。
-Seq2Seq模型的例子从原来的翻译tranlate.py修改得到，同时我们在eval.py 模块中还提供了评价这种序列模型的计算ROUGE和BLEU分的方法。
+Seq2Seq模型的例子从原来的法语英语翻译的例子 translate.py 修改得到，同时我们在eval.py 模块中还提供了评价这种序列模型的计算ROUGE和BLEU分的方法。
 
 语料和参数
 ---------------
@@ -22,12 +22,12 @@ http://www.sogou.com/labs/resource/cs.php
 语料需要做分词和标签替换的预处理。模型训练在一台8个CPU核的Linux机器上完成，速度慢需耐心等待。
 
 我们选取下列Seq2Seq-attention 模型参数: 
-Encoder的LSTM:
-num_layers = 4  # 4层LSTM Layer
-size = 256      # 每层256节点
-num_samples = 4096  #负采样4096
-batch_size = 64     # 64个样本
-vocab_size = 50000  # 词典50000个词
+*Encoder的LSTM:
+*num_layers = 4  # 4层LSTM Layer
+*size = 256      # 每层256节点
+*num_samples = 4096  #负采样4096
+*batch_size = 64     # 64个样本
+*vocab_size = 50000  # 词典50000个词
 
 Bucket桶:
 新闻正文截至长度为120个词，不足补齐PAD, 标题长度30个词。
@@ -69,7 +69,7 @@ python predict.py $input_dir $reference_dir $summary_dir
 
 训练模型
 ---------------
-#语料格式
+### 语料格式
 将自己的textsum的语料分好词，分训练集和测试集，准备下列四个文件: content-train.txt, title-train.txt, content-dev.txt, title-dev.txt
 要将新闻正文content和其对应标题title存在两个文件内，一行一个样本，例如:
 
@@ -105,16 +105,15 @@ We choose the Chinese news corpus form sohu.com. You can download it from http:/
 Seq2Seq-attention config params:
 
 Encoder LSTM:
-num_layers = 4  # 4 layer LSTM
-size = 256      # 256 nodes per layer
-num_samples = 4096  # negative sampling during softmax 4096
-batch_size = 64     # 64 examples per batch
-vocab_size = 50000  # top 50000 words in dictionary
+*num_layers = 4  # 4 layer LSTM
+*size = 256      # 256 nodes per layer
+*num_samples = 4096  # negative sampling during softmax 4096
+*batch_size = 64     # 64 examples per batch
+*vocab_size = 50000  # top 50000 words in dictionary
 
 Bucket桶:
 News article cutted to 120, news with fewer words will be padded with 'PAD', Titles length cut to 30.
-buckets = [(120, 30), ...]
-
+*buckets = [(120, 30), ...]
 
 Prediction
 ---------------
