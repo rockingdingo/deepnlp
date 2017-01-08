@@ -35,7 +35,7 @@ buckets = [(120, 30), ...]
 
 模型结果
 ---------------
-# 交互式运行
+### 交互式运行
 linux下运行命令行，交互式输入中文分好词的新闻正文语料，词之间空格分割，结果返回自动生成的新闻标题。
 ```shell
 python predict.py
@@ -50,7 +50,7 @@ python predict.py
 ...
 ```
 
-# 预测和评估ROUGE分
+### 预测和评估ROUGE分
 运行命令行: python predict.py arg1 arg2 arg3
 arg1 参数1: 输入分好词的新闻正文，每行一篇新闻报道;
 arg2 参数2: 输入原本的人工的新闻标题，每行一个标题作为评估的Reference;
@@ -86,7 +86,7 @@ title-train.txt
 思源 焦点 公益 基金 联手 曲 美 家具 共 献 爱心 ...
 ```
 
-#运行脚本
+### 运行脚本
 运行下列脚本训练模型，模型会被保存在ckpt目录下。
 ```shell
 python headline.py
@@ -118,7 +118,7 @@ buckets = [(120, 30), ...]
 
 Prediction
 ---------------
-# Run the script
+### Run the script
 Run the predict.py and interactively input the Chinese news text(space separated), automatic generated headline will be returned.
 ```shell
 python predict.py
@@ -134,7 +134,7 @@ headline: 美国 科罗拉多州 山火 致 TAG_NUMBER 人 死亡
 ...
 ```
 
-# Evaluate ROUGE-score
+### Evaluate ROUGE-score
 Run the command line: python predict.py arg1 arg2 arg3;
 args1: directory of space separated Chinese news content corpus, one article content per line;
 args2: directory of human generated headline for the news, one title per line;
@@ -154,7 +154,7 @@ python predict.py $input_dir $reference_dir $summary_dir
 
 Training
 ---------------
-#Corpus format
+### Corpus format
 Prepare four documents: content-train.txt, title-train.txt, content-dev.txt, content-dev.txt, title-dev.txt
 The format of corpus is as below:
 
@@ -171,7 +171,7 @@ title-train.txt
 思源 焦点 公益 基金 联手 曲 美 家具 共 献 爱心 ...
 ```
 
-# Run the script
+### Run the script
 ```shell
 python headline.py
 ```
