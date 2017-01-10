@@ -3,8 +3,9 @@
 
 """
 Evaluation Method for summarization tasks, including BLUE and ROUGE score
+Visualization of Attention Mask Matrix: plot_attention() method
 """
-from __future__ import unicode_literals
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -12,7 +13,12 @@ from __future__ import print_function
 import os
 import sys
 
-#from matplotlib import pyplot as plt # drawing heat map of attention weights
+import matplotlib
+matplotlib.use('Agg') # Must be before importing matplotlib.pyplot or pylab!
+import matplotlib.pyplot as plt # drawing heat map of attention weights
+plt.rcParams['font.sans-serif']=['SimSun'] # set font family
+
+import time
 
 def evaluate(X, Y, method = "rouge_n", n = 2):
   score = 0.0
@@ -21,26 +27,56 @@ def evaluate(X, Y, method = "rouge_n", n = 2):
   elif (method == "rouge_l"):
     score = eval_rouge_l(X, Y)
   elif (method == "bleu"):
-    score = eval_bleu(X, Y)
+    score = eval_bleu(X, Y, n)
   else:
+    print ("method not found")
     score = 0.0
   return score
 
-def eval_bleu(X, Y, n = 2):
-  # To Do
+def eval_bleu(y_candidate, y_reference, n = 2):
+  '''
+  Args: 
+    y_candidate: list of words, machine generated prediction
+    y_reference: list of list, [[], [],], human generated referenced line
+  Return:
+    rouge_n score:double, maximum of pairwise rouge-n score
+  '''
+  if (type(y_reference[0]) != list):
+    print ('y_reference should be list of list')
+    return
+  m = len(y_reference)
+  bleu_score = 0.0
+  ngram_cand = generate_ngrams(y_candidate, n)
+  total_cand_count = len(ngram_cand)
+  ngram_ref_list = [] # list of ngrams for each reference sentence
+  for i in range(m): 
+    ngram_ref_list.append(generate_ngrams(y_reference[i], n))
   
+  total_clip_count = 0
+  for tuple in set(ngram_cand):
+    # for each unique n-gram tuple in ngram_cand, calculate the clipped count
+    cand_count = count_element(ngram_cand, tuple)
+    max_ref_count = 0 # max_ref_count for this tuple in the references sentences
+    for i in range(m): 
+      # tuple count in reference sentence i
+      num = count_element(ngram_ref_list[i], tuple)
+      max_ref_count = num if max_ref_count < num else max_ref_count # compare max_ref_count and num
+    total_clip_count += min(cand_count, max_ref_count)  
   
-  
-  
-  
-  
-  return 0
+  bleu_score = total_clip_count/total_cand_count
+  return bleu_score
+
+def count_element(list, element):
+  if element in list:
+    return list.count(element)
+  else:
+    return 0
 
 def eval_rouge_n(y_candidate, y_reference, n = 2):
   '''
   Args: 
-    y_candidate: list, fitted line (predicted)
-    y_reference: list of list, [[], [],], referenced line (target)
+    y_candidate: list of words, machine generated prediction
+    y_reference: list of list, [[], [],], human generated referenced line
   Return:
     rouge_n score:double, maximum of pairwise rouge-n score
   '''
@@ -70,8 +106,8 @@ def count_match(listA, listB):
 def eval_rouge_l(y_candidate, y_reference):
   '''
   Args: 
-    y_candidate: list, fitted line (predicted)
-    y_reference: list of list, [[], [],], referenced line (target)
+    y_candidate: list of words, machine generated prediction
+    y_reference: list of list, [[], [],], human generated referenced line
   Return:
     rouge_l score:double, F1 score of longest common sequence
   '''
@@ -148,43 +184,59 @@ def calc_LCS(X, Y):
           flag[i][j] = 3 # (j-1) -> j
   return length, flag
 
-#strA = "ABCBDAB"
-#strB = "BDCABA" 
-#m = LCS(strA, strB)
-
-#listA = ['但是','我', '爱' ,'吃', '肉夹馍']
-#listB = ['我', '不是', '很', '爱', '肉夹馍']
-#m = LCS(listA, listB)
-
-
-#y_candidate = ['我', '爱', '吃', '北京', '烤鸭']
-#y_reference = [['我', '爱', '吃', '北京', '烧鸡'], ['我', '爱', '吃', '北京', '烤鹅'],['我', '很','爱', '吃', '西湖', '醋鱼']]
-#p = eval_rouge_l(y_candidate, y_reference)
-
 def plot_attention(data, X_label=None, Y_label=None):
   '''
     Plot the attention model heatmap
+    Args:
+      data: attn_matrix with shape [ty, tx], cutted before 'PAD'
+      X_label: list of size tx, encoder tags
+      Y_label: list of size ty, decoder tags
   '''
-  fig, ax = plt.subplots()
-  heatmap = ax.pcolor(data, cmap=plt.cm.Blues, alpha=0.8)
+  fig, ax = plt.subplots(figsize=(20, 8)) # set figure size
+  heatmap = ax.pcolor(data, cmap=plt.cm.Blues, alpha=0.9)
   
-  ax.set_xticklabels(X_label, minor=False)
-  ax.set_yticklabels(Y_label, minor=False)
+  # Set axis labels
+  if X_label != None and Y_label != None:
+    X_label = [x_label.decode('utf-8') for x_label in X_label]
+    Y_label = [y_label.decode('utf-8') for y_label in Y_label]
+    
+    xticks = range(0,len(X_label))
+    ax.set_xticks(xticks, minor=False) # major ticks
+    ax.set_xticklabels(X_label, minor = False, rotation=45)   # labels should be 'unicode'
+    
+    yticks = range(0,len(Y_label))
+    ax.set_yticks(yticks, minor=False)
+    ax.set_yticklabels(Y_label, minor = False)   # labels should be 'unicode'
+    
+    ax.grid(True)
   
-  ax.grid(False)
-  ax = plt.gca()
-  # plt.show()
-  fig.savefig('attention_weight.png')   # save the figure to file
+  # Save Figure
+  plt.title(u'Attention Heatmap')
+  timestamp = int(time.time())
+  file_name = 'img/attention_heatmap_' + str(timestamp) + ".jpg"
+  print ("Saving figures %s" % file_name)
+  fig.savefig(file_name)   # save the figure to file
   plt.close(fig)    # close the figure
 
 def test():
+  #strA = "ABCBDAB"
+  #strB = "BDCABA" 
+  #m = LCS(strA, strB)
+
+  #listA = ['但是','我', '爱' ,'吃', '肉夹馍']
+  #listB = ['我', '不是', '很', '爱', '肉夹馍']
+  #m = LCS(listA, listB)
+  
   y_candidate = ['我', '爱', '吃', '北京', '烤鸭']
-  y_reference = [['你', '爱', '吃', '北京', '小吃'], ['他', '爱', '吃', '北京', '烤鹅'],['但是', '我', '很','爱', '吃', '西湖', '醋鱼']]
+  y_reference = [['我', '爱', '吃', '北京', '小吃', '烤鸭'], ['他', '爱', '吃', '北京', '烤鹅'],['但是', '我', '很','爱', '吃', '西湖', '醋鱼']]
   p1 = eval_rouge_l(y_candidate, y_reference)
-  print (p1)
+  print ("ROUGE-L score %f" % p1)
   
   p2 = eval_rouge_n(y_candidate, y_reference, 2)
-  print (p2)
+  print ("ROUGE-N score %f" % p2)
+  
+  p3 = eval_bleu(y_candidate, y_reference, 2)
+  print ("BLEU score %f" % p3)
 
 if __name__ == "__main__":
   test()

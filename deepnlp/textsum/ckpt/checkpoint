@@ -1,0 +1,6 @@
+model_checkpoint_path: "/mnt/python/tensorflow/tutorial/textsum/textsum/ckpt/headline_large.ckpt-44000"
+all_model_checkpoint_paths: "/mnt/python/tensorflow/tutorial/textsum/textsum/ckpt/headline_large.ckpt-40000"
+all_model_checkpoint_paths: "/mnt/python/tensorflow/tutorial/textsum/textsum/ckpt/headline_large.ckpt-41000"
+all_model_checkpoint_paths: "/mnt/python/tensorflow/tutorial/textsum/textsum/ckpt/headline_large.ckpt-42000"
+all_model_checkpoint_paths: "/mnt/python/tensorflow/tutorial/textsum/textsum/ckpt/headline_large.ckpt-43000"
+all_model_checkpoint_paths: "/mnt/python/tensorflow/tutorial/textsum/textsum/ckpt/headline_large.ckpt-44000"

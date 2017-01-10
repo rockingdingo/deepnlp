@@ -2,11 +2,13 @@
 ==================
 * [中文教程](#中文教程)
     * [语料和参数](#语料和参数)
-    * [模型结果](#模型结果)
+    * [预测结果](#预测结果)
+    * [attention可视化](#attention可视化)
     * [训练模型](#训练模型)
 * [Tutorial](#tutorial)
     * [Corpus and Config](#corpus-and-config)
     * [Prediction](#prediction)
+    * [Attention Visualization](#attention-visualization)
     * [Training](#training)
 * [Reference](#reference)
 
@@ -22,21 +24,35 @@ http://www.sogou.com/labs/resource/cs.php
 语料需要做分词和标签替换的预处理。模型训练在一台8个CPU核的Linux机器上完成，速度慢需耐心等待。
 
 我们选取下列Seq2Seq-attention 模型参数: 
-*Encoder的LSTM:
-    *num_layers = 4  # 4层LSTM Layer
-    *size = 256      # 每层256节点
-    *num_samples = 4096  #负采样4096
-    *batch_size = 64     # 64个样本
-    *vocab_size = 50000  # 词典50000个词
+Encoder的LSTM:
+*   num_layers = 4  # 4层LSTM Layer
+*   size = 256      # 每层256节点
+*   num_samples = 4096  #负采样4096
+*   batch_size = 64     # 64个样本
+*   vocab_size = 50000  # 词典50000个词
 
 Bucket桶:
-新闻正文截至长度为120个词，不足补齐PAD, 标题长度30个词。
+新闻正文截至长度为120个词，不足补齐PAD, 标题长度限制30个词。
 buckets = [(120, 30), ...]
 
-模型结果
+预训练模型的解压:
+我们基于1M的搜狐新闻的语料预训练好了一个模型，因为大小限制所以分卷压缩上传。
+在使用前需要合并后解压缩, 模型名为: headline_large.ckpt-44000.data-00000-of-00001,
+被压缩为3卷: *.tar.gz00, *.tar.gz01, *.tar.gz02
+
+```shell
+#解压缩后的预训练模型文件为: headline_large.ckpt-44000.data-00000-of-00001
+
+cd ./ckpt
+cat headline_large.ckpt-44000.* > headline_large.ckpt-44000.data-00000-of-00001.tar.gz
+tar xzvf headline_large.ckpt-44000.data-00000-of-00001.tar.gz
+```
+
+预测结果
 ---------------
 ### 交互式运行
 linux下运行命令行，交互式输入中文分好词的新闻正文语料，词之间空格分割，结果返回自动生成的新闻标题。
+
 ```shell
 python predict.py
 ```
@@ -66,6 +82,22 @@ summary_dir=${folder_path}/news/test/summary.txt
 python predict.py $input_dir $reference_dir $summary_dir
 
 ```
+
+attention可视化
+---------------
+为了获得Decoder阶段的Attention矩阵, 我们需要对Tensorflow的标准运算符tf.nn.seq2seq进行适当的修改, 保存在了seq2seq_attn.py文件中。
+具体的修改步骤参考博客: 
+
+### 运行 predict_attn.py文件
+保存attention的Heatmap
+```shell
+# 调用 eval.py的模块的方法 plot_attention(data, X_label=None, Y_label=None)
+# 保存每个预测样本的attention的Heatmap图像在img目录下
+python predict_attn.py
+
+```
+Example:
+![image](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/textsum/img/attention_heatmap_1484035202.jpg)
 
 训练模型
 ---------------
@@ -104,16 +136,28 @@ We choose the Chinese news corpus form sohu.com. You can download it from http:/
 
 Seq2Seq-attention config params:
 
-*Encoder LSTM:
-    *num_layers = 4  # 4 layer LSTM
-    *size = 256      # 256 nodes per layer
-    *num_samples = 4096  # negative sampling during softmax 4096
-    *batch_size = 64     # 64 examples per batch
-    *vocab_size = 50000  # top 50000 words in dictionary
+Encoder LSTM:
+*   num_layers = 4  # 4 layer LSTM
+*   size = 256      # 256 nodes per layer
+*   num_samples = 4096  # negative sampling during softmax 4096
+*   batch_size = 64     # 64 examples per batch
+*   vocab_size = 50000  # top 50000 words in dictionary
 
 Bucket桶:
 News article cutted to 120, news with fewer words will be padded with 'PAD', Titles length cut to 30.
 *buckets = [(120, 30), ...]
+
+Model File:
+The pre-trained model file has name 'headline_large.ckpt-44000.data-00000-of-00001' and it
+is compressed and split into 3 files: *.tar.gz00, *.tar.gz01, *.tar.gz02
+
+```shell
+#Model File Name: headline_large.ckpt-44000.data-00000-of-00001
+
+cd ./ckpt
+cat headline_large.ckpt-44000.* > headline_large.ckpt-44000.data-00000-of-00001.tar.gz
+tar xzvf headline_large.ckpt-44000.data-00000-of-00001.tar.gz
+```
 
 Prediction
 ---------------
@@ -150,6 +194,22 @@ summary_dir=${folder_path}/news/test/summary.txt
 python predict.py $input_dir $reference_dir $summary_dir
 
 ```
+
+Attention Visualization
+---------------
+To get the attention mask matrix, we need to modified the standard seq2seq ops tf.nn.seq2seq. Right now 
+there is not available method to extract those tensors so we need to modify the source file. We save the modified file to seq2seq_attn.py in this package.
+Please check out this blog for details:
+
+### Run predict_attn.py
+```shell
+# Call the method in eval.py: plot_attention(data, X_label=None, Y_label=None), based on matplotlib package
+# The attention heatmap will be saved under the /img folder
+python predict_attn.py
+
+```
+Examples:
+![image](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/textsum/img/attention_heatmap_1484027503.jpg)
 
 Training
 ---------------
