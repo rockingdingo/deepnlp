@@ -97,7 +97,7 @@ python predict_attn.py
 
 ```
 Example:
-![image](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/textsum/img/attention_heatmap_1484035202.jpg)
+![image](https://raw.githubusercontent.com/rockingdingo/deepnlp/master/deepnlp/textsum/img/attention_heatmap_1484035202.jpg)
 
 训练模型
 ---------------
@@ -209,7 +209,7 @@ python predict_attn.py
 
 ```
 Examples:
-![image](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/textsum/img/attention_heatmap_1484027503.jpg)
+![image](https://raw.githubusercontent.com/rockingdingo/deepnlp/master/deepnlp/textsum/img/attention_heatmap_1484035202.jpg)
 
 Training
 ---------------
