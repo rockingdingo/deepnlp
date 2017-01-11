@@ -88,6 +88,8 @@ attention可视化
 为了获得Decoder阶段的Attention矩阵, 我们需要对Tensorflow的标准运算符tf.nn.seq2seq进行适当的修改, 保存在了seq2seq_attn.py文件中。
 具体的修改步骤参考博客: 
 
+http://www.deepnlp.org/blog/textsum-seq2seq-attention/
+
 ### 运行 predict_attn.py文件
 保存attention的Heatmap
 ```shell
@@ -200,6 +202,8 @@ Attention Visualization
 To get the attention mask matrix, we need to modified the standard seq2seq ops tf.nn.seq2seq. Right now 
 there is not available method to extract those tensors so we need to modify the source file. We save the modified file to seq2seq_attn.py in this package.
 Please check out this blog for details:
+
+http://www.deepnlp.org/blog/textsum-seq2seq-attention/
 
 ### Run predict_attn.py
 ```shell
