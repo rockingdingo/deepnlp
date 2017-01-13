@@ -11,14 +11,14 @@ from __future__ import unicode_literals # compatible with python3 unicode
 import collections
 import sys, os
 import codecs
+import re
 
 import numpy as np
 import tensorflow as tf
 
-global UNKNOWN, EOS
+global UNKNOWN, DELIMITER
 UNKNOWN = "*"
-EOS = "<eos>"
-DELIMITER = "  "
+DELIMITER = "\s+" # line delimiter
 
 def _read_words(filename):
   with tf.gfile.GFile(filename, "r") as f:
@@ -29,21 +29,22 @@ def _read_file(filename):
   words = []
   file = codecs.open(filename, encoding='utf-8')
   for line in file:
-    wordsplit = line.replace("\n","").split(DELIMITER)
+    wordsplit = re.split(DELIMITER, line.replace("\n",""))
     sentences.append(wordsplit) # list(list(str))
-    words.extend(wordsplit + [EOS+"/n"]) # list(str)
+    words.extend(wordsplit) # list(str)
   return words, sentences
 
 # input format word2/tag2 word2/tag2
-
 def _split_word_tag(data):
     word = []
     tag = []
     for word_tag_pair in data:
         pairs = word_tag_pair.split("/")
         if (len(pairs)==2):
-            word.append(pairs[0])
-            tag.append(pairs[1])
+            # word or tag not equal to ""
+            if (len(pairs[0].strip())!=0 and len(pairs[1].strip())!=0):
+                word.append(pairs[0])
+                tag.append(pairs[1])
     return word, tag
 
 def _build_vocab(filename):
