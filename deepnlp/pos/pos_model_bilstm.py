@@ -18,7 +18,7 @@ pkg_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # .../dee
 sys.path.append(pkg_path)
 from pos import reader # absolute import
 
-# language option python command line python pos_model.py en
+# language option python command line: python pos_model.py en
 lang = "zh" if len(sys.argv)==1 else sys.argv[1] # default zh
 file_path = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(file_path, "data", lang)  # path to find corpus vocab file
@@ -32,7 +32,6 @@ flags.DEFINE_string("pos_data_path", data_path, "data_path")
 flags.DEFINE_string("pos_train_dir", train_dir, "Training directory.")
 flags.DEFINE_string("pos_scope_name", "pos_var_scope", "Define POS Tagging Variable Scope Name")
 
-#print (train_dir)
 FLAGS = flags.FLAGS
 
 def data_type():
@@ -61,23 +60,19 @@ class POSTagger(object):
     else:                      # LSTM
       self._cost, self._logits, self._final_state, self._initial_state = _lstm_model(inputs, self._targets, config)
     
-    #if not is_training:
-    #  return
-    
     # Gradients and SGD update operation for training the model.
     self._lr = tf.Variable(0.0, trainable=False)
     tvars = tf.trainable_variables()
     grads, _ = tf.clip_by_global_norm(tf.gradients(self._cost, tvars), config.max_grad_norm)
-    optimizer = tf.train.GradientDescentOptimizer(self._lr)
-    # optimizer = tf.train.AdamOptimizer(learning_rate=self._lr).minimize(self._cost)
+    optimizer = tf.train.GradientDescentOptimizer(self._lr) # vanila SGD
     self._train_op = optimizer.apply_gradients(
         zip(grads, tvars),
         global_step=tf.contrib.framework.get_or_create_global_step())
     
     self._new_lr = tf.placeholder(data_type(), shape=[], name="new_learning_rate")
     self._lr_update = tf.assign(self._lr, self._new_lr)
-    self.saver = tf.train.Saver(tf.all_variables())
-
+    self.saver = tf.train.Saver(tf.global_variables())
+  
   def assign_lr(self, session, lr_value):
     session.run(self._lr_update, feed_dict={self._new_lr: lr_value})
 
@@ -89,17 +84,9 @@ class POSTagger(object):
   def targets(self):
     return self._targets
 
-  #@property
-  #def initial_state(self):
-  #  return self._initial_state
-
   @property
   def cost(self):
     return self._cost
-
-  #@property
-  #def final_state(self):
-  #  return self._final_state
   
   @property
   def logits(self):
@@ -117,8 +104,7 @@ class POSTagger(object):
   def accuracy(self):
     return self._accuracy
 
-
-# pos Model Configuration, Set Target Num, and input vocab_Size
+# pos model configuration, set target num, and input vocab_size
 class LargeConfigChinese(object):
   """Large config."""
   init_scale = 0.04
@@ -131,10 +117,10 @@ class LargeConfigChinese(object):
   max_max_epoch = 55
   keep_prob = 1.0
   lr_decay = 1 / 1.15
-  batch_size = 1 # single sample batch
+  batch_size = 1        # single sample batch
   vocab_size = 50000
-  target_num = 44  # POS tagging for Chinese
-  bi_direction = True # LSTM or BiLSTM
+  target_num = 44       # POS tagging tag number for Chinese
+  bi_direction = True   # LSTM or BiLSTM
 
 class LargeConfigEnglish(object):
   """Large config for English"""
@@ -148,9 +134,9 @@ class LargeConfigEnglish(object):
   max_max_epoch = 55
   keep_prob = 1.0 # There is one dropout layer on input tensor also, don't set lower than 0.9
   lr_decay = 1 / 1.15
-  batch_size = 1 # single sample batch
-  vocab_size = 50000
-  target_num = 81  # English: Brown Corpus tags
+  batch_size = 1      # single sample batch
+  vocab_size = 50000  
+  target_num = 81     # English: Brown Corpus tags
   bi_direction = True # LSTM or BiLSTM
 
 def get_config(lang):
@@ -175,12 +161,12 @@ def _lstm_model(inputs, targets, config):
     vocab_size = config.vocab_size
     target_num = config.target_num # target output number    
     
-    lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
-    cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell] * config.num_layers, state_is_tuple=True)
+    lstm_cell = tf.contrib.rnn.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
+    cell = tf.contrib.rnn.MultiRNNCell([lstm_cell] * config.num_layers, state_is_tuple=True)
     
     initial_state = cell.zero_state(batch_size, data_type())
     
-    outputs = []
+    outputs = [] # outputs shape: list of tensor with shape [batch_size, size], length: time_step
     state = initial_state
     with tf.variable_scope("pos_lstm"):
         for time_step in range(num_steps):
@@ -188,23 +174,22 @@ def _lstm_model(inputs, targets, config):
             (cell_output, state) = cell(inputs[:, time_step, :], state) # inputs[batch_size, time_step, hidden_size]
             outputs.append(cell_output)
     
-    output = tf.reshape(tf.concat(1, outputs), [-1, size]) # output dimension: time_step(30) * size(128)
+    output = tf.reshape(tf.concat(outputs, 1), [-1, size])    # output shape [time_step, size]
     softmax_w = tf.get_variable("softmax_w", [size, target_num], dtype=data_type())
     softmax_b = tf.get_variable("softmax_b", [target_num], dtype=data_type())
-    logits = tf.matmul(output, softmax_w) + softmax_b
+    logits = tf.matmul(output, softmax_w) + softmax_b         # logits shape[time_step, target_num]
     
-    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits, tf.reshape(targets, [-1]))
-    # loss = tf.nn.seq2seq.sequence_loss_by_example([logits],[tf.reshape(targets, [-1])], [tf.ones([batch_size * num_steps], dtype=data_type())])
+    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels = tf.reshape(targets, [-1]), logits = logits)
     cost = tf.reduce_sum(loss)/batch_size # loss [time_step]
     
     # adding extra statistics to monitor
-    correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(targets, 0))
-    accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))    
+    correct_prediction = tf.equal(tf.cast(tf.argmax(logits, 1), tf.int32), tf.reshape(targets, [-1]))
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
     return cost, logits, state, initial_state
 
 def _bilstm_model(inputs, targets, config):
     '''
-    @Use BasicLSTMCell, MultiRNNCell, tf.nn.rnn_cell.BasicLSTMCell method to build LSTM model, 
+    @Use BasicLSTMCell, MultiRNNCell method to build LSTM model 
     @return logits, cost and others
     '''
     batch_size = config.batch_size
@@ -214,49 +199,47 @@ def _bilstm_model(inputs, targets, config):
     vocab_size = config.vocab_size
     target_num = config.target_num # target output number    
     
-    lstm_fw_cell = tf.nn.rnn_cell.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
-    lstm_bw_cell = tf.nn.rnn_cell.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
+    lstm_fw_cell = tf.contrib.rnn.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
+    lstm_bw_cell = tf.contrib.rnn.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
         
-    cell_fw = tf.nn.rnn_cell.MultiRNNCell([lstm_fw_cell] * num_layers, state_is_tuple=True)
-    cell_bw = tf.nn.rnn_cell.MultiRNNCell([lstm_bw_cell] * num_layers, state_is_tuple=True)
+    cell_fw = tf.contrib.rnn.MultiRNNCell([lstm_fw_cell] * num_layers, state_is_tuple=True)
+    cell_bw = tf.contrib.rnn.MultiRNNCell([lstm_bw_cell] * num_layers, state_is_tuple=True)
     
     initial_state_fw = cell_fw.zero_state(batch_size, data_type())
     initial_state_bw = cell_bw.zero_state(batch_size, data_type())
     
     # Split to get a list of 'n_steps' tensors of shape (batch_size, n_input)
-    inputs_list = [tf.squeeze(s, squeeze_dims=[1]) for s in tf.split(1, num_steps, inputs)]
+    inputs_list = [tf.squeeze(s, axis = 1) for s in tf.split(value = inputs, num_or_size_splits = num_steps, axis = 1)]
     
     with tf.variable_scope("pos_bilstm"):
-        outputs, state_fw, state_bw = tf.nn.bidirectional_rnn(
+        outputs, state_fw, state_bw = tf.contrib.rnn.static_bidirectional_rnn(
             cell_fw, cell_bw, inputs_list, initial_state_fw = initial_state_fw, 
             initial_state_bw = initial_state_bw)
     
     # outputs is a length T list of output vectors, which is [batch_size, 2 * hidden_size]
     # [time][batch][cell_fw.output_size + cell_bw.output_size]
     
-    output = tf.reshape(tf.concat(1, outputs), [-1, size * 2])
+    output = tf.reshape(tf.concat(outputs, 1), [-1, size * 2])
     # output has size: [T, size * 2]
-    #print("each output tensor shape:")
-    #print(output.get_shape())
     
     softmax_w = tf.get_variable("softmax_w", [size * 2, target_num], dtype=data_type())
     softmax_b = tf.get_variable("softmax_b", [target_num], dtype=data_type())
     logits = tf.matmul(output, softmax_w) + softmax_b
     
-    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits, tf.reshape(targets, [-1]))
-    # loss = tf.nn.seq2seq.sequence_loss_by_example([logits],[tf.reshape(targets, [-1])], [tf.ones([batch_size * num_steps], dtype=data_type())])
+    # adding extra statistics to monitor
+    correct_prediction = tf.equal(tf.cast(tf.argmax(logits, 1), tf.int32), tf.reshape(targets, [-1]))
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels = tf.reshape(targets, [-1]), logits = logits)
     cost = tf.reduce_sum(loss)/batch_size # loss [time_step]
     return cost, logits
 
 def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
   """Runs the model on the given data."""
   epoch_size = ((len(word_data) // model.batch_size) - 1) // model.num_steps
-  # print ("Number of sample data in the epoch is: " + str(epoch_size))
   
   start_time = time.time()
   costs = 0.0
   iters = 0
-  # state = session.run(model.initial_state)
   
   for step, (x, y) in enumerate(reader.iterator(word_data, tag_data, model.batch_size,
                                                     model.num_steps)):
@@ -264,13 +247,10 @@ def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
     feed_dict = {}
     feed_dict[model.input_data] = x
     feed_dict[model.targets] = y
-    #for i, (c, h) in enumerate(model.initial_state):
-    #  feed_dict[c] = state[i].c
-    #  feed_dict[h] = state[i].h
     cost, logits, _ = session.run(fetches, feed_dict)
     costs += cost
     iters += model.num_steps
-
+    
     if verbose and step % (epoch_size // 10) == 10:
       print("%.3f perplexity: %.3f speed: %.0f wps" %
             (step * 1.0 / epoch_size, np.exp(costs / iters),
@@ -282,7 +262,7 @@ def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
         checkpoint_path = os.path.join(FLAGS.pos_train_dir, "pos_bilstm.ckpt")
         model.saver.save(session, checkpoint_path)
         print("Model Saved... at time step " + str(step))
-
+  
   return np.exp(costs / iters)
 
 def main(_):
@@ -290,14 +270,13 @@ def main(_):
     raise ValueError("No data files found in 'data_path' folder")
 
   raw_data = reader.load_data(FLAGS.pos_data_path)
-  # train_data, valid_data, test_data, _ = raw_data
   train_word, train_tag, dev_word, dev_tag, test_word, test_tag, vocabulary = raw_data
   
   config = get_config(FLAGS.pos_lang)
   eval_config = get_config(FLAGS.pos_lang)
   eval_config.batch_size = 1
   eval_config.num_steps = 1
-
+  
   with tf.Graph().as_default(), tf.Session() as session:
     initializer = tf.random_uniform_initializer(-config.init_scale,
                                                 config.init_scale)
@@ -309,14 +288,12 @@ def main(_):
     
     # CheckPoint State
     ckpt = tf.train.get_checkpoint_state(FLAGS.pos_train_dir)
-    if ckpt and tf.gfile.Exists(ckpt.model_checkpoint_path):
+    if ckpt:
       print("Loading model parameters from %s" % ckpt.model_checkpoint_path)
-      m.saver.restore(session, ckpt.model_checkpoint_path)
+      m.saver.restore(session, tf.train.latest_checkpoint(FLAGS.pos_train_dir))
     else:
       print("Created model with fresh parameters.")
-      session.run(tf.initialize_all_variables())
-
-    # tf.initialize_all_variables().run()
+      session.run(tf.global_variables_initializer())
     
     for i in range(config.max_max_epoch):
       lr_decay = config.lr_decay ** max(i - config.max_epoch, 0.0)
@@ -328,7 +305,7 @@ def main(_):
       print("Epoch: %d Train Perplexity: %.3f" % (i + 1, train_perplexity))
       valid_perplexity = run_epoch(session, mvalid, dev_word, dev_tag, tf.no_op())
       print("Epoch: %d Valid Perplexity: %.3f" % (i + 1, valid_perplexity))
-
+    
     test_perplexity = run_epoch(session, mtest, test_word,test_tag, tf.no_op())
     print("Test Perplexity: %.3f" % test_perplexity)
 
