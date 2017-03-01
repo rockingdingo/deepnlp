@@ -1,9 +1,9 @@
-Visit http://www.deepnlp.org
-==============================
+#### Visit http://www.deepnlp.org
+
 Deep Learning NLP Pipeline implemented on Tensorflow. Following the 'simplicity' rule, this project aims to 
 use the deep learning library of Tensorflow to implement new NLP pipeline. You can extend the project to 
 train models with your own corpus/languages. Pretrained models of Chinese corpus are distributed.
-Free RESTful NLP API are also provided. Visit http://www.deepnlp.org/api/v1.0 for details.
+Free RESTful NLP API are also provided. Visit http://www.deepnlp.org/api/v1.0/pipeline for details.
 
 Brief Introduction
 ==================
@@ -51,22 +51,20 @@ Installation
 ================
 * Requirements
     * CRF++ (>=0.54)
-    * Tensorflow(1.0) This project is up to date with the latest tensorflow release. For tensorflow (<=0.12.0), use deepnlp <=0.1.5 version. See RELEASE.md for more details
-
-```
-    * python2/python3        Both are supported, and the default coding is unicode for version compatibility purpose
+    * Tensorflow(1.0) 
+This project is up to date with the latest tensorflow release. For tensorflow (<=0.12.0), use deepnlp <=0.1.5 version. See RELEASE.md for more details
 
 * Pip
 ```python
     # linux, run the script:
     pip install deepnlp
-    
 ```
 Due to pkg size restriction, english pos model, ner model files are not distributed on pypi
 You can download the pre-trained model files from github and put in your installation directory .../site-packages/.../deepnlp/...
 model files: ../pos/ckpt/en/pos.ckpt  ; ../ner/ckpt/zh/ner.ckpt
 
 * Source Distribution, e.g. deepnlp-0.1.6.tar.gz: https://pypi.python.org/pypi/deepnlp
+
 ```python
     # linux, run the script:
     tar zxvf deepnlp-0.1.6.tar.gz
@@ -210,13 +208,13 @@ Textsum
 ---------------
 自动文摘
 
-See details: [README](textsum/README.md)
+See details: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/textsum)
 
 Textrank
 ---------------
 重要句子抽取
 
-See details: [README](textrank/README.md)
+See details: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/textrank)
 
 TextCNN (WIP)
 ---------------
@@ -227,16 +225,16 @@ Train your model
 --------------------
 自己训练模型
 ###Segment model
-See instructions: [README](segment/README.md)
+See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/segment)
 
 ###POS model
-See instructions: [README](pos/README.md)
+See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/pos)
 
 ###NER model
-See instructions: [README](ner/README.md)
+See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/ner)
 
 ###Textsum model
-See instructions: [README](textsum/README.md)
+See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/textsum)
 
 Web API Service
 ---------------
@@ -359,4 +357,6 @@ https://taku910.github.io/crfpp/#download
 https://www.tensorflow.org/
 * Word Segmentation Using CRF++ Blog:
 http://www.52nlp.cn/%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E5%85%A5%E9%97%A8%E4%B9%8B%E5%AD%97%E6%A0%87%E6%B3%A8%E6%B3%954
+* Blogs
+http://www.deepnlp.org/blog/
 
