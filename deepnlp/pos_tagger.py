@@ -14,6 +14,7 @@ from __future__ import unicode_literals # compatible with python3 unicode coding
 import sys, os
 import tensorflow as tf
 import numpy as np
+import glob
 
 # adding pos submodule to sys.path, compatible with py3 absolute_import
 pkg_path = os.path.dirname(os.path.abspath(__file__)) # .../deepnlp/
@@ -26,12 +27,12 @@ class ModelLoader(object):
     def __init__(self, lang, data_path, ckpt_path):
         self.lang = lang
         self.data_path = data_path
-        self.ckpt_path = ckpt_path
+        self.ckpt_path = ckpt_path  # the path of the ckpt file, e.g. ./ckpt/zh/pos.ckpt
         print("Starting new Tensorflow session...")
         self.session = tf.Session()
         print("Initializing pos_tagger class...")
         self.model = self._init_pos_model(self.session, self.ckpt_path)
-
+    
     def predict(self, words):
         '''
         Coding: utf-8 for Chinese Characters
@@ -51,17 +52,15 @@ class ModelLoader(object):
       
         with tf.variable_scope("pos_var_scope"):  #Need to Change in Pos_Tagger Save Function
             model = pos_model.POSTagger(is_training=False, config=config) # save object after is_training
-    
-        if tf.gfile.Exists(ckpt_path):
+        
+        if len(glob.glob(ckpt_path + '.data*')) > 0: # file exist with pattern: 'pos.ckpt.data*'
             print("Loading model parameters from %s" % ckpt_path)
-
-            all_vars = tf.all_variables()
+            all_vars = tf.global_variables()
             model_vars = [k for k in all_vars if k.name.startswith("pos_var_scope")]
             tf.train.Saver(model_vars).restore(session, ckpt_path)
-
         else:
             print("Model not found, created with fresh parameters.")
-            session.run(tf.initialize_all_variables())
+            session.run(tf.global_variables_initializer())
         return model
     
     def _predict_pos_tags(self, session, model, words, data_path):
@@ -91,6 +90,10 @@ class ModelLoader(object):
         return zip(words, predict_tag)
     
 def load_model(lang = 'zh'):
+    ''' data_path e.g.: ./deepnlp/pos/data/zh
+        ckpt_path e.g.: ./deepnlp/pos/ckpt/zh/pos.ckpt
+        ckpt_file e.g.: ./deepnlp/pos/ckpt/zh/pos.ckpt.data-00000-of-00001
+    '''
     data_path = os.path.join(pkg_path, "pos/data", lang) # POS vocabulary data path
     ckpt_path = os.path.join(pkg_path, "pos/ckpt", lang, "pos.ckpt") # POS model checkpoint path
     return ModelLoader(lang, data_path, ckpt_path)

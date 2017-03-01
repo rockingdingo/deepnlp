@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 '''
-NER module global function 'predict'
+NER training module
 @author: xichen ding
 @date: 2016-11-15
 '''
@@ -14,6 +14,7 @@ from __future__ import unicode_literals # compatible with python3 unicode coding
 import sys, os
 import tensorflow as tf
 import numpy as np
+import glob
 
 # adding pos submodule to sys.path, compatible with py3 absolute_import
 pkg_path = os.path.dirname(os.path.abspath(__file__))
@@ -51,17 +52,15 @@ class ModelLoader(object):
         
         with tf.variable_scope("ner_var_scope"):
             model = ner_model.NERTagger(is_training=True, config=config) # save object after is_training
-    
-        if tf.gfile.Exists(ckpt_path):
+        
+        if len(glob.glob(ckpt_path + '.data*')) > 0: # file exist with pattern: 'ner.ckpt.data*'
             print("Loading model parameters from %s" % ckpt_path)
-
-            all_vars = tf.all_variables()
+            all_vars = tf.global_variables()
             model_vars = [k for k in all_vars if k.name.startswith("ner_var_scope")]
             tf.train.Saver(model_vars).restore(session, ckpt_path)
-
         else:
             print("Model not found, created with fresh parameters.")
-            session.run(tf.initialize_all_variables())
+            session.run(tf.global_variables_initializer())
         return model
     
     def _predict_ner_tags(self, session, model, words, data_path):
@@ -87,8 +86,12 @@ class ModelLoader(object):
             predict_id.append(int(np.argmax(logits)))    
         predict_tag = ner_reader.word_ids_to_sentence(data_path, predict_id)
         return zip(words, predict_tag)
-
+    
 def load_model(lang = 'zh'):
+    ''' data_path e.g.: ./deepnlp/ner/data/zh
+        ckpt_path e.g.: ./deepnlp/ner/ckpt/zh/ner.ckpt
+        ckpt_file e.g.: ./deepnlp/ner/ckpt/zh/ner.ckpt.data-00000-of-00001
+    '''
     data_path = os.path.join(pkg_path, "ner/data", lang) # NER vocabulary data path
     ckpt_path = os.path.join(pkg_path, "ner/ckpt", lang, "ner.ckpt") # NER model checkpoint path
     return ModelLoader(lang, data_path, ckpt_path)

@@ -49,21 +49,18 @@ class NERTagger(object):
     
     self._input_data = tf.placeholder(tf.int32, [batch_size, num_steps])
     self._targets = tf.placeholder(tf.int32, [batch_size, num_steps])
-
+    
     # Check if Model is Training
     self.is_training = is_training
     
-    # Slightly better results can be obtained with forget gate biases
-    # initialized to 1 but the hyperparameters of the model would need to be
-    # different than reported in the paper.
-    lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
+    lstm_cell = tf.contrib.rnn.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
     if is_training and config.keep_prob < 1:
-      lstm_cell = tf.nn.rnn_cell.DropoutWrapper(
+      lstm_cell = tf.contrib.rnn.DropoutWrapper(
           lstm_cell, output_keep_prob=config.keep_prob)
-    cell = tf.nn.rnn_cell.MultiRNNCell([lstm_cell] * config.num_layers, state_is_tuple=True)
-
+    cell = tf.contrib.rnn.MultiRNNCell([lstm_cell] * config.num_layers, state_is_tuple=True)
+    
     self._initial_state = cell.zero_state(batch_size, data_type())
-
+    
     with tf.device("/cpu:0"):
       embedding = tf.get_variable(
           "embedding", [vocab_size, size], dtype=data_type())
@@ -71,7 +68,7 @@ class NERTagger(object):
 
     if is_training and config.keep_prob < 1:
       inputs = tf.nn.dropout(inputs, config.keep_prob)
-
+    
     outputs = []
     state = self._initial_state
     with tf.variable_scope("ner_lstm"):
@@ -79,41 +76,37 @@ class NERTagger(object):
         if time_step > 0: tf.get_variable_scope().reuse_variables()
         (cell_output, state) = cell(inputs[:, time_step, :], state)
         outputs.append(cell_output)
-
-    output = tf.reshape(tf.concat(1, outputs), [-1, size])
+    
+    output = tf.reshape(tf.concat(outputs, 1), [-1, size])
     softmax_w = tf.get_variable(
         "softmax_w", [size, target_num], dtype=data_type())
     softmax_b = tf.get_variable("softmax_b", [target_num], dtype=data_type())
     logits = tf.matmul(output, softmax_w) + softmax_b
-    loss = tf.nn.seq2seq.sequence_loss_by_example(
-        [logits],
-        [tf.reshape(self._targets, [-1])],
-        [tf.ones([batch_size * num_steps], dtype=data_type())])
+    loss = tf.contrib.legacy_seq2seq.sequence_loss_by_example(
+        logits = [logits],
+        targets = [tf.reshape(self._targets, [-1])],
+        weights = [tf.ones([batch_size * num_steps], dtype=data_type())])
     
     # Fetch Reults in session.run()
     self._cost = cost = tf.reduce_sum(loss) / batch_size
     self._final_state = state
     self._logits = logits
     
-    #if not is_training:
-    #  return
-
     self._lr = tf.Variable(0.0, trainable=False)
     tvars = tf.trainable_variables()
     grads, _ = tf.clip_by_global_norm(tf.gradients(cost, tvars),
                                       config.max_grad_norm)
     optimizer = tf.train.GradientDescentOptimizer(self._lr)
     self._train_op = optimizer.apply_gradients(zip(grads, tvars))
-
+    
     self._new_lr = tf.placeholder(
         data_type(), shape=[], name="new_learning_rate")
     self._lr_update = tf.assign(self._lr, self._new_lr)
-    self.saver = tf.train.Saver(tf.all_variables())
-
-
+    self.saver = tf.train.Saver(tf.global_variables())
+  
   def assign_lr(self, session, lr_value):
     session.run(self._lr_update, feed_dict={self._new_lr: lr_value})
-
+    
   @property
   def input_data(self):
     return self._input_data
@@ -150,30 +143,30 @@ class NERTagger(object):
 class LargeConfigChinese(object):
   """Large config."""
   init_scale = 0.04
-  learning_rate = 1.0
+  learning_rate = 0.1
   max_grad_norm = 10
   num_layers = 2
   num_steps = 30
   hidden_size = 128
   max_epoch = 14
   max_max_epoch = 55
-  keep_prob = 0.95
+  keep_prob = 1.00    # remember to set to 1.00 when making new prediction
   lr_decay = 1 / 1.15
   batch_size = 1 # single sample batch
-  vocab_size = 52000
-  target_num = 19  # NER Tag 17, n, nf, nc, ne, (name, start, continue, end) n, p, o, q (special), nz entity_name, nbz
+  vocab_size = 60000
+  target_num = 8 # NER Tag 7, nt, n, p, o, q (special), nz entity_name, nbz
 
 class LargeConfigEnglish(object):
   """Large config."""
   init_scale = 0.04
-  learning_rate = 1.0
+  learning_rate = 0.1
   max_grad_norm = 10
   num_layers = 2
   num_steps = 30
   hidden_size = 128
   max_epoch = 14
   max_max_epoch = 55
-  keep_prob = 0.95
+  keep_prob = 1.00    # remember to set to 1.00 when making new prediction
   lr_decay = 1 / 1.15
   batch_size = 1 # single sample batch
   vocab_size = 52000
@@ -208,7 +201,7 @@ def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
     cost, state, _ = session.run(fetches, feed_dict)
     costs += cost
     iters += model.num_steps
-
+    
     if verbose and step % (epoch_size // 10) == 10:
       print("%.3f perplexity: %.3f speed: %.0f wps" %
             (step * 1.0 / epoch_size, np.exp(costs / iters),
@@ -229,7 +222,6 @@ def main(_):
     raise ValueError("No data files found in 'data_path' folder")
 
   raw_data = reader.load_data(FLAGS.ner_data_path)
-  # train_data, valid_data, test_data, _ = raw_data
   train_word, train_tag, dev_word, dev_tag, test_word, test_tag, vocabulary = raw_data
   
   config = get_config(FLAGS.ner_lang)
@@ -237,7 +229,7 @@ def main(_):
   eval_config = get_config(FLAGS.ner_lang)
   eval_config.batch_size = 1
   eval_config.num_steps = 1
-
+  
   with tf.Graph().as_default(), tf.Session() as session:
     initializer = tf.random_uniform_initializer(-config.init_scale,
                                                 config.init_scale)
@@ -249,19 +241,17 @@ def main(_):
     
     # CheckPoint State
     ckpt = tf.train.get_checkpoint_state(FLAGS.ner_train_dir)
-    if ckpt and tf.gfile.Exists(ckpt.model_checkpoint_path):
+    if ckpt:
       print("Loading model parameters from %s" % ckpt.model_checkpoint_path)
-      m.saver.restore(session, ckpt.model_checkpoint_path)
+      m.saver.restore(session, tf.train.latest_checkpoint(FLAGS.ner_train_dir))
     else:
       print("Created model with fresh parameters.")
-      session.run(tf.initialize_all_variables())
-
-    # tf.initialize_all_variables().run()
-
+      session.run(tf.global_variables_initializer())
+    
     for i in range(config.max_max_epoch):
       lr_decay = config.lr_decay ** max(i - config.max_epoch, 0.0)
       m.assign_lr(session, config.learning_rate * lr_decay)
-
+    
       print("Epoch: %d Learning rate: %.3f" % (i + 1, session.run(m.lr)))
       train_perplexity = run_epoch(session, m, train_word, train_tag, m.train_op,
                                    verbose=True)
