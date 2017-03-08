@@ -25,8 +25,6 @@ import numpy as np
 from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 import seq2seq_attn
-#from tensorflow.models.rnn import rnn_cell
-#from tensorflow.models.rnn import seq2seq
 
 import data_utils
 import eval
@@ -61,7 +59,7 @@ class Seq2SeqModel(object):
                forward_only=False):
 
     """Create the model.
-
+    
     Args:
       source_vocab_size: size of the source vocabulary.
       target_vocab_size: size of the target vocabulary.
@@ -83,7 +81,7 @@ class Seq2SeqModel(object):
       forward_only: if set, we do not construct the backward pass in the model.
       dtype: the data type to use to store internal variables.
     """
-
+    
     # self.dtype = tf.float32
     self.source_vocab_size = source_vocab_size
     self.target_vocab_size = target_vocab_size
@@ -93,23 +91,22 @@ class Seq2SeqModel(object):
     #    float(learning_rate), trainable=False, dtype=tf.float32)
     self.learning_rate = tf.Variable(
         float(learning_rate), tf.float32)
-
+    
     self.learning_rate_decay_op = self.learning_rate.assign(
         self.learning_rate * learning_rate_decay_factor)
     self.global_step = tf.Variable(0, trainable=False)
-
+    
     # If we use sampled softmax, we need an output projection.
     output_projection = None
     softmax_loss_function = None
     # Sampled softmax only makes sense if we sample less than vocabulary size.
     if num_samples > 0 and num_samples < self.target_vocab_size:
-      #w = tf.get_variable("proj_w", [size, self.target_vocab_size], dtype=dtype)
-      w = tf.get_variable("proj_w", [size, self.target_vocab_size], tf.float32)
-      w_t = tf.transpose(w)
+      w_t = tf.get_variable("proj_w", [self.target_vocab_size, size], tf.float32)
+      w = tf.transpose(w_t)
       b = tf.get_variable("proj_b", [self.target_vocab_size], tf.float32)
       output_projection = (w, b)
-
-      def sampled_loss(inputs, labels):
+      
+      def sampled_loss(labels, inputs):
         labels = tf.reshape(labels, [-1, 1])
         # We need to compute the sampled_softmax_loss using 32bit floats to
         # avoid numerical instabilities.
@@ -117,17 +114,24 @@ class Seq2SeqModel(object):
         local_b = tf.cast(b, tf.float32)
         local_inputs = tf.cast(inputs, tf.float32)
         return tf.cast(
-            tf.nn.sampled_softmax_loss(local_w_t, local_b, local_inputs, labels,
-                                       num_samples, self.target_vocab_size), tf.float32)
+            tf.nn.sampled_softmax_loss(
+                weights=local_w_t,
+                biases=local_b,
+                labels=labels,
+                inputs=local_inputs,
+                num_sampled=num_samples,
+                num_classes=self.target_vocab_size),
+            tf.float32)
+      
       softmax_loss_function = sampled_loss
-
+    
     # Create the internal multi-layer cell for our RNN.
-    single_cell = tf.nn.rnn_cell.GRUCell(size)
+    single_cell = tf.contrib.rnn.GRUCell(size)
     if use_lstm:
-      single_cell = tf.nn.rnn_cell.BasicLSTMCell(size, state_is_tuple=True)
+      single_cell = tf.contrib.rnn.BasicLSTMCell(size, state_is_tuple=True)
     cell = single_cell
     if num_layers > 1:
-      cell = tf.nn.rnn_cell.MultiRNNCell([single_cell] * num_layers, state_is_tuple=True)
+      cell = tf.contrib.rnn.MultiRNNCell([single_cell] * num_layers, state_is_tuple=True)
     
     # The seq2seq function: we use embedding for the input and attention.
     def seq2seq_f(encoder_inputs, decoder_inputs, do_decode):
@@ -154,11 +158,11 @@ class Seq2SeqModel(object):
                                                 name="decoder{0}".format(i)))
       self.target_weights.append(tf.placeholder(tf.float32, shape=[batch_size],
                                                 name="weight{0}".format(i)))
-
+    
     # Our targets are decoder inputs shifted by one.
     targets = [self.decoder_inputs[i + 1]
                for i in xrange(len(self.decoder_inputs) - 1)]
-
+    
     # Training outputs and losses.
     if forward_only:
       self.outputs, self.losses, self.attn_masks = seq2seq_attn.model_with_buckets(

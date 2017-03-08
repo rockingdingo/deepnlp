@@ -14,7 +14,7 @@
 
 中文教程
 =================
-textsum基于tensorflow (0.12.0)实现的Seq2Seq-attention模型, 来解决中文新闻标题自动生成的任务。
+textsum基于tensorflow (1.0.0) 实现的Seq2Seq-attention模型, 来解决中文新闻标题自动生成的任务。(旧版tf 0.12.0训练的模型可以在deepnlp 0.1.5分支找到)
 Seq2Seq模型的例子从原来的法语英语翻译的例子 translate.py 修改得到，同时我们在eval.py 模块中还提供了评价这种序列模型的计算ROUGE和BLEU分的方法。
 
 语料和参数
@@ -37,15 +37,15 @@ buckets = [(120, 30), ...]
 
 预训练模型的解压:
 我们基于1M的搜狐新闻的语料预训练好了一个模型，因为大小限制所以分卷压缩上传。
-在使用前需要合并后解压缩, 模型名为: headline_large.ckpt-44000.data-00000-of-00001,
+在使用前需要合并后解压缩, 模型名为: headline_large.ckpt-48000.data-00000-of-00001,
 被压缩为3卷: *.tar.gz00, *.tar.gz01, *.tar.gz02
 
 ```shell
-#解压缩后的预训练模型文件为: headline_large.ckpt-44000.data-00000-of-00001
+#解压缩后的预训练模型文件为: headline_large.ckpt-48000.data-00000-of-00001
 
 cd ./ckpt
-cat headline_large.ckpt-44000.* > headline_large.ckpt-44000.data-00000-of-00001.tar.gz
-tar xzvf headline_large.ckpt-44000.data-00000-of-00001.tar.gz
+cat headline_large.ckpt-48000.* > headline_large.ckpt-48000.data-00000-of-00001.tar.gz
+tar xzvf headline_large.ckpt-48000.data-00000-of-00001.tar.gz
 ```
 
 预测结果
@@ -59,10 +59,10 @@ python predict.py
 输出结果例子
 ```shell
 新闻:      中央 气象台 TAG_DATE TAG_NUMBER 时 继续 发布 暴雨 蓝色 预警 TAG_NAME_EN 预计 TAG_DATE TAG_NUMBER 时至 TAG_DATE TAG_NUMBER 时 TAG_NAME_EN 内蒙古 东北部 、 山西 中 北部 、 河北 中部 和 东北部 、 京津 地区 、 辽宁 西南部 、 吉林 中部 、 黑龙江 中部 偏南 等 地 的 部分 地区 有 大雨 或 暴雨 。
-生成标题:  全 国 新一 轮 降雨 致 TAG_NUMBER 人
+生成标题:  中央 气象台 发布 暴雨 蓝色 预警 华北 等 地 持续 暴雨
 
 新闻:      美国 科罗拉多州 山林 大火 持续 肆虐 TAG_NAME_EN 当地 时间 TAG_DATE 横扫 州 内 第二 大 城市 科罗拉多斯 普林斯 一 处 居民区 TAG_NAME_EN 迫使 超过 TAG_NUMBER TAG_NAME_EN TAG_NUMBER 万 人 紧急 撤离 。 美国 正 值 山火 多发 季 TAG_NAME_EN 现有 TAG_NUMBER 场 山火 处于 活跃 状态 。
-生成标题:  美国 东北部 山火 致 TAG_NUMBER 万 人 受灾
+生成标题:  美国 多地 山火 致 TAG_NUMBER 人 死亡
 ...
 ```
 
@@ -87,7 +87,6 @@ attention可视化
 ---------------
 为了获得Decoder阶段的Attention矩阵, 我们需要对Tensorflow的标准运算符tf.nn.seq2seq进行适当的修改, 保存在了seq2seq_attn.py文件中。
 具体的修改步骤参考博客: 
-
 http://www.deepnlp.org/blog/textsum-seq2seq-attention/
 
 ### 运行 predict_attn.py文件
@@ -99,7 +98,7 @@ python predict_attn.py
 
 ```
 Example:
-![image](https://raw.githubusercontent.com/rockingdingo/deepnlp/master/deepnlp/textsum/img/attention_heatmap_1484035202.jpg)
+![image](https://raw.githubusercontent.com/rockingdingo/deepnlp/master/deepnlp/textsum/img/attention_heatmap_1488962653.jpg)
 
 训练模型
 ---------------
@@ -150,15 +149,15 @@ News article cutted to 120, news with fewer words will be padded with 'PAD', Tit
 *buckets = [(120, 30), ...]
 
 Model File:
-The pre-trained model file has name 'headline_large.ckpt-44000.data-00000-of-00001' and it
+The pre-trained model file has name 'headline_large.ckpt-48000.data-00000-of-00001' and it
 is compressed and split into 3 files: *.tar.gz00, *.tar.gz01, *.tar.gz02
 
 ```shell
-#Model File Name: headline_large.ckpt-44000.data-00000-of-00001
+#Model File Name: headline_large.ckpt-48000.data-00000-of-00001
 
 cd ./ckpt
-cat headline_large.ckpt-44000.* > headline_large.ckpt-44000.data-00000-of-00001.tar.gz
-tar xzvf headline_large.ckpt-44000.data-00000-of-00001.tar.gz
+cat headline_large.ckpt-48000.* > headline_large.ckpt-48000.data-00000-of-00001.tar.gz
+tar xzvf headline_large.ckpt-48000.data-00000-of-00001.tar.gz
 ```
 
 Prediction
@@ -171,11 +170,11 @@ python predict.py
 
 Output examples
 ```shell
-news: 中央 气象台 TAG_DATE TAG_NUMBER 时 继续 发布 暴雨 蓝色 预警 TAG_NAME_EN 预计 TAG_DATE TAG_NUMBER 时至 TAG_DATE TAG_NUMBER 时 TAG_NAME_EN 内蒙古 东北部 、 山西 中 北部 、 河北 中部 和 东北部 、 京津 地区 、 辽宁 西南部 、 吉林 中部 、 黑龙江 中部 偏南 等 地 的 部分 地区 有 大雨 或 暴雨 。
-headline: 中央 气象台 发布 暴雨 蓝色 预警
+news:      中央 气象台 TAG_DATE TAG_NUMBER 时 继续 发布 暴雨 蓝色 预警 TAG_NAME_EN 预计 TAG_DATE TAG_NUMBER 时至 TAG_DATE TAG_NUMBER 时 TAG_NAME_EN 内蒙古 东北部 、 山西 中 北部 、 河北 中部 和 东北部 、 京津 地区 、 辽宁 西南部 、 吉林 中部 、 黑龙江 中部 偏南 等 地 的 部分 地区 有 大雨 或 暴雨 。
+headline:  中央 气象台 发布 暴雨 蓝色 预警 华北 等 地 持续 暴雨
 
-news: 美国 科罗拉多州 山林 大火 持续 肆虐 TAG_NAME_EN 当地 时间 TAG_DATE 横扫 州 内 第二 大 城市 科罗拉多斯 普林斯 一 处 居民区 TAG_NAME_EN 迫使 超过 TAG_NUMBER TAG_NAME_EN TAG_NUMBER 万 人 紧急 撤离 。 美国 正 值 山火 多发 季 TAG_NAME_EN 现有 TAG_NUMBER 场 山火 处于 活跃 状态 。
-headline: 美国 科罗拉多州 山火 致 TAG_NUMBER 人 死亡
+news:      美国 科罗拉多州 山林 大火 持续 肆虐 TAG_NAME_EN 当地 时间 TAG_DATE 横扫 州 内 第二 大 城市 科罗拉多斯 普林斯 一 处 居民区 TAG_NAME_EN 迫使 超过 TAG_NUMBER TAG_NAME_EN TAG_NUMBER 万 人 紧急 撤离 。 美国 正 值 山火 多发 季 TAG_NAME_EN 现有 TAG_NUMBER 场 山火 处于 活跃 状态 。
+headline:  美国 多地 山火 致 TAG_NUMBER 人 死亡
 ...
 ```
 
@@ -202,7 +201,6 @@ Attention Visualization
 To get the attention mask matrix, we need to modified the standard seq2seq ops tf.nn.seq2seq. Right now 
 there is not available method to extract those tensors so we need to modify the source file. We save the modified file to seq2seq_attn.py in this package.
 Please check out this blog for details:
-
 http://www.deepnlp.org/blog/textsum-seq2seq-attention/
 
 ### Run predict_attn.py
@@ -213,7 +211,7 @@ python predict_attn.py
 
 ```
 Examples:
-![image](https://raw.githubusercontent.com/rockingdingo/deepnlp/master/deepnlp/textsum/img/attention_heatmap_1484035202.jpg)
+![image](https://raw.githubusercontent.com/rockingdingo/deepnlp/master/deepnlp/textsum/img/attention_heatmap_1488962653.jpg)
 
 Training
 ---------------
@@ -245,3 +243,5 @@ Reference
 https://github.com/tensorflow/models/tree/master/textsum
 * Tensorflow seq2seq ops: 
 https://github.com/tensorflow/tensorflow/blob/64edd34ce69b4a8033af5d217cb8894105297d8a/tensorflow/contrib/legacy_seq2seq/python/ops/seq2seq.py
+* Blog
+http://www.deepnlp.org/blog/textsum-seq2seq-attention/
