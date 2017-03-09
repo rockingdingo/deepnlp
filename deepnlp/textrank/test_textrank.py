@@ -19,7 +19,6 @@ from urllib import quote
 # Read document and segment words
 docs = []
 folder_path = os.path.dirname(os.path.abspath(__file__))
-#folder_path = "D:\\Python\\tensorflow\\tutorial\\textrank"
 file_path = os.path.join(folder_path, 'docs.txt')
 f = codecs.open(file_path, encoding='utf-8')
 for line in f:
@@ -33,7 +32,7 @@ from deepnlp import api_service
 login = {}
 conn = api_service.connect(login)   # save the connection with login cookies
 
-base_url = 'www.deepnlp.org'
+base_url = 'http://www.deepnlp.org'
 lang = 'zh'
 
 docSplit = []
@@ -48,7 +47,7 @@ for i in range(len(docs)):
         wordsList = tuples['words'] # segmentation json {'words', [w1, w2,...]} return list
         docSplit.append(wordsList)
 
-outfile_path = os.path.join(folder_path, 'docsSplit.txt')
+outfile_path = os.path.join(folder_path, 'docs_split.txt')
 outFile = codecs.open(outfile_path, "w", encoding='utf-8')
 
 for items in docSplit:
@@ -66,6 +65,6 @@ summary_file = codecs.open(summary_path, "w", encoding='utf-8')
 
 for (index, words, score) in summary:
     # words = [str(w) for w in words]
-    line =  str(index) + " ".join(words) + str(score)
+    line =  str(index) + "\t" + " ".join(words) + str(score)
+    print (line.encode('utf-8'))
     summary_file.write(line + "\n")
-

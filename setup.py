@@ -6,22 +6,32 @@ from setuptools import find_packages
 
 setup(
     name = 'deepnlp',
-    version = '0.1.5',
+    version = '0.1.6',
     description = 'Deep Learning NLP Pipeline implemented on Tensorflow',
     author = 'Xichen Ding',
     author_email = 'dingo0927@126.com',
     url = 'https://github.com/rockingdingo/deepnlp',
     license="MIT",
-    keywords='DeepLearning,NLP,Tensorflow,deepnlp.org',
+    keywords='DeepLearning NLP Tensorflow deepnlp.org',
     packages=find_packages(),
     package_data={
-        'deepnlp': ['segment/data/crf_model', 
+        'deepnlp': [
+            'segment/data/crf_model', 
             'segment/data/template',
             'segment/train_crf.sh',
             'pos/trainPOSModel.sh',
-            'pos/data/zh/word_to_id', 'pos/data/zh/tag_to_id', 'pos/ckpt/zh/*',
-            'pos/data/en/word_to_id', 'pos/data/en/tag_to_id', 'pos/ckpt/en/*',
-            'ner/data/zh/word_to_id', 'ner/data/zh/tag_to_id', 'ner/ckpt/zh/*',
+            'pos/data/zh/word_to_id', 
+            'pos/data/zh/tag_to_id', 
+            'pos/ckpt/zh/*',
+            'textrank/docs.txt',
+            'segment/README.md',
+            'pos/README.md',
+            'ner/README.md',
+            'textsum/README.md',
+        ],
+        'test': [
+            'docs_api.txt',
+            'docs_test.txt',
         ],
     },
     classifiers=[

@@ -1,6 +1,9 @@
 #coding:utf-8
 from __future__ import unicode_literals # compatible with python3 unicode
 
+import deepnlp
+deepnlp.download('ner')  # download the NER pretrained models from github if installed from pip
+
 from deepnlp import segmenter
 from deepnlp import ner_tagger
 tagger = ner_tagger.load_model(lang = 'zh')

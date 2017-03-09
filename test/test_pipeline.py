@@ -4,6 +4,11 @@ from __future__ import unicode_literals # compatible with python3 unicode
 import sys,os
 import codecs
 
+import deepnlp
+deepnlp.download('segment')   # download all the required pretrained models from github if installed from pip
+deepnlp.download('pos')       
+deepnlp.download('ner')
+
 from deepnlp import pipeline
 p = pipeline.load_model('zh')
 

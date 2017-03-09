@@ -12,5 +12,10 @@ include deepnlp/pos/ckpt/zh/pos.ckpt.data-00000-of-00001
 include deepnlp/pos/ckpt/zh/pos.ckpt.meta
 include deepnlp/pos/ckpt/zh/pos.ckpt.index
 include deepnlp/pos/trainPOSModel.sh
-include deepnlp/ner/data/zh/word_to_id
-include deepnlp/ner/data/zh/tag_to_id
+include deepnlp/textrank/docs.txt
+include deepnlp/segment/README.md
+include deepnlp/pos/README.md
+include deepnlp/ner/README.md
+include deepnlp/textsum/README.md
+include test/docs_api.txt
+include test/docs_test.txt

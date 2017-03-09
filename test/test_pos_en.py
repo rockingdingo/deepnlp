@@ -1,6 +1,9 @@
 #coding:utf-8
 from __future__ import unicode_literals
 
+import deepnlp
+deepnlp.download('pos')                     # download the POS pretrained models from github if installed from pip
+
 from deepnlp import pos_tagger
 tagger = pos_tagger.load_model(lang = 'en')  # Loading English model, lang code 'en'
 

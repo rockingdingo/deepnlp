@@ -75,12 +75,12 @@ def connect(credentials):
         print ("Run 'login = api_service.init()' to initialize your personal account with full API access")
         print ("loading default login for pypi with limited API access")
         login = default_login
-    
+
     if('username' not in login.keys()):
         print ("key 'username' missing in credentials")
         print ("loading default login with limited API access")
         login = default_login
-    
+
     if('password' not in login.keys()):
         print ("key 'password' missing in credentials")
         print ("loading default login with limited API access")
