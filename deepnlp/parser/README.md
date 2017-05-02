@@ -1,7 +1,8 @@
-Parsing Dependency(WIP)
+Dependency Parsing (WIP)
 ==============================
 句法依存解析
-s
+
+
 Train your model
 --------------------
 自己训练模型
