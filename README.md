@@ -1,4 +1,3 @@
-#### Visit http://www.deepnlp.org
 
 Deep Learning NLP Pipeline implemented on Tensorflow. Following the 'simplicity' rule, this project aims to 
 use the deep learning library of Tensorflow to implement new NLP pipeline. You can extend the project to 
