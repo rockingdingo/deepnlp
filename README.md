@@ -39,7 +39,7 @@ Modules
     * POS: LSTM/BI-LSTM network, based on Tensorflow
     * NER: LSTM/BI-LSTM/LSTM-CRF network, based on Tensorflow
     * Textsum: Seq2Seq with attention mechanism
-    * Texncnn: CNN
+    * Textcnn: CNN
 
 * Pre-trained Model
     * Chinese: Segmentation, POS, NER (1998 china daily corpus)
