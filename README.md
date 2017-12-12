@@ -1,4 +1,3 @@
-
 Deep Learning NLP Pipeline implemented on Tensorflow. Following the 'simplicity' rule, this project aims to 
 use the deep learning library of Tensorflow to implement new NLP pipeline. You can extend the project to 
 train models with your own corpus/languages. Pretrained models of Chinese corpus are distributed.
@@ -12,6 +11,7 @@ Brief Introduction
     * [Segmentation](#segmentation)
     * [POS](#pos)
     * [NER](#ner)
+    * [Parsing](#parsing) 
     * [Pipeline](#pipeline)
     * [Textsum](#textsum)
     * [Textrank](#textrank)
@@ -28,21 +28,24 @@ Modules
     * Word Segmentation/Tokenization
     * Part-of-speech (POS)
     * Named-entity-recognition(NER)
+    * Dependency Parsing (Parse)
     * textsum: automatic summarization Seq2Seq-Attention models
     * textrank: extract the most important sentences
     * textcnn: document classification
     * Web API: Free Tensorflow empowered web API
-    * Planed: Parsing, Automatic Summarization
+    * Planed: Automatic Summarization
 
 * Algorithm(Closely following the state-of-Art)
     * Word Segmentation: Linear Chain CRF(conditional-random-field), based on python CRF++ module
-    * POS: LSTM/BI-LSTM network, based on Tensorflow
+    * POS: LSTM/BI-LSTM/LSTM-CRF network, based on Tensorflow
     * NER: LSTM/BI-LSTM/LSTM-CRF network, based on Tensorflow
+    * Parse: Arc-Standard System with Feed Forward Neural Network
     * Textsum: Seq2Seq with attention mechanism
     * Texncnn: CNN
 
 * Pre-trained Model
-    * Chinese: Segmentation, POS, NER (1998 china daily corpus)
+    * Chinese: Segmentation, POS, NER, Parse (1998 china daily corpus)
+    * Domain Specific NER Models are also provided: general, entertainment, o2o, etc... Contribution are welcome
     * English: POS (brown corpus)
     * For your Specific Language, you can easily use the script to train model with the corpus of your language choice.
 
@@ -50,24 +53,30 @@ Installation
 ================
 * Requirements
     * CRF++ (>=0.54)
-    * Tensorflow(1.0) 
-This project is up to date with the latest tensorflow release. For tensorflow (<=0.12.0), use deepnlp <=0.1.5 version. See RELEASE.md for more details
+    * Tensorflow(1.4)
+    * Python (python2.7 and python3.6 are tested)
+This project is up to date with the latest tensorflow release. 
+For tensorflow (<=0.12.0), use deepnlp <=0.1.5 version. 
+tensorflow (1.0-1.3), use deepnlp = 0.1.6 version
+tensorflow (1.4), use deepnlp = 0.1.7 version
+See RELEASE.md for more details
+
 
 * Pip
 ```python
     # linux, run the script:
     pip install deepnlp
 ```
-Due to pkg size restriction, english pos model, ner model files are not distributed on pypi
+Due to pkg size restriction, english pos model, ner domain specific model files are not distributed on pypi
 You can download the pre-trained model files from github and put in your installation directory .../site-packages/.../deepnlp/...
 model files: ../pos/ckpt/en/pos.ckpt  ; ../ner/ckpt/zh/ner.ckpt
 
-* Source Distribution, e.g. deepnlp-0.1.6.tar.gz: https://pypi.python.org/pypi/deepnlp
+* Source Distribution, e.g. deepnlp-0.1.7.tar.gz: https://pypi.python.org/pypi/deepnlp
 
 ```python
     # linux, run the script:
-    tar zxvf deepnlp-0.1.6.tar.gz
-    cd deepnlp-0.1.6
+    tar zxvf deepnlp-0.1.7.tar.gz
+    cd deepnlp-0.1.7
     python setup.py install
 ```
 
@@ -75,9 +84,12 @@ model files: ../pos/ckpt/en/pos.ckpt  ; ../ner/ckpt/zh/ner.ckpt
 ```python
     # ./deepnlp/test folder
     cd test
-    python test_pos_en.py
-    python test_segmenter.py
-    python test_pos_zh.py
+    python test_segment.py    # segmentation
+    python test_pos_en.py       # POS tag
+    python test_ner_zh.py       # NER Zh
+    python test_ner_domain.py   # NER domain-specific models
+    python test_ner_dict_udf.py # NER load user dict and UDF for disambiguation
+    python test_nn_parser.py    # dependency parsing
     python test_api_v1_module.py
     python test_api_v1_pipeline.py
 ```
@@ -98,18 +110,23 @@ Download pretrained models
 ---------------
 下载预训练模型
 If you install deepnlp via pip, the pre-trained models are not distributed due to size restriction. 
-You can download full models for 'Segment', 'POS' en and zh, 'NER' zh, 'Textsum' by calling the download function.
+You can download full models for 'Segment', 'POS' en and zh, 'NER' zh, zh_entertainment, zh_o2o, 'Textsum' by calling the download function.
 
 ```python
 import deepnlp
 # Download all the modules
 deepnlp.download()
 
-# Download only specific module
+# Download specific module
 deepnlp.download('segment')
 deepnlp.download('pos')
 deepnlp.download('ner')
-deepnlp.download('textsum')
+deepnlp.download('parse')
+
+# Download module and domain-specific model
+deepnlp.download(module = 'pos', name = 'en') 
+deepnlp.download(module = 'ner', name = 'zh_entertainment')
+
 ```
 
 Segmentation
@@ -118,18 +135,15 @@ Segmentation
 ```python
 #coding=utf-8
 from __future__ import unicode_literals
-
 from deepnlp import segmenter
 
+tokenizer = segmenter.load_model(name = 'zh_entertainment')
 text = "我刚刚在浙江卫视看了电视剧老九门，觉得陈伟霆很帅"
-segList = segmenter.seg(text)
+segList = tokenizer.seg(text)
 text_seg = " ".join(segList)
 
-print (text.encode('utf-8'))
-print (text_seg.encode('utf-8'))
-
 #Results
-#我 刚刚 在 浙江卫视 看 了 电视剧 老九门 ， 觉得 陈伟霆 很 帅
+# 我 刚刚 在 浙江卫视 看 了 电视剧 老九门 ， 觉得 陈伟霆 很 帅
 
 ```
 
@@ -145,16 +159,16 @@ deepnlp.download('pos')
 
 ## English Model
 from deepnlp import pos_tagger
-tagger = pos_tagger.load_model(lang = 'en')  # Loading English model, lang code 'en', English Model Brown Corpus
+tagger = pos_tagger.load_model(name = 'en')  # Loading English model, lang code 'en', English Model Brown Corpus
 
 text = "I want to see a funny movie"
 words = text.split(" ")     # unicode
-print (" ".join(words).encode('utf-8'))
+print (" ".join(words))
 
 tagging = tagger.predict(words)
 for (w,t) in tagging:
-    str = w + "/" + t
-    print (str.encode('utf-8'))
+    pair = w + "/" + t
+    print (pair)
     
 #Results
 #I/nn want/vb to/to see/vb a/at funny/jj movie/nn
@@ -162,16 +176,16 @@ for (w,t) in tagging:
 ## Chinese Model
 from deepnlp import segmenter
 from deepnlp import pos_tagger
-tagger = pos_tagger.load_model(lang = 'zh') # Loading Chinese model, lang code 'zh', China Daily Corpus
+tagger = pos_tagger.load_model(name = 'zh') # Loading Chinese model, lang code 'zh', China Daily Corpus
 
 text = "我爱吃北京烤鸭"
 words = segmenter.seg(text) # words in unicode coding
-print (" ".join(words).encode('utf-8'))
+print (" ".join(words))
 
 tagging = tagger.predict(words)  # input: unicode coding
 for (w,t) in tagging:
-    str = w + "/" + t
-    print (str.encode('utf-8'))
+    pair = w + "/" + t
+    print (pair)
 
 #Results
 #我/r 爱/v 吃/v 北京/ns 烤鸭/n
@@ -179,33 +193,80 @@ for (w,t) in tagging:
 ```
 
 NER
------
+------------
 命名实体识别
 ```python
-#coding:utf-8
-from __future__ import unicode_literals
 
-# Download pretrained NER model
+from __future__ import unicode_literals   # compatible with python3 unicode
+
 import deepnlp
-deepnlp.download('ner')
+deepnlp.download('ner')  # download the NER pretrained models from github if installed from pip
 
-from deepnlp import segmenter
 from deepnlp import ner_tagger
-tagger = ner_tagger.load_model(lang = 'zh') # Loading Chinese NER model
 
-text = "我爱吃北京烤鸭"
-words = segmenter.seg(text)
-print (" ".join(words).encode('utf-8'))
-
+# Example: Entertainment Model
+tagger = ner_tagger.load_model(name = 'zh')   # Base LSTM Based Model
+#Load Entertainment Dict
+tagger.load_dict("zh_entertainment")
+text = "你 最近 在 看 胡歌 演的 猎场 吗 ?"
+words = text.split(" ")
 tagging = tagger.predict(words)
 for (w,t) in tagging:
-    str = w + "/" + t
-    print (str.encode('utf-8'))
+    pair = w + "/" + t
+    print (pair)
 
-#Results
-#我/nt 爱/nt 吃/nt 北京/p 烤鸭/nt
+#Result
+#你最近/nt
+#在/nt
+#看/nt
+#胡歌/actor
+#演的/nt
+#猎场/list_name
+#吗/nt
+#?/nt
 
 ```
+
+Parsing
+------------
+依存句法分析
+
+```python
+
+from __future__ import unicode_literals # compatible with python3 unicode coding
+
+from deepnlp import nn_parser
+parser = nn_parser.load_model(name = 'zh')
+
+#Example 1, Input Words and Tags Both
+words = ['它', '熟悉', '一个', '民族', '的', '历史']
+tags = ['r', 'v', 'm', 'n', 'u', 'n']
+
+#Parsing
+dep_tree = parser.predict(words, tags)
+
+#Fetch result from Transition Namedtuple
+num_token = dep_tree.count()
+print ("id\tword\tpos\thead\tlabel")
+for i in range(num_token):
+    cur_id = int(dep_tree.tree[i+1].id)
+    cur_form = str(dep_tree.tree[i+1].form)
+    cur_pos = str(dep_tree.tree[i+1].pos)
+    cur_head = str(dep_tree.tree[i+1].head)
+    cur_label = str(dep_tree.tree[i+1].deprel)
+    print ("%d\t%s\t%s\t%s\t%s" % (cur_id, cur_form, cur_pos, cur_head, cur_label))
+
+# Result
+id	word	pos	head	label
+1	它	r	2	SBV
+2	熟悉	v	0	HED
+3	一个	m	4	QUN
+4	民族	n	5	DE
+5	的	u	6	ATT
+6	历史	n	2	VOB
+
+```
+
 
 Pipeline
 ----------
@@ -262,6 +323,9 @@ See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/d
 ###NER model
 See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/ner)
 
+###Parsing model
+See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/parse)
+
 ###Textsum model
 See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/textsum)
 
@@ -317,6 +381,7 @@ deepnlp项目是基于Tensorflow平台的一个python版本的NLP套装, 目的�
     * 分词 Word Segmentation/Tokenization
     * 词性标注 Part-of-speech (POS)
     * 命名实体识别 Named-entity-recognition(NER)
+    * 依存句法分析 Dependency Parsing (Parse)
     * 自动生成式文摘 Textsum (Seq2Seq-Attention)
     * 关键句子抽取 Textrank
     * 文本分类 Textcnn (WIP)
@@ -327,6 +392,7 @@ deepnlp项目是基于Tensorflow平台的一个python版本的NLP套装, 目的�
     * 分词: 线性链条件随机场 Linear Chain CRF, 基于CRF++包来实现
     * 词性标注: 单向LSTM/ 双向BI-LSTM, 基于Tensorflow实现
     * 命名实体识别: 单向LSTM/ 双向BI-LSTM/ LSTM-CRF 结合网络, 基于Tensorflow实现
+    * 依存句法分析: 基于arc-standard system的神经网络的parser
 
 * 预训练模型
     * 中文: 基于人民日报语料和微博混合语料: 分词, 词性标注, 实体识别
@@ -355,11 +421,11 @@ API目前提供以下模块支持：
     pip install deepnlp
 ```
 
-* 从源码安装, 下载deepnlp-0.1.6.tar.gz文件: https://pypi.python.org/pypi/deepnlp
+* 从源码安装, 下载deepnlp-0.1.7.tar.gz文件: https://pypi.python.org/pypi/deepnlp
 ```python
     # linux, run the script:
-    tar zxvf deepnlp-0.1.6.tar.gz
-    cd deepnlp-0.1.6
+    tar zxvf deepnlp-0.1.7.tar.gz
+    cd deepnlp-0.1.7
     python setup.py install
 ```
 

@@ -46,9 +46,9 @@ fileOut.writelines(res[0] + "\n")
 fileOut.writelines(res[1] + "\n")
 fileOut.writelines(res[2] + "\n")
 
-print (res[0].encode('utf-8'))
-print (res[1].encode('utf-8'))
-print (res[2].encode('utf-8'))
+print (res[0])
+print (res[1])
+print (res[2])
 
 # print modules results
 fileOut.writelines("modules results:" + "\n")

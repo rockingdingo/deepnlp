@@ -25,18 +25,19 @@ pkg_path = os.path.dirname(os.path.abspath(__file__))
 
 class Pipeline(object):
 
-  def __init__(self, lang):
+  def __init__(self, name):
     print("Starting new Tensorflow session...")
     self.session = tf.Session()
     print("Loading pipeline modules...")
-    self.tagger_pos = pos_tagger.load_model(lang) # class tagger_pos
-    self.tagger_ner = ner_tagger.load_model(lang) # class tagger_ner
+    self.tokenizer = segmenter.load_model(name)
+    self.tagger_pos = pos_tagger.load_model(name) # class tagger_pos
+    self.tagger_ner = ner_tagger.load_model(name) # class tagger_ner
     
   def analyze(self, string):
     '''Return a list of three string output: segment, pos, ner'''
     res = []
     #segment
-    words = segmenter.seg(string)
+    words = self.tokenizer.seg(string)
     segment_str = " ".join(words)
     res.append(segment_str)
     
@@ -51,7 +52,7 @@ class Pipeline(object):
   
   def segment(self, string):
     ''' Return list of [word]'''
-    words = segmenter.seg(string)
+    words = self.tokenizer.seg(string)
     return words
   
   def tag_pos(self, words):

@@ -12,6 +12,7 @@ from __future__ import unicode_literals # compatible with python3 unicode coding
 import time
 import numpy as np
 import tensorflow as tf
+from tensorflow.python.tools import freeze_graph  # for future C++ reference
 import sys,os
 
 pkg_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # .../deepnlp/
@@ -23,6 +24,7 @@ lang = "zh" if len(sys.argv)==1 else sys.argv[1] # default zh
 file_path = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(file_path, "data", lang)
 train_dir = os.path.join(file_path, "ckpt", lang)
+model_dir = os.path.join(file_path, "models", lang)   # save the graph
 
 flags = tf.flags
 logging = tf.logging
@@ -30,6 +32,7 @@ logging = tf.logging
 flags.DEFINE_string("pos_lang", lang, "pos language option for model config")
 flags.DEFINE_string("pos_data_path", data_path, "data_path")
 flags.DEFINE_string("pos_train_dir", train_dir, "Training directory.")
+flags.DEFINE_string("pos_model_dir", model_dir, "Models dir for protobuf graph file")
 flags.DEFINE_string("pos_scope_name", "pos_var_scope", "Variable scope of pos Model")
 
 FLAGS = flags.FLAGS
@@ -47,18 +50,15 @@ class POSTagger(object):
     vocab_size = config.vocab_size
     target_num = config.target_num # target output number
     
-    self._input_data = tf.placeholder(tf.int32, [batch_size, num_steps])
-    self._targets = tf.placeholder(tf.int32, [batch_size, num_steps])
+    self._input_data = tf.placeholder(tf.int32, [batch_size, num_steps], name = "input_data") # define input placeholder names
+    self._targets = tf.placeholder(tf.int32, [batch_size, num_steps], name = "targets")       # define targets placeholder names
     
     # Check if Model is Training
     self.is_training = is_training
     
-    lstm_cell = tf.contrib.rnn.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
-    if is_training and config.keep_prob < 1:
-      lstm_cell = tf.contrib.rnn.DropoutWrapper(
-          lstm_cell, output_keep_prob=config.keep_prob)
-    cell = tf.contrib.rnn.MultiRNNCell([lstm_cell] * config.num_layers, state_is_tuple=True)
-    
+    # NOTICE: TF1.2 change API to make RNNcell share the same variables under namespace
+    # Create multi-layer LSTM model, Separate Layers with different variables, we need to create multiple RNNCells separately
+    cell = tf.nn.rnn_cell.MultiRNNCell([tf.nn.rnn_cell.BasicLSTMCell(size) for _ in range(config.num_layers)])
     self._initial_state = cell.zero_state(batch_size, data_type())
     
     with tf.device("/cpu:0"):
@@ -81,17 +81,27 @@ class POSTagger(object):
     softmax_w = tf.get_variable(
         "softmax_w", [size, target_num], dtype=data_type())
     softmax_b = tf.get_variable("softmax_b", [target_num], dtype=data_type())
-    logits = tf.matmul(output, softmax_w) + softmax_b
-    loss = tf.contrib.legacy_seq2seq.sequence_loss_by_example(
-        logits = [logits],
-        targets = [tf.reshape(self._targets, [-1])],
-        weights = [tf.ones([batch_size * num_steps], dtype=data_type())])
+    #logits = tf.matmul(output, softmax_w) + softmax_b
+    logits = tf.add(tf.matmul(output, softmax_w), softmax_b, name= "output_node")  # rename logits to output_node for future inference
+    
+    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels = tf.reshape(self._targets, [-1]), logits = logits)
+    cost = tf.reduce_sum(loss)/batch_size # loss [time_step]
+
+    # adding extra statistics to monitor
+    correct_prediction = tf.equal(tf.cast(tf.argmax(logits, 1), tf.int32), tf.reshape(self._targets, [-1]))
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+
+    #loss = tf.contrib.legacy_seq2seq.sequence_loss_by_example(
+    #    logits = [logits],
+    #    targets = [tf.reshape(self._targets, [-1])],
+    #    weights = [tf.ones([batch_size * num_steps], dtype=data_type())])
     
     # Fetch Reults in session.run()
-    self._cost = cost = tf.reduce_sum(loss) / batch_size
+    self._cost = cost
     self._final_state = state
     self._logits = logits
-    
+    self._correct_prediction = correct_prediction
+
     # Set Optimizer and learning rate
     self._lr = tf.Variable(0.0, trainable=False)
     tvars = tf.trainable_variables()
@@ -131,7 +141,11 @@ class POSTagger(object):
   @property
   def logits(self):
     return self._logits
-  
+
+  @property
+  def correct_prediction(self):
+    return self._correct_prediction
+    
   @property
   def lr(self):
     return self._lr
@@ -139,7 +153,7 @@ class POSTagger(object):
   @property
   def train_op(self):
     return self._train_op
-  
+
 # pos model configuration, set target num, and input vocab_size
 class LargeConfigChinese(object):
   """Large config."""
@@ -150,7 +164,7 @@ class LargeConfigChinese(object):
   num_steps = 30
   hidden_size = 128
   max_epoch = 5
-  max_max_epoch = 55
+  max_max_epoch = 10
   keep_prob = 1.0
   lr_decay = 1 / 1.15
   batch_size = 1 # single sample batch
@@ -166,7 +180,7 @@ class LargeConfigEnglish(object):
   num_steps = 30
   hidden_size = 128
   max_epoch = 5
-  max_max_epoch = 55
+  max_max_epoch = 10
   keep_prob = 1.0 # There is one dropout layer on input tensor also, don't set lower than 0.9
   lr_decay = 1 / 1.15
   batch_size = 1 # single sample batch
@@ -189,25 +203,37 @@ def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
   start_time = time.time()
   costs = 0.0
   iters = 0
+  correct_labels = 0
+  total_labels = 0
+
   state = session.run(model.initial_state)
   for step, (x, y) in enumerate(reader.iterator(word_data, tag_data, model.batch_size,
                                                     model.num_steps)):
-    fetches = [model.cost, model.final_state, eval_op]
+    fetches = [model.cost, model.final_state, model.correct_prediction,eval_op]
     feed_dict = {}
     feed_dict[model.input_data] = x
     feed_dict[model.targets] = y
     for i, (c, h) in enumerate(model.initial_state):
       feed_dict[c] = state[i].c
       feed_dict[h] = state[i].h
-    cost, state, _ = session.run(fetches, feed_dict)
+    cost, state, correct_prediction, _ = session.run(fetches, feed_dict)
     costs += cost
     iters += model.num_steps
-    
+
+    correct_labels += np.sum(correct_prediction)
+    total_labels += len(correct_prediction)
+    #print ("correct_labels: %d" % correct_labels)
+    #print ("total_labels: %d" % total_labels)
+
     if verbose and step % (epoch_size // 10) == 10:
       print("%.3f perplexity: %.3f speed: %.0f wps" %
             (step * 1.0 / epoch_size, np.exp(costs / iters),
              iters * model.batch_size / (time.time() - start_time)))
     
+    if verbose and step % (epoch_size // 10) == 10:
+      accuracy = 100.0 * correct_labels / float(total_labels)
+      print("Cum Accuracy: %.2f%%" % accuracy)
+      
     # Save Model to CheckPoint when is_training is True
     if model.is_training:
       if step % (epoch_size // 10) == 10:
@@ -216,6 +242,29 @@ def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
         print("Model Saved... at time step " + str(step))
   
   return np.exp(costs / iters)
+
+def freeze_graph():
+  checkpoint_state_name = "checkpoint_state_name"
+  input_graph_name = "pos_graph.pb"
+  output_graph_name = "pos_graph_output.pb"
+  
+  input_graph_path = os.path.join(FLAGS.pos_model_dir, input_graph_name)
+  input_saver_def_path = ""
+  input_binary = False
+  input_checkpoint_path = os.path.join(FLAGS.pos_train_dir, 'pos.ckpt.data-00000-of-00001')
+
+  # Note that we this normally should be only "output_node"!!!
+  output_node_names = "output_node" 
+  restore_op_name = "save/restore_all"
+  filename_tensor_name = "save/Const:0"
+  output_graph_path = os.path.join(FLAGS.pos_model_dir, output_graph_name)
+  clear_devices = False
+
+  freeze_graph.freeze_graph(input_graph_path, input_saver_def_path,
+                            input_binary, input_checkpoint_path,
+                            output_node_names, restore_op_name,
+                            filename_tensor_name, output_graph_path,
+                            clear_devices)
 
 def main(_):
   if not FLAGS.pos_data_path:
@@ -247,6 +296,9 @@ def main(_):
     else:
       print("Created model with fresh parameters.")
       session.run(tf.global_variables_initializer())
+    
+    # write the graph out for further use e.g. C++ API call
+    tf.train.write_graph(session.graph_def, './models/', 'pos_graph.pbtxt', as_text=True)   # output is text
     
     for i in range(config.max_max_epoch):
       lr_decay = config.lr_decay ** max(i - config.max_epoch, 0.0)

@@ -60,7 +60,6 @@ class NERTagger(object):
     else:                      # LSTM
       self._cost, self._logits, self._final_state, self._initial_state = _lstm_model(inputs, self._targets, config)
     
-    
     # Gradients and SGD update operation for training the model.
     self._lr = tf.Variable(0.0, trainable=False)
     tvars = tf.trainable_variables()
@@ -114,8 +113,8 @@ class LargeConfigChinese(object):
   num_layers = 2
   num_steps = 30
   hidden_size = 128
-  max_epoch = 14
-  max_max_epoch = 55
+  max_epoch = 15
+  max_max_epoch = 20
   keep_prob = 1.00
   lr_decay = 1 / 1.15
   batch_size = 1 # single sample batch
@@ -131,8 +130,8 @@ class LargeConfigEnglish(object):
   num_layers = 2
   num_steps = 30
   hidden_size = 128
-  max_epoch = 14
-  max_max_epoch = 55
+  max_epoch = 15
+  max_max_epoch = 20
   keep_prob = 1.00
   lr_decay = 1 / 1.15
   batch_size = 1 # single sample batch
@@ -162,9 +161,8 @@ def _lstm_model(inputs, targets, config):
     vocab_size = config.vocab_size
     target_num = config.target_num # target output number    
     
-    lstm_cell = tf.contrib.rnn.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
-    cell = tf.contrib.rnn.MultiRNNCell([lstm_cell] * config.num_layers, state_is_tuple=True)
-    
+    # multi-layer LSTM cells
+    cell = tf.nn.rnn_cell.MultiRNNCell([tf.nn.rnn_cell.BasicLSTMCell(size) for _ in range(num_layers)])
     initial_state = cell.zero_state(batch_size, data_type())
     
     outputs = [] # outputs shape: list of tensor with shape [batch_size, size], length: time_step
@@ -199,13 +197,13 @@ def _bilstm_model(inputs, targets, config):
     size = config.hidden_size
     vocab_size = config.vocab_size
     target_num = config.target_num # target output number    
-    
-    lstm_fw_cell = tf.contrib.rnn.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
-    lstm_bw_cell = tf.contrib.rnn.BasicLSTMCell(size, forget_bias=0.0, state_is_tuple=True)
-        
-    cell_fw = tf.contrib.rnn.MultiRNNCell([lstm_fw_cell] * num_layers, state_is_tuple=True)
-    cell_bw = tf.contrib.rnn.MultiRNNCell([lstm_bw_cell] * num_layers, state_is_tuple=True)
-    
+
+    # NOTICE: Changes in TF 1.2, create LSTM layer with different variables
+    # Multi-Layer Forward LSTM Cell
+    cell_fw = tf.nn.rnn_cell.MultiRNNCell([tf.nn.rnn_cell.BasicLSTMCell(size) for _ in range(num_layers)])
+    # Multi-Layer Backward LSTM Cell
+    cell_bw = tf.nn.rnn_cell.MultiRNNCell([tf.nn.rnn_cell.BasicLSTMCell(size) for _ in range(num_layers)])
+
     initial_state_fw = cell_fw.zero_state(batch_size, data_type())
     initial_state_bw = cell_bw.zero_state(batch_size, data_type())
     
@@ -213,7 +211,7 @@ def _bilstm_model(inputs, targets, config):
     inputs_list = [tf.squeeze(s, axis = 1) for s in tf.split(value = inputs, num_or_size_splits = num_steps, axis = 1)]
     
     with tf.variable_scope("ner_bilstm"):
-        outputs, state_fw, state_bw = tf.contrib.rnn.static_bidirectional_rnn(
+        outputs, state_fw, state_bw = tf.nn.static_bidirectional_rnn(
             cell_fw, cell_bw, inputs_list, initial_state_fw = initial_state_fw, 
             initial_state_bw = initial_state_bw)
     

@@ -9,8 +9,9 @@ from deepnlp import pos_tagger # module: pos_tagger
 from deepnlp import ner_tagger # module: ner_tagger
 
 # Create new tagger instance
-tagger_pos = pos_tagger.load_model(lang = 'zh')
-tagger_ner = ner_tagger.load_model(lang = 'zh')
+tokenizer = segmenter.load_model(name = 'zh')
+tagger_pos = pos_tagger.load_model(name = 'zh')
+tagger_ner = ner_tagger.load_model(name = 'zh')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -33,7 +34,7 @@ for line in file:
 # Test each individual module
 # output file
 fileOut = codecs.open(os.path.join(BASE_DIR, 'modules_test_results.txt'), 'w', encoding='utf-8')
-words = segmenter.seg(docs[0])
+words = tokenizer.seg(docs[0])
 pos_tagging = _concat_tuples(tagger_pos.predict(words))
 ner_tagging = _concat_tuples(tagger_ner.predict(words))
 
@@ -42,6 +43,6 @@ fileOut.writelines(pos_tagging + "\n")
 fileOut.writelines(ner_tagging + "\n")
 fileOut.close
 
-print (" ".join(words).encode('utf-8'))
-print (pos_tagging.encode('utf-8'))
-print (ner_tagging.encode('utf-8'))
+print (" ".join(words))
+print (pos_tagging)
+print (ner_tagging)

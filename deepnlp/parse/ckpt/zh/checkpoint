@@ -1,0 +1,2 @@
+model_checkpoint_path: "/Users/dingxichen/Desktop/data/python/pypi/deepnlp/deepnlp/parse/ckpt/zh/parser.ckpt"
+all_model_checkpoint_paths: "/Users/dingxichen/Desktop/data/python/pypi/deepnlp/deepnlp/parse/ckpt/zh/parser.ckpt"

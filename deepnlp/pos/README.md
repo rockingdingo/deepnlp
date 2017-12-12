@@ -6,12 +6,38 @@ Train your model
 --------------------
 自己训练模型
 
-###POS model
+### LSTM-based Sequential Tagging
+```python
+python pos_model.py en # LSTM model English
+
+python pos_model.py zh # LSTM model Chinese
+
+```
+
+### Bi-LSTM based Sequential Tagging
+```python
+python pos_model_bilstm.py en # Bi-LSTM model English
+
+python pos_model_bilstm.py zh # Bi-LSTM model Chinese
+
+```
+
+### Bi-LSTM-CRF based Sequential Tagging
+```python
+python pos_model_bilstm_crf.py en # Bi-LSTM model English
+
+python pos_model_bilstm_crf.py zh # Bi-LSTM model Chinese
+
+```
+
+###POS Corpus Preparation
 #### Folder Structure
 ```shell
 /deepnlp
 ./pos
 ..pos_model.py
+..pos_model_bilstm.py
+..pos_model_bilstm_crf.py
 ..reader.py
 ../data
 .../en
@@ -25,7 +51,10 @@ Train your model
 ../ckpt
 .../en
 .../zh
+../models
+.../freeze_graph.py
 ```
+
 #### Prepare corpus
 First, prepare your corpus and split into 3 files: 'train.txt', 'dev.txt', 'test.txt'.
 Each line in the file represents one annotated sentence, in this format: "word1/tag1 word2/tag2 ...", separated by white space.
@@ -44,16 +73,5 @@ So model can find training data files. Download the source of package and put al
 for your specific language option, create subfolders .../data/'your_language_code' and .../ckpt/'your_language_code'
 you can change data_path setting in reader.py and pos_model.py
 
-#### Running script
-```python
-python pos_model.py en # LSTM model English
-
-python pos_model.py zh # LSTM model Chinese
-
-python pos_model_bilstm.py en # Bi-LSTM model English
-
-python pos_model_bilstm.py zh # Bi-LSTM model Chinese
-
-```
 #### Trained model can be found under folder ../deepnlp/pos/ckpt/'your_language_code'
 

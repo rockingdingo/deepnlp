@@ -6,22 +6,24 @@ deepnlp.download('ner')  # download the NER pretrained models from github if ins
 
 from deepnlp import segmenter
 from deepnlp import ner_tagger
-tagger = ner_tagger.load_model(lang = 'zh')
+
+tokenizer = segmenter.load_model(name = 'zh')
+tagger = ner_tagger.load_model(name = 'zh')
 
 #Segmentation
 text = "我爱吃北京烤鸭"
-words = segmenter.seg(text)
-print (" ".join(words).encode('utf-8'))
+words = tokenizer.seg(text)
+print (" ".join(words))
 
 #NER tagging
 tagging = tagger.predict(words)
 for (w,t) in tagging:
-    str = w + "/" + t
-    print (str.encode('utf-8'))
+    pair = w + "/" + t
+    print (pair)
 
 #Results
 #我/nt
 #爱/nt
 #吃/nt
-#北京/p
+#北京/city
 #烤鸭/nt

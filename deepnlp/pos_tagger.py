@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 '''
-POS module global function 'predict'
 @author: xichen ding
 @date: 2016-11-15
+@rev: 2017-11-01
 '''
 
 from __future__ import absolute_import
@@ -24,13 +24,13 @@ from pos import reader as pos_reader
 
 class ModelLoader(object):
     
-    def __init__(self, lang, data_path, ckpt_path):
-        self.lang = lang
+    def __init__(self, name, data_path, ckpt_path):
+        self.name = name   # model name
         self.data_path = data_path
         self.ckpt_path = ckpt_path  # the path of the ckpt file, e.g. ./ckpt/zh/pos.ckpt
-        print("Starting new Tensorflow session...")
+        print("NOTICE: Starting new Tensorflow session...")
         self.session = tf.Session()
-        print("Initializing pos_tagger class...")
+        print("NOTICE: Initializing pos_tagger class...")
         self.model = self._init_pos_model(self.session, self.ckpt_path)
     
     def predict(self, words):
@@ -46,7 +46,7 @@ class ModelLoader(object):
         """Create POS Tagger model and initialize with random or load parameters in session."""
         # initilize config
         # config = POSConfig()   # Choose the config of language option
-        config = pos_model.get_config(self.lang)
+        config = pos_model.get_config(self.name)
         config.batch_size = 1
         config.num_steps = 1 # iterator one token per time
       
@@ -54,12 +54,12 @@ class ModelLoader(object):
             model = pos_model.POSTagger(is_training=False, config=config) # save object after is_training
         
         if len(glob.glob(ckpt_path + '.data*')) > 0: # file exist with pattern: 'pos.ckpt.data*'
-            print("Loading model parameters from %s" % ckpt_path)
+            print("NOTICE: Loading model parameters from %s" % ckpt_path)
             all_vars = tf.global_variables()
             model_vars = [k for k in all_vars if k.name.startswith("pos_var_scope")]
             tf.train.Saver(model_vars).restore(session, ckpt_path)
         else:
-            print("Model not found, created with fresh parameters.")
+            print("NOTICE: Model not found, created with fresh parameters.")
             session.run(tf.global_variables_initializer())
         return model
     
@@ -88,13 +88,12 @@ class ModelLoader(object):
             #print (logits)
         predict_tag = pos_reader.word_ids_to_sentence(data_path, predict_id)
         return zip(words, predict_tag)
-    
-def load_model(lang = 'zh'):
+
+def load_model(name = 'zh'):
     ''' data_path e.g.: ./deepnlp/pos/data/zh
         ckpt_path e.g.: ./deepnlp/pos/ckpt/zh/pos.ckpt
         ckpt_file e.g.: ./deepnlp/pos/ckpt/zh/pos.ckpt.data-00000-of-00001
     '''
-    data_path = os.path.join(pkg_path, "pos/data", lang) # POS vocabulary data path
-    ckpt_path = os.path.join(pkg_path, "pos/ckpt", lang, "pos.ckpt") # POS model checkpoint path
-    return ModelLoader(lang, data_path, ckpt_path)
-
+    data_path = os.path.join(pkg_path, "pos/data", name) # POS vocabulary data path
+    ckpt_path = os.path.join(pkg_path, "pos/ckpt", name, "pos.ckpt") # POS model checkpoint path
+    return ModelLoader(name, data_path, ckpt_path)

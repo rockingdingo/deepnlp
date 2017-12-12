@@ -13,3 +13,6 @@ python pos_model_bilstm.py en # Bi-LSTM model English
 
 python pos_model_bilstm.py zh # Bi-LSTM model Chinese
 
+python pos_model_bilstm_crf.py en # Bi-LSTM-CRF model English
+
+python pos_model_bilstm_crf.py zh # Bi-LSTM-CRF model Chinese
