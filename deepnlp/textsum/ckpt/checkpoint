@@ -1,6 +1,0 @@
-model_checkpoint_path: "/mnt/python/pypi/deepnlp/deepnlp/textsum/ckpt/headline_large.ckpt-48000"
-all_model_checkpoint_paths: "/mnt/python/pypi/deepnlp/deepnlp/textsum/ckpt/headline_large.ckpt-44000"
-all_model_checkpoint_paths: "/mnt/python/pypi/deepnlp/deepnlp/textsum/ckpt/headline_large.ckpt-45000"
-all_model_checkpoint_paths: "/mnt/python/pypi/deepnlp/deepnlp/textsum/ckpt/headline_large.ckpt-46000"
-all_model_checkpoint_paths: "/mnt/python/pypi/deepnlp/deepnlp/textsum/ckpt/headline_large.ckpt-47000"
-all_model_checkpoint_paths: "/mnt/python/pypi/deepnlp/deepnlp/textsum/ckpt/headline_large.ckpt-48000"
