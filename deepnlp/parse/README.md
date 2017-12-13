@@ -13,7 +13,7 @@ Usage
 使用
 
 ####  Prediction
-## 1. Input: Words and Pos Tags; POS Tags should be aligned with the dependency tree corpus
+* 1. Input: Words and Pos Tags; POS Tags should be aligned with the dependency tree corpus
 ```python
 
 from __future__ import unicode_literals # compatible with python3 unicode coding
@@ -31,8 +31,8 @@ print ("id" + "\t" + "form" + "\t" + "lemma" + "\t" + "pos" + "\t" + "ppos"+ "\t
 print (dep_tree)
 
 ```
+* 2. Input: Words, Using the default POS Tagger of deepnlp
 
-## 2. Input: Words, Using the default POS Tagger of deepnlp
 ```python
 
 from __future__ import unicode_literals # compatible with python3 unicode coding
@@ -50,7 +50,8 @@ print (dep_tree)
 
 ```
 
-## 3. Fetching Result from namedTuple Transition
+* 3. Fetching Result from namedTuple Transition
+
 ```python
 
 num_token = dep_tree.count()
@@ -82,6 +83,10 @@ Train your model
 See CONLL 2006/2009 data format for details
 The training corpus are from below source with headers as follows:
 ID FORM LEMMA POS PPOS _ HEAD DEPREL _ _
+
+* Split your corpus
+Split your training files into 3 set, train.conll, dev.conll and test.conll
+for training, development and test purpose.
 
 Example:
 ```python
@@ -135,7 +140,7 @@ DEPREL_LC[0](STACK[1])
 
 #### Training Instance
 Training instance are generated and saved using pickle file for future use.
-They are fisted generated and saved the first time when below functions are called..
+They are first generated and saved  when below functions are called..
 ```python
 
 # function for generating train/dev data
@@ -154,3 +159,4 @@ transition_system.generate_examples(sents, trees, label_dict, feature_tpl, insta
 # dev_examples_X.pkl
 # dev_examples_Y.pkl
 ```
+

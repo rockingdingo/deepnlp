@@ -62,7 +62,7 @@ python ner_model_bilstm_crf.py zh # Bi-LSTM model Chinese
 
 ```
 
-###NER model Corpus Preparation
+### NER model Corpus Preparation
 #### Prepare corpus the same way as POS
 #### Put data files in folder ../deepnlp/ner/data/'your_model_name'
 #### Running script
@@ -120,8 +120,8 @@ Suppose you have prepared a entity_tags dictionary file, 'entity_tags.dic',
 which has the format as "word \t tag" in a line
 
 ```python
-胡歌	actor
-猎场	teleplay
+胡歌\tactor
+猎场\tteleplay
 ...
 
 ```

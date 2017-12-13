@@ -12,10 +12,6 @@ include deepnlp/pos/ckpt/zh/pos.ckpt.data-00000-of-00001
 include deepnlp/pos/ckpt/zh/pos.ckpt.meta
 include deepnlp/pos/ckpt/zh/pos.ckpt.index
 include deepnlp/pos/trainPOSModel.sh
-include deepnlp/ner/ckpt/zh/checkpoint
-include deepnlp/ner/ckpt/zh/ner.ckpt.data-00000-of-00001
-include deepnlp/ner/ckpt/zh/ner.ckpt.meta
-include deepnlp/ner/ckpt/zh/ner.ckpt.index
 include deepnlp/ner/data/zh/word_to_id
 include deepnlp/ner/data/zh/tag_to_id
 include deepnlp/ner/dict/zh/entity_tag.dic
