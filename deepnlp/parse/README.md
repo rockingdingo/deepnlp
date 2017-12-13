@@ -84,7 +84,7 @@ See CONLL 2006/2009 data format for details
 The training corpus are from below source with headers as follows:
 ID FORM LEMMA POS PPOS _ HEAD DEPREL _ _
 
-* Split your corpus
+##### Split your corpus
 Split your training files into 3 set, train.conll, dev.conll and test.conll
 for training, development and test purpose.
 
