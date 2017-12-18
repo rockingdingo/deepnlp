@@ -4,6 +4,7 @@
 
 import sys,os
 import CRFPP
+from model_util import registered_models
 
 # linear chain CRF model path, need str input, convert unicode to str in python2, <str> object in python3
 pkg_path = os.path.dirname(os.path.abspath(__file__))
@@ -54,13 +55,18 @@ def load_model(name = 'zh'):
     ''' model_path e.g.: ./segment/models/zh/crf_model
         Loadg pretrained subfield models...
     '''
+    registered_model_list = registered_models[0]['segment']
+    if name not in registered_model_list:
+        print ("WARNING: Input model name '%s' is not registered..." % name)
+        print ("WARNING: Please register the name in model_util.registered_models...")
+        return None
     model_path = str(os.path.join(pkg_path, "segment/models/", name, "crf_model"))
     if os.path.exists(model_path):
         print ("NOTICE: Loading model from below path %s..." % model_path)
         return Tokenizer(model_path)
     else:
         print ("WARNING: Input model path %s doesn't exist ..." % model_path)
-        print ("WARNING: Please download model file using deepnlp.download('%s') method" % model_path)
+        print ("WARNING: Please download model file using method: deepnlp.download(module='%s', name='%s')" % ('segment', name))
         print ("WARNING: Loading default model %s..." % DEFAULT_MODEL)
         return Tokenizer(DEFAULT_MODEL)
 

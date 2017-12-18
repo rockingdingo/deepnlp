@@ -17,6 +17,9 @@ import sys, os
 pkg_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # .../deepnlp/
 sys.path.append(pkg_path)
 from ner import reader # explicit relative import
+from model_util import get_model_var_scope
+from model_util import _ner_scope_name
+from model_util import _ner_variables_namescope
 
 # language option python command line 'python ner_model.py zh'
 lang = "zh" if len(sys.argv)==1 else sys.argv[1] # default zh
@@ -30,7 +33,7 @@ logging = tf.logging
 flags.DEFINE_string("ner_lang", lang, "ner language option for model config")
 flags.DEFINE_string("ner_data_path", data_path, "data_path")
 flags.DEFINE_string("ner_train_dir", train_dir, "Training directory.")
-flags.DEFINE_string("ner_scope_name", "ner_var_scope", "Variable scope of NER Model")
+flags.DEFINE_string("ner_scope_name", _ner_scope_name, "Variable scope of NER Model")
 
 FLAGS = flags.FLAGS
 
@@ -58,7 +61,7 @@ class NERTagger(object):
     cell = tf.nn.rnn_cell.MultiRNNCell([tf.nn.rnn_cell.BasicLSTMCell(size) for _ in range(config.num_layers)])
     self._initial_state = cell.zero_state(batch_size, data_type())
     
-    with tf.variable_scope("ner_variables", reuse = tf.AUTO_REUSE):
+    with tf.variable_scope(_ner_variables_namescope, reuse = tf.AUTO_REUSE):
       with tf.device("/cpu:0"):
         embedding = tf.get_variable("embedding", [vocab_size, size], dtype=data_type())
         inputs = tf.nn.embedding_lookup(embedding, self._input_data)
@@ -173,7 +176,7 @@ class LargeConfigEnglish(object):
   keep_prob = 1.00    # remember to set to 1.00 when making new prediction
   lr_decay = 1 / 1.15
   batch_size = 1 # single sample batch
-  vocab_size = 52000
+  vocab_size = 60000
   target_num = 15  # NER Tag 17, n, nf, nc, ne, (name, start, continue, end) n, p, o, q (special), nz entity_name, nbz
 
 def get_config(name):
@@ -254,12 +257,14 @@ def main(_):
   eval_config.batch_size = 1
   eval_config.num_steps = 1
   
+  model_var_scope = get_model_var_scope(FLAGS.ner_scope_name, FLAGS.ner_lang)
+  
   with tf.Graph().as_default(), tf.Session() as session:
     initializer = tf.random_uniform_initializer(-config.init_scale,
                                                 config.init_scale)
-    with tf.variable_scope(FLAGS.ner_scope_name, reuse=True, initializer=initializer):
+    with tf.variable_scope(model_var_scope, reuse=True, initializer=initializer):
       m = NERTagger(is_training=True, config=config)
-    with tf.variable_scope(FLAGS.ner_scope_name, reuse=True, initializer=initializer):
+    with tf.variable_scope(model_var_scope, reuse=True, initializer=initializer):
       mvalid = NERTagger(is_training=False, config=config)
       mtest = NERTagger(is_training=False, config=eval_config)
     
@@ -274,7 +279,7 @@ def main(_):
     
     # write the graph out for further use e.g. C++ API call
     tf.train.write_graph(session.graph_def, './models/', 'ner_graph.pbtxt', as_text=True)   # output is text
-
+    
     for i in range(config.max_max_epoch):
       lr_decay = config.lr_decay ** max(i - config.max_epoch, 0.0)
       m.assign_lr(session, config.learning_rate * lr_decay)

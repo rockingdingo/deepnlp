@@ -17,7 +17,11 @@ import sys,os
 
 pkg_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # .../deepnlp/
 sys.path.append(pkg_path)
+
 from pos import reader # absolute import
+from model_util import get_model_var_scope
+from model_util import _pos_variables_namescope
+from model_util import _pos_scope_name
 
 # language option python command line 'python pos_model.py en'
 lang = "zh" if len(sys.argv)==1 else sys.argv[1] # default zh
@@ -33,7 +37,7 @@ flags.DEFINE_string("pos_lang", lang, "pos language option for model config")
 flags.DEFINE_string("pos_data_path", data_path, "data_path")
 flags.DEFINE_string("pos_train_dir", train_dir, "Training directory.")
 flags.DEFINE_string("pos_model_dir", model_dir, "Models dir for protobuf graph file")
-flags.DEFINE_string("pos_scope_name", "pos_var_scope", "Variable scope of pos Model")
+flags.DEFINE_string("pos_scope_name", _pos_scope_name, "Variable scope of pos Model")
 
 FLAGS = flags.FLAGS
 
@@ -61,41 +65,37 @@ class POSTagger(object):
     cell = tf.nn.rnn_cell.MultiRNNCell([tf.nn.rnn_cell.BasicLSTMCell(size) for _ in range(config.num_layers)])
     self._initial_state = cell.zero_state(batch_size, data_type())
     
-    with tf.device("/cpu:0"):
-      embedding = tf.get_variable(
+    with tf.variable_scope(_pos_variables_namescope, reuse = tf.AUTO_REUSE):
+      with tf.device("/cpu:0"):
+        embedding = tf.get_variable(
           "embedding", [vocab_size, size], dtype=data_type())
-      inputs = tf.nn.embedding_lookup(embedding, self._input_data)
+        inputs = tf.nn.embedding_lookup(embedding, self._input_data)
     
-    if is_training and config.keep_prob < 1:
-      inputs = tf.nn.dropout(inputs, config.keep_prob)
-    
-    outputs = []
-    state = self._initial_state
-    with tf.variable_scope("pos_lstm"):
-      for time_step in range(num_steps):
-        if time_step > 0: tf.get_variable_scope().reuse_variables()
-        (cell_output, state) = cell(inputs[:, time_step, :], state)
-        outputs.append(cell_output)
-    
-    output = tf.reshape(tf.concat(outputs, 1), [-1, size])
-    softmax_w = tf.get_variable(
+      if is_training and config.keep_prob < 1:
+        inputs = tf.nn.dropout(inputs, config.keep_prob)
+      
+      outputs = []
+      state = self._initial_state
+      with tf.variable_scope("lstm", reuse = tf.AUTO_REUSE):
+        for time_step in range(num_steps):
+          if time_step > 0: tf.get_variable_scope().reuse_variables()
+          (cell_output, state) = cell(inputs[:, time_step, :], state)
+          outputs.append(cell_output)
+      
+      output = tf.reshape(tf.concat(outputs, 1), [-1, size])
+      softmax_w = tf.get_variable(
         "softmax_w", [size, target_num], dtype=data_type())
-    softmax_b = tf.get_variable("softmax_b", [target_num], dtype=data_type())
-    #logits = tf.matmul(output, softmax_w) + softmax_b
-    logits = tf.add(tf.matmul(output, softmax_w), softmax_b, name= "output_node")  # rename logits to output_node for future inference
+      softmax_b = tf.get_variable("softmax_b", [target_num], dtype=data_type())
+      #logits = tf.matmul(output, softmax_w) + softmax_b
+      logits = tf.add(tf.matmul(output, softmax_w), softmax_b, name= "output_node")  # rename logits to output_node for future inference
     
-    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels = tf.reshape(self._targets, [-1]), logits = logits)
-    cost = tf.reduce_sum(loss)/batch_size # loss [time_step]
+      loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels = tf.reshape(self._targets, [-1]), logits = logits)
+      cost = tf.reduce_sum(loss)/batch_size # loss [time_step]
 
-    # adding extra statistics to monitor
-    correct_prediction = tf.equal(tf.cast(tf.argmax(logits, 1), tf.int32), tf.reshape(self._targets, [-1]))
-    accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+      # adding extra statistics to monitor
+      correct_prediction = tf.equal(tf.cast(tf.argmax(logits, 1), tf.int32), tf.reshape(self._targets, [-1]))
+      accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 
-    #loss = tf.contrib.legacy_seq2seq.sequence_loss_by_example(
-    #    logits = [logits],
-    #    targets = [tf.reshape(self._targets, [-1])],
-    #    weights = [tf.ones([batch_size * num_steps], dtype=data_type())])
-    
     # Fetch Reults in session.run()
     self._cost = cost
     self._final_state = state
@@ -187,13 +187,14 @@ class LargeConfigEnglish(object):
   vocab_size = 44000
   target_num = 81  # English: Brown Corpus tags
 
-def get_config(lang):
-  if (lang == 'zh'):
-    return LargeConfigChinese()  
-  elif (lang == 'en'):
-    return LargeConfigEnglish()
+def get_config(name):
+  if (name == 'zh'):
+    config = LargeConfigChinese()
+    return config
+  elif (name == 'en'):
+    config = LargeConfigEnglish()
+    return config
   # other lang options
-  
   else :
     return None
 
@@ -279,12 +280,15 @@ def main(_):
   eval_config.batch_size = 1
   eval_config.num_steps = 1
 
+  # Define Variable Scope
+  model_var_scope = get_model_var_scope(FLAGS.pos_scope_name, FLAGS.pos_lang)
+
   with tf.Graph().as_default(), tf.Session() as session:
     initializer = tf.random_uniform_initializer(-config.init_scale,
                                                 config.init_scale)
-    with tf.variable_scope(FLAGS.pos_scope_name, reuse=None, initializer=initializer):
+    with tf.variable_scope(model_var_scope, reuse=False, initializer=initializer):
       m = POSTagger(is_training=True, config=config)
-    with tf.variable_scope(FLAGS.pos_scope_name, reuse=True, initializer=initializer):
+    with tf.variable_scope(model_var_scope, reuse=True, initializer=initializer):
       mvalid = POSTagger(is_training=False, config=config)
       mtest = POSTagger(is_training=False, config=eval_config)
     

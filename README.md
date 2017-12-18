@@ -41,7 +41,7 @@ Modules
     * NER: LSTM/BI-LSTM/LSTM-CRF network, based on Tensorflow
     * Parse: Arc-Standard System with Feed Forward Neural Network
     * Textsum: Seq2Seq with attention mechanism
-    * Textcnn: CNN
+    * Texncnn: CNN
 
 * Pre-trained Model
     * Chinese: Segmentation, POS, NER, Parse (1998 china daily corpus)
@@ -99,7 +99,7 @@ Tutorial
 Set Coding
 ---------------
 设置编码
-* For python2, the default coding is ascii not unicode, use __future__ module to make it compatible with python3
+For python2, the default coding is ascii not unicode, use __future__ module to make it compatible with python3
 ```python
 #coding=utf-8
 from __future__ import unicode_literals # compatible with python3 unicode
@@ -109,7 +109,7 @@ from __future__ import unicode_literals # compatible with python3 unicode
 Download pretrained models
 ---------------
 下载预训练模型
-* If you install deepnlp via pip, the pre-trained models are not distributed due to size restriction. 
+If you install deepnlp via pip, the pre-trained models are not distributed due to size restriction. 
 You can download full models for 'Segment', 'POS' en and zh, 'NER' zh, zh_entertainment, zh_o2o, 'Textsum' by calling the download function.
 
 ```python
@@ -257,13 +257,13 @@ for i in range(num_token):
     print ("%d\t%s\t%s\t%s\t%s" % (cur_id, cur_form, cur_pos, cur_head, cur_label))
 
 # Result
-# id	word	pos	head	label
-# 1	它	r	2	SBV
-# 2	熟悉	v	0	HED
-# 3	一个	m	4	QUN
-# 4	民族	n	5	DE
-# 5	的	u	6	ATT
-# 6	历史	n	2	VOB
+id	word	pos	head	label
+1	它	r	2	SBV
+2	熟悉	v	0	HED
+3	一个	m	4	QUN
+4	民族	n	5	DE
+5	的	u	6	ATT
+6	历史	n	2	VOB
 
 ```
 
@@ -281,9 +281,9 @@ p = pipeline.load_model('zh')
 text = "我爱吃北京烤鸭"
 res = p.analyze(text)
 
-print (res[0])
-print (res[1])
-print (res[2])
+print (res[0].encode('utf-8'))
+print (res[1].encode('utf-8'))
+print (res[2].encode('utf-8'))
 
 words = p.segment(text)
 pos_tagging = p.tag_pos(words)

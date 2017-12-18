@@ -1,2 +1,2 @@
-model_checkpoint_path: "/Users/dingxichen/Desktop/data/python/pypi/deepnlp/deepnlp/ner/ckpt/zh/ner.ckpt"
-all_model_checkpoint_paths: "/Users/dingxichen/Desktop/data/python/pypi/deepnlp/deepnlp/ner/ckpt/zh/ner.ckpt"
+model_checkpoint_path: "/Users/dingxichen/Desktop/data/python/pypi/deepnlp_py3/deepnlp/ner/ckpt/zh/ner.ckpt"
+all_model_checkpoint_paths: "/Users/dingxichen/Desktop/data/python/pypi/deepnlp_py3/deepnlp/ner/ckpt/zh/ner.ckpt"

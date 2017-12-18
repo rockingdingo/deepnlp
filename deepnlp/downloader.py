@@ -14,20 +14,26 @@ else : from urllib import urlretrieve, urlopen
 pkg_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(pkg_path)
 
+from model_util import registered_models
+
 def Schedule(a,b,c):
-    '''''
-    a: Data already downloaded
-    b: Size of Data block
-    c: Size of remote file
-   '''
+    '''
+        a: Data already downloaded
+        b: Size of Data block
+        c: Size of remote file
+    '''
+    est_block_num = (c * 1.0)/b
+    tick_num = 10
+    block_index = []
+    for i in range(tick_num):
+        cur_block_index = int(est_block_num * (i+1) * 1.0/tick_num)
+        block_index.append(cur_block_index)
     per = 100.0 * a * b / c
     per = min(100.0, per)
-    prev_break_point = -1
-    if(int(per) % 10 == 0):
-        cur_break_point = int(per)
-        if (cur_break_point != prev_break_point):
-            print ('Downloading %.2f%%' % per)
-            prev_break_point = cur_break_point
+    # Current Block
+    if(a in block_index):
+        print ('Downloading %.2f%%' % per)
+        sys.stdout.flush()
 
 # Download from below two sources
 github_repo = "https://github.com/rockingdingo/deepnlp/raw/master/deepnlp"
@@ -35,24 +41,10 @@ deepnlp_repo = "http://deepnlp.org/downloads/deepnlp/models"
 
 folder = os.path.dirname(os.path.abspath(__file__))
 
-model_textsum = [
-(github_repo + "/textsum/ckpt/" + "checkpoint", folder + "/textsum/ckpt/" + "checkpoint"),
-(github_repo + "/textsum/ckpt/" + "headline_large.ckpt-48000.data-00000-of-00001.tar.gz00", folder + "/textsum/ckpt/" + "headline_large.ckpt-48000.data-00000-of-00001.tar.gz00"),
-(github_repo + "/textsum/ckpt/" + "headline_large.ckpt-48000.data-00000-of-00001.tar.gz01", folder + "/textsum/ckpt/" + "headline_large.ckpt-48000.data-00000-of-00001.tar.gz01"),
-(github_repo + "/textsum/ckpt/" + "headline_large.ckpt-48000.data-00000-of-00001.tar.gz02", folder + "/textsum/ckpt/" + "headline_large.ckpt-48000.data-00000-of-00001.tar.gz02"),
-(github_repo + "/textsum/ckpt/" + "headline_large.ckpt-48000.index", folder + "/textsum/ckpt/" + "headline_large.ckpt-48000.index"),
-(github_repo + "/textsum/news/" + "vocab", folder + "/textsum/news/" + "vocab"),
-(github_repo + "/textsum/news/train/" + "content-train-sample.txt", folder + "/textsum/news/train/" + "content-train-sample.txt"),
-(github_repo + "/textsum/news/train/" + "title-train-sample.txt", folder + "/textsum/news/train/" + "title-train-sample.txt"),
-(github_repo + "/textsum/news/test/" + "content-test.txt", folder + "/textsum/news/test/" + "content-test.txt"),
-(github_repo + "/textsum/news/test/" + "title-test.txt", folder + "/textsum/news/test/" + "title-test.txt"),
-(github_repo + "/textsum/news/test/" + "summary.txt", folder + "/textsum/news/test/" + "summary.txt"),
-]
-
-segment_model_list = ['zh', 'zh_o2o', 'zh_entertainment']
-ner_model_list = ['zh', 'zh_o2o', 'zh_entertainment']
-pos_model_list = ['zh', 'en']
-parse_model_list = ['zh']
+segment_model_list = registered_models[0]['segment']
+ner_model_list = registered_models[0]['ner']
+pos_model_list = registered_models[0]['pos']
+parse_model_list = registered_models[0]['parse']
 
 def get_model_ner(model_name_list):
     """ Args: model relative path
@@ -60,8 +52,10 @@ def get_model_ner(model_name_list):
     """
     data_path = "ner/data/"
     ckpt_path = "ner/ckpt/"
+    dict_path = "ner/dict/"
     data_files = ["word_to_id", "tag_to_id"]
     ckpt_files = ["checkpoint", "ner.ckpt.data-00000-of-00001", "ner.ckpt.index", "ner.ckpt.meta"]
+    dict_files = ["entity_tags.dic.pkl"]
     model_ner = []
     for model_name in model_name_list:
         # Append data files
@@ -72,6 +66,9 @@ def get_model_ner(model_name_list):
         for ckpt_file in ckpt_files:
             relative_ckpt_file_path = ckpt_path + model_name + "/" + ckpt_file
             model_ner.append((relative_ckpt_file_path, relative_ckpt_file_path))
+        for dict_file in dict_files:
+            relative_dict_file_path = dict_path + model_name + "/" + dict_file
+            model_ner.append((relative_ckpt_file_path, relative_dict_file_path))
     return model_ner
 
 def get_model_pos(model_name_list):
@@ -155,7 +152,8 @@ def download_model(models):
             # First try if deepnlp repo resource exist
             deepnlp_ret = None
             try:
-                deepnlp_ret = urlopen(url_deepnlp, data = None, timeout = 3)
+                #deepnlp_ret = urlopen(url_deepnlp, data = None, timeout = 3)
+                deepnlp_ret = None
             except Exception as e:
                 deepnlp_ret = None
                 #print ("DEBUG: Downloading from deepnlp met error:")
@@ -220,14 +218,11 @@ def download(module = None, name = None):
                 print ("NOTICE: Downloading Parse module All ...")
                 model_parse = get_model_parse(parse_model_list)
                 download_model(model_parse)
-        elif (module.lower() == "textsum"):
-            print ("NOTICE: Downloading Textsum module...")
-            download_model(model_textsum)
         else:
             print ("NOTICE: module not found...")
     else:
         # default download all the require models
-        print ("NOTICE: Downloading Segment, POS, NER, Textsum module...")
+        print ("NOTICE: Downloading Segment, POS, NER, Parsing module...")
         model_segment = get_model_segment(segment_model_list)
         model_pos = get_model_pos(pos_model_list)
         model_ner = get_model_ner(ner_model_list)
@@ -236,7 +231,6 @@ def download(module = None, name = None):
         download_model(model_pos)
         download_model(model_ner)
         download_model(model_parse)
-        #download_model(model_textsum)
 
 def test():
     download('pos')

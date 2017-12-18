@@ -20,6 +20,9 @@ sys.path.append(pkg_path)
 from parse import transition_system    # absolute import
 from parse import reader
 from parse.transition_system import Configuration
+from model_util import get_model_var_scope
+from model_util import _parse_scope_name
+from model_util import _parse_variables_namescope
 
 # language option python command line 'python pos_model.py en'
 lang = "zh" if len(sys.argv)==1 else sys.argv[1] # default zh
@@ -33,7 +36,7 @@ logging = tf.logging
 flags.DEFINE_string("parse_lang", lang, "parse option for model config")
 flags.DEFINE_string("parse_data_path", data_path, "data_path")
 flags.DEFINE_string("parse_train_dir", train_dir, "Training directory.")
-flags.DEFINE_string("parse_scope_name", "parse_var_scope", "Variable scope of pos Model")
+flags.DEFINE_string("parse_scope_name", _parse_scope_name, "Variable scope of pos Model")
 
 FLAGS = flags.FLAGS
 
@@ -100,30 +103,32 @@ class NNParser(object):
         self._input_l = self.X[:, (feature_word_num + feature_pos_num): feature_num]      # arc_label_id
         
         # ANN model input layer
-        with tf.device("/cpu:0"):
-            embedding_w = tf.get_variable("embedding_w", [config.vocab_size, embedding_dim], dtype=data_type())
-            inputs_w = tf.nn.embedding_lookup(embedding_w, self._input_w)
-            inputs_w = tf.reshape(inputs_w, [self._batch_size, -1], name="inputs_w")
+        with tf.variable_scope(_parse_variables_namescope, reuse = tf.AUTO_REUSE):  # set auto reuse of variable scope for reading saver
+            with tf.device("/cpu:0"):
+                embedding_w = tf.get_variable("embedding_w", [config.vocab_size, embedding_dim], dtype=data_type())
+                inputs_w = tf.nn.embedding_lookup(embedding_w, self._input_w)
+                inputs_w = tf.reshape(inputs_w, [self._batch_size, -1], name="inputs_w")
 
-            embedding_p = tf.get_variable("embedding_p", [config.pos_size, embedding_dim], dtype=data_type())
-            inputs_p = tf.nn.embedding_lookup(embedding_p, self._input_p)
-            inputs_p = tf.reshape(inputs_p, [self._batch_size, -1], name="inputs_p")
-            
-            embedding_l = tf.get_variable("embedding_l", [config.label_size, embedding_dim], dtype=data_type())
-            inputs_l = tf.nn.embedding_lookup(embedding_l, self._input_l)
-            inputs_l = tf.reshape(inputs_l, [self._batch_size, -1], name="inputs_l")
-            
-        # ANN model hidden layer
-        weight_w = self.weight_variable([feature_word_num * embedding_dim, hidden_size])  # [embed_dim * feature_word_num, hidden_size]
-        weight_p = self.weight_variable([feature_pos_num * embedding_dim, hidden_size])
-        weight_l = self.weight_variable([feature_label_num * embedding_dim, hidden_size])
-        bias = self.weight_variable([hidden_size])
+                embedding_p = tf.get_variable("embedding_p", [config.pos_size, embedding_dim], dtype=data_type())
+                inputs_p = tf.nn.embedding_lookup(embedding_p, self._input_p)
+                inputs_p = tf.reshape(inputs_p, [self._batch_size, -1], name="inputs_p")
+                
+                embedding_l = tf.get_variable("embedding_l", [config.label_size, embedding_dim], dtype=data_type())
+                inputs_l = tf.nn.embedding_lookup(embedding_l, self._input_l)
+                inputs_l = tf.reshape(inputs_l, [self._batch_size, -1], name="inputs_l")
         
-        act = tf.nn.relu  # activation function, e.g. relu, cubic
-        h = act(tf.matmul(inputs_w, weight_w) + tf.matmul(inputs_p, weight_p) + tf.matmul(inputs_l, weight_l) + bias)
+            # ANN model hidden layer
+            weight_w = self.weight_variable([feature_word_num * embedding_dim, hidden_size])  # [embed_dim * feature_word_num, hidden_size]
+            weight_p = self.weight_variable([feature_pos_num * embedding_dim, hidden_size])
+            weight_l = self.weight_variable([feature_label_num * embedding_dim, hidden_size])
+            bias = self.weight_variable([hidden_size])
         
-        # ANN model output layer
-        weight_o = self.weight_variable([hidden_size, self._target_num]) 
+            act = tf.nn.relu  # activation function, e.g. relu, cubic
+            h = act(tf.matmul(inputs_w, weight_w) + tf.matmul(inputs_p, weight_p) + tf.matmul(inputs_l, weight_l) + bias)
+            
+            # ANN model output layer
+            weight_o = self.weight_variable([hidden_size, self._target_num]) 
+        
         self._logit = tf.nn.softmax(tf.matmul(h, weight_o))
         self._predict_label = tf.cast(tf.argmax(self._logit, 1), tf.int32)
         self._correct_predict_num = tf.equal(tf.cast(tf.argmax(self._logit, 1), tf.int32), tf.cast(tf.argmax(self.Y, 1), tf.int32))
@@ -188,7 +193,7 @@ def _crf_layer(crf_input, batch_size):
     matricized_crf_input = tf.reshape(x_crf_input, [-1, num_features])
     matricized_unary_scores = tf.matmul(matricized_crf_input, crf_weights)
     unary_scores = tf.reshape(matricized_unary_scores, [batch_size, num_steps, target_num])
-
+    
     # log-likelihood
     sequence_lengths = tf.constant(np.full(batch_size, num_steps - 1, dtype=np.int32))  # shape: [batch_size], value: [T-1, T-1,...]
     log_likelihood, transition_params = tf.contrib.crf.crf_log_likelihood(unary_scores, 
@@ -261,10 +266,12 @@ def main(_):
     train_sents, train_trees, dev_sents, dev_trees, vocab_dict, pos_dict, label_dict, feature_tpl = raw_data # items in ids
     config = get_config(FLAGS.parse_lang)
 
+    model_var_scope = get_model_var_scope(FLAGS.parse_scope_name, FLAGS.parse_lang)
+    print ("NOTICE: Parsing model variable scope is %s" % model_var_scope)
     with tf.Session() as session:
-        with tf.variable_scope(FLAGS.parse_scope_name):
+        with tf.variable_scope(model_var_scope, reuse=True):
             m = NNParser(config=config)
-
+    
     # CheckPoint State
     if not os.path.exists(FLAGS.parse_train_dir):
         os.makedirs(FLAGS.parse_train_dir)
