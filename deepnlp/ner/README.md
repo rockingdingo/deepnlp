@@ -7,7 +7,6 @@ Prediction
 --------------------
 预测
 
-
 ```python
 
 from __future__ import unicode_literals # compatible with python3 unicode
@@ -27,8 +26,7 @@ for (w,t) in tagging:
 #望京/area
 #最好吃/nt
 #的/nt
-#小/nt
-#龙虾/dish
+#小龙虾/dish
 #在/nt
 #哪里/nt
 
@@ -84,10 +82,10 @@ easily by calling deepnlp.download() function
 | Module        | Model            | Note      | Entity      | Status               |
 | ------------- |:-----------------|:----------|:------------|:---------------------|
 | NER           | zh               | 中文      |  city(城市),district(区域),area(商圈)   | Release  |
-| NER           | zh_entertainment | 中文,文娱  |  actor(演员),teleplay(影视剧),role_name(角色名),singer(歌手),song(歌曲)  | Release  |
+| NER           | zh_entertainment | 中文,文娱  |  actor(演员),role_name(角色名),teleplay(影视剧),teleplay_tag(影视剧标签) | Release  |
+| NER           | zh_o2o | 中文,O2O  |  dish(菜品名),shop(店名),category(菜品类目名) | Release  |
 | NER           | zh_finance       | 中文,财经  |  To Do | Contribution Welcome  |
 | NER           | other domain are welcome   |   |  To Do | Contribution Welcome  |
-
 
 ### Download models
 

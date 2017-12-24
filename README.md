@@ -80,6 +80,14 @@ model files: ../pos/ckpt/en/pos.ckpt  ; ../ner/ckpt/zh/ner.ckpt
     python setup.py install
 ```
 
+* Initial setup
+```python
+    # install crf++0.58 package using the script
+    sh ./deepnlp/segment/install_crfpp.sh
+    # download all the pre-trained models
+    python ./test/test_install.py
+```
+
 * Running Examples
 ```python
     # ./deepnlp/test folder
@@ -205,23 +213,25 @@ deepnlp.download('ner')  # download the NER pretrained models from github if ins
 from deepnlp import ner_tagger
 
 # Example: Entertainment Model
-tagger = ner_tagger.load_model(name = 'zh')   # Base LSTM Based Model
+tagger = ner_tagger.load_model(name = 'zh_entertainment')   # Base LSTM Based Model
 #Load Entertainment Dict
 tagger.load_dict("zh_entertainment")
 text = "你 最近 在 看 胡歌 演的 猎场 吗 ?"
 words = text.split(" ")
-tagging = tagger.predict(words)
+tagset_entertainment = ['actor', 'role_name', 'teleplay', 'teleplay_tag']
+tagging = tagger.predict(words, tagset = tagset_entertainment)
 for (w,t) in tagging:
     pair = w + "/" + t
     print (pair)
 
 #Result
-#你最近/nt
+#你/nt
+#最近/nt
 #在/nt
 #看/nt
 #胡歌/actor
 #演的/nt
-#猎场/list_name
+#猎场/teleplay
 #吗/nt
 #?/nt
 
@@ -427,6 +437,14 @@ API目前提供以下模块支持：
     tar zxvf deepnlp-0.1.7.tar.gz
     cd deepnlp-0.1.7
     python setup.py install
+```
+
+* 初始设置
+```python
+    # 运行脚本安装 crf++0.58 包
+    sh ./deepnlp/segment/install_crfpp.sh
+    # 运行脚本下载预训练模型测试
+    python ./test/test_install.py
 ```
 
 Reference
