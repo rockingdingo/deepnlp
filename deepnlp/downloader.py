@@ -11,6 +11,9 @@ import urllib
 if (sys.version_info>(3,0)): from urllib.request import urlretrieve, urlopen
 else : from urllib import urlretrieve, urlopen
 
+import socket
+socket.setdefaulttimeout(300) # set timeout for connection 5min for timeout
+
 pkg_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(pkg_path)
 
@@ -37,7 +40,7 @@ def Schedule(a,b,c):
 
 # Download from below two sources
 github_repo = "https://github.com/rockingdingo/deepnlp/raw/master/deepnlp"
-deepnlp_repo = "http://deepnlp.org/downloads/deepnlp/models"
+deepnlp_repo = "http://deepnlp.org/downloads/?"
 
 folder = os.path.dirname(os.path.abspath(__file__))
 
@@ -45,6 +48,29 @@ segment_model_list = registered_models[0]['segment']
 ner_model_list = registered_models[0]['ner']
 pos_model_list = registered_models[0]['pos']
 parse_model_list = registered_models[0]['parse']
+
+def get_deepnlp_model_url(relative_file_path):
+    """ Args: rel_path: ner/data/zh_entertainment/word_to_id
+    """
+    items = relative_file_path.split("/")
+    num = len(items)
+    file_name = None
+    file_path = None
+    if (num == 1):
+        file_name = items[0]
+        file_path = "/"
+        deepnlp_url = deepnlp_repo + "project=deepnlp&file_path=" + file_path + "&file_name=" + file_name
+        return deepnlp_url
+    elif (num > 1):
+        file_name = items[(num - 1)]
+        file_path = "/" + "/".join(items[0:(num-1)]) + "/"
+        deepnlp_url = deepnlp_repo + "project=deepnlp&file_path=" + file_path + "&file_name=" + file_name
+        return deepnlp_url
+    else:
+        return None
+
+#relative_file_path="parse/ckpt/zh/parser.ckpt.data-00000-of-00001"
+#deepnlp_url = get_deepnlp_model_url(relative_file_path)
 
 def get_model_ner(model_name_list):
     """ Args: model relative path
@@ -112,7 +138,7 @@ def get_model_parse(model_name_list):
     model_parse = []
     # ckpt path and files
     ckpt_path = "parse/ckpt/"
-    ckpt_files = ["checkpoint", "parse.ckpt.data-00000-of-00001", "parse.ckpt.index", "parse.ckpt.meta"]
+    ckpt_files = ["checkpoint", "parser.ckpt.data-00000-of-00001", "parser.ckpt.index", "parser.ckpt.meta"]
     # data path and files
     data_path = "parse/data/"
     data_files = ["parse.template", "pos_dict", "vocab_dict", "label_dict"]
@@ -128,6 +154,32 @@ def get_model_parse(model_name_list):
             relative_model_file_path = ckpt_path + model_name + "/" + ckpt_file
             model_parse.append((relative_model_file_path, relative_model_file_path))
     return model_parse
+
+def urllib_ret_success(ret):
+    """ url_retrieve return object
+    """
+    ret_success = False
+    content_type_name = "content-type"
+    content_type_file_succ = "application/octet-stream"
+    content_type_not_found = "text/html; charset=UTF-8"
+    if ret is not None:
+        try:
+            if content_type_name in ret[1]:
+                content_type = ret[1][content_type_name]
+                if (content_type == content_type_file_succ):
+                    ret_success = True
+                    return ret_success
+                elif (content_type == content_type_not_found):
+                    return ret_success
+                else:
+                    return ret_success
+            else:
+                return ret_success
+        except Exception as e:
+            print (e)
+            return ret_success
+    else:
+        return ret_success
 
 def download_model(models):
     """ Args:
@@ -145,33 +197,24 @@ def download_model(models):
             if not os.path.exists(local_dir):
                 os.makedirs(local_dir)
             # First try if deepnlp repo resource exist
-            url_deepnlp = deepnlp_repo + "/" + rel_repo_path   # .../models + "/pos/..."
+            url_deepnlp = get_deepnlp_model_url(rel_repo_path)
             url_git = github_repo + "/" + rel_repo_path
-            #print ("DEBUG: Repo %s" % url_deepnlp)
-            #print ("DEBUG: Repo %s" % url_git)
             # First try if deepnlp repo resource exist
-            deepnlp_ret = None
+            deepnlp_ret_succ = False
             try:
-                #deepnlp_ret = urlopen(url_deepnlp, data = None, timeout = 3)
-                deepnlp_ret = None
+                # deepnlp_ret = urlopen(url_deepnlp, data = None, timeout = 3)
+                print ("NOTICE: Downloading from URL %s" % url_deepnlp)
+                deepnlp_ret = urlretrieve(url_deepnlp, localfile, Schedule)
+                deepnlp_ret_succ = urllib_ret_success(deepnlp_ret)
             except Exception as e:
+                print (e)
                 deepnlp_ret = None
-                #print ("DEBUG: Downloading from deepnlp met error:")
-                #print (e)
             # Check if deepnlp repo return True
-            deepnlp_ret_suc = False
-            if deepnlp_ret is not None:
-                if deepnlp_ret.code == 200:
-                    deepnlp_ret_suc = True
-            if (deepnlp_ret_suc):   # Download from deepnlp repo, return Success
-                print ("NOTICE: Downloading models from repo %s to local %s" % (url_deepnlp, localfile))
-                try:
-                    urlretrieve(url_deepnlp, localfile, Schedule)
-                except:
-                    print ("Debug: Failed to download models from repo %s, met connection error" % url_deepnlp)
-                    continue
+            if (deepnlp_ret_succ):   # Download from deepnlp repo, return Success
+                print ("NOTICE: Downloading models from deepnlp.org %s to local %s successfully..." % (url_deepnlp, localfile))
             else:   # Donwload from github
-                print ("NOTICE: Downloading models from repo %s to Local %s" % (url_git, localfile))
+                print ("DEBUG: Failed to download from URL %s" % url_deepnlp)
+                print ("NOTICE: Start Downloading models from repo %s to Local %s" % (url_git, localfile))
                 try:
                     urlretrieve(url_git, localfile, Schedule)
                 except:

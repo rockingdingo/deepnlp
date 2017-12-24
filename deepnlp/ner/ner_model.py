@@ -195,7 +195,7 @@ def get_config(name):
   elif (name == 'zh_entertainment'):
     config = LargeConfigChinese()
     config.vocab_size = 60000
-    config.target_num = 8
+    config.target_num = 6
     return config 
   else :
     return None

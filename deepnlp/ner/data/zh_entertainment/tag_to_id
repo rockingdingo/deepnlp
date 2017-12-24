@@ -1,8 +1,6 @@
-nbz	5
-*	7
-o	3
-n	1
-q	6
-p	2
-nz	4
+*	5
+actor	3
+teleplay_tag	4
+role_name	2
 nt	0
+teleplay	1

@@ -22,32 +22,32 @@ for (w,t) in tagging:
 #望京/area
 #最好吃/nt
 #的/nt
-#小/nt
-#龙虾/dish
+#小龙虾/dish
 #在/nt
 #哪里/nt
 
 # Example 2: Switch to base NER LSTM-Based Model and domain-specific dictionary
-tagger = ner_tagger.load_model(name = 'zh')   # Base LSTM Based Model
+tagger = ner_tagger.load_model(name = 'zh_entertainment')   # Base LSTM Based Model
 #Load Entertainment Dict
 tagger.load_dict("zh_entertainment")
 text = "你 最近 在 看 胡歌 演的 猎场 吗 ?"
 words = text.split(" ")
-tagging = tagger.predict(words, tagset = ['actor'])
+tagset_entertainment = ['actor', 'role_name', 'teleplay', 'teleplay_tag']
+tagging = tagger.predict(words, tagset = tagset_entertainment)
 for (w,t) in tagging:
     pair = w + "/" + t
     print (pair)
 
 #Result
-#你最近/nt
+#你/nt
+#最近/nt
 #在/nt
 #看/nt
 #胡歌/actor
 #演的/nt
-#猎场/nt
+#猎场/teleplay
 #吗/nt
 #?/nt
-
 
 # Load User Defined Dict
 # user_dict_path = "./data/entity_tags.dic"

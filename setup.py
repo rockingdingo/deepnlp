@@ -17,7 +17,9 @@ setup(
     package_data={
         'deepnlp': [
             'segment/data/zh/template',
-            'segment/data/zh/train_crf.sh',        
+            'segment/data/zh/train_crf.sh',
+            'segment/install_crfpp.sh',
+            'segment/train_crf.sh',       
             'segment/models/zh/crf_model',
             'pos/trainPOSModel.sh',
             'pos/data/zh/word_to_id', 
@@ -28,15 +30,14 @@ setup(
             'ner/dict/zh/entity_tags.dic.pkl',
             'ner/data/zh_o2o/word_to_id', 
             'ner/data/zh_o2o/tag_to_id',             
-            'ner/dict/zh_o2o/entity_tags.dic.pkl',            
+            'ner/dict/zh_o2o/entity_tags.dic.pkl',
+            'ner/data/zh_entertainment/word_to_id', 
+            'ner/data/zh_entertainment/tag_to_id',
             'textrank/docs.txt',
             'parse/data/zh/vocab_dict',
             'parse/data/zh/label_dict',
             'parse/data/zh/pos_dict',
-            'parse/data/zh/parse.template',                            
-            # 'ner/ckpt/zh/*',
-            # 'parse/ckpt/zh/*'
-            # 'ner/ckpt/zh_o2o/*',            
+            'parse/data/zh/parse.template', 
         ],
         'test': [
             './*',
