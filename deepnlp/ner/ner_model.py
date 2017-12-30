@@ -26,6 +26,7 @@ lang = "zh" if len(sys.argv)==1 else sys.argv[1] # default zh
 file_path = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(file_path, "data", lang)
 train_dir = os.path.join(file_path, "ckpt", lang)
+modle_config_path = os.path.join(file_path, "data", "models.conf")
 
 flags = tf.flags
 logging = tf.logging
@@ -33,6 +34,7 @@ logging = tf.logging
 flags.DEFINE_string("ner_lang", lang, "ner language option for model config")
 flags.DEFINE_string("ner_data_path", data_path, "data_path")
 flags.DEFINE_string("ner_train_dir", train_dir, "Training directory.")
+flags.DEFINE_string("ner_model_config_path", modle_config_path, "Model hyper parameters configuration path")
 flags.DEFINE_string("ner_scope_name", _ner_scope_name, "Variable scope of NER Model")
 
 FLAGS = flags.FLAGS
@@ -146,6 +148,22 @@ class NERTagger(object):
   def train_op(self):
     return self._train_op
 
+class DefaultModelConfig(object):
+  def __init__(self):
+    self.vocab_size = 60000
+    self.target_num = 8      # NER Tag 7, nt, n, p, o, q (special), nz entity_name, nbz
+    self.init_scale = 0.04
+    self.learning_rate = 0.05
+    self.max_grad_norm = 10
+    self.num_layers = 2
+    self.num_steps = 30
+    self.hidden_size = 128
+    self.max_epoch = 15
+    self.max_max_epoch = 20
+    self.keep_prob = 1.00      # remember to set to 1.00 when making new prediction
+    self.lr_decay = 1 / 1.15
+    self.batch_size = 1       # single sample batch
+
 # NER Model Configuration, Set Target Num, and input vocab_Size
 class LargeConfigChinese(object):
   """Large config."""
@@ -179,7 +197,27 @@ class LargeConfigEnglish(object):
   vocab_size = 60000
   target_num = 15  # NER Tag 17, n, nf, nc, ne, (name, start, continue, end) n, p, o, q (special), nz entity_name, nbz
 
-def get_config(name):
+def get_config(conf_dict, name):
+  """ @brief:get model from conf_dict
+      Args: conf_dict:  2Dmap <K,V> K:model_name, V: dict{} hyper_param_key=hyper_param_value
+  """
+  if (name not in conf_dict):
+    print ("DEBUG: Model Name not in models.conf file... %s" % name)
+    print ("DEBUG: Loading default model config")
+    config = DefaultModelConfig()
+    return config
+  else:
+    model_param = conf_dict[name]
+    config = DefaultModelConfig()
+    try:
+      for key in config.__dict__:
+        if key in model_param:
+          setattr(config, key, eval(model_param[key]))   # convert hparam from string to int/float
+    except Exception as e:
+      print (e)
+    return config
+
+def get_config_old(name):
   if (name == 'zh'):
     config = LargeConfigChinese()
     return config
@@ -247,13 +285,15 @@ def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
 def main(_):
   if not FLAGS.ner_data_path:
     raise ValueError("No data files found in 'data_path' folder")
-
+  
+  # Load Data
   raw_data = reader.load_data(FLAGS.ner_data_path)
   train_word, train_tag, dev_word, dev_tag, test_word, test_tag, vocabulary = raw_data
   
-  config = get_config(FLAGS.ner_lang)
-  
-  eval_config = get_config(FLAGS.ner_lang)
+  # Load Config
+  config_dict = reader.load_config(FLAGS.ner_model_config_path)
+  config = get_config(config_dict, FLAGS.ner_lang)
+  eval_config = get_config(config_dict, FLAGS.ner_lang)
   eval_config.batch_size = 1
   eval_config.num_steps = 1
   

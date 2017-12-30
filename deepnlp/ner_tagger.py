@@ -105,12 +105,13 @@ class ModelLoader(object):
         self.name = name
         self.data_path = data_path
         self.ckpt_path = ckpt_path
+        self.model_config_path = os.path.join(os.path.dirname(data_path), "models.conf")  #./data/models.conf
         print("NOTICE: Starting new Tensorflow session...")
         print("NOTICE: Initializing ner_tagger model...")
         self.session = tf.Session()
         self.model = None
         self.var_scope = _ner_scope_name
-        self._init_ner_model(self.session, self.ckpt_path)  # Initialization model
+        self._init_ner_model(self.session, self.data_path, self.ckpt_path)  # Initialization model
         self.__prefix_dict = {}                             # private member variable
         self._load_dict(name)                               # load model dict zh + dict_name
     
@@ -126,10 +127,11 @@ class ModelLoader(object):
         return dict_tagging
     
     ## Define Config Parameters for NER Tagger
-    def _init_ner_model(self, session, ckpt_path):
+    def _init_ner_model(self, session, data_path, ckpt_path):
         """Create ner Tagger model and initialize or load parameters in session."""
         # initilize config
-        config = ner_model.get_config(self.name)
+        config_dict = ner_reader.load_config(self.model_config_path)
+        config = ner_model.get_config(config_dict, self.name)
         if config is None:
             print ("WARNING: Input model name %s has no configuration..." % self.name)
         config.batch_size = 1
