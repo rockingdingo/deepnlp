@@ -21,6 +21,7 @@ from parse import transition_system    # absolute import
 from parse import reader
 from parse.transition_system import Configuration
 from model_util import get_model_var_scope
+from model_util import get_config, load_config
 from model_util import _parse_scope_name
 from model_util import _parse_variables_namescope
 
@@ -29,6 +30,7 @@ lang = "zh" if len(sys.argv)==1 else sys.argv[1] # default zh
 file_path = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(file_path, "data", lang)
 train_dir = os.path.join(file_path, "ckpt", lang)
+modle_config_path = os.path.join(file_path, "data", "models.conf")
 
 flags = tf.flags
 logging = tf.logging
@@ -37,6 +39,7 @@ flags.DEFINE_string("parse_lang", lang, "parse option for model config")
 flags.DEFINE_string("parse_data_path", data_path, "data_path")
 flags.DEFINE_string("parse_train_dir", train_dir, "Training directory.")
 flags.DEFINE_string("parse_scope_name", _parse_scope_name, "Variable scope of pos Model")
+flags.DEFINE_string("parse_model_config_path", modle_config_path, "Model hyper parameters configuration path")
 
 FLAGS = flags.FLAGS
 
@@ -67,15 +70,6 @@ class LargeConfigEnglish(object):
     init_scale = 0.04
     learning_rate = 0.1
     # To Do
-
-def get_config(lang):
-    if (lang == 'zh'):
-        return ChineseParseConfig()  
-    elif (lang == 'en'):
-        return LargeConfigEnglish()
-    # other lang options
-    else :
-        return None
 
 def data_type():
     return tf.float32
@@ -262,10 +256,12 @@ def predict(session, model, sent):
         next_arc_id = arc_labels[next_arc]
 
 def main(_):
+    # Load Data
     raw_data = reader.load_data(FLAGS.parse_data_path)
     train_sents, train_trees, dev_sents, dev_trees, vocab_dict, pos_dict, label_dict, feature_tpl = raw_data # items in ids
-    config = get_config(FLAGS.parse_lang)
-
+    # Load Config
+    config_dict = load_config(FLAGS.parse_model_config_path)
+    config = get_config(config_dict, FLAGS.parse_lang)
     model_var_scope = get_model_var_scope(FLAGS.parse_scope_name, FLAGS.parse_lang)
     print ("NOTICE: Parsing model variable scope is %s" % model_var_scope)
     with tf.Session() as session:

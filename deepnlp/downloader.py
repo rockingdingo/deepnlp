@@ -11,13 +11,12 @@ import urllib
 if (sys.version_info>(3,0)): from urllib.request import urlretrieve, urlopen
 else : from urllib import urlretrieve, urlopen
 
+# set timeout for connection
 import socket
-socket.setdefaulttimeout(300) # set timeout for connection 5min for timeout
+socket.setdefaulttimeout(300) # 5min for timeout
 
 pkg_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(pkg_path)
-
-from model_util import registered_models
 
 def Schedule(a,b,c):
     '''
@@ -39,15 +38,12 @@ def Schedule(a,b,c):
         sys.stdout.flush()
 
 # Download from below two sources
+# deepnlp repo:  http://deepnlp.org/downloads/?project=deepnlp&file_path=/ner/ckpt/zh/&file_name=ner.ckpt.data-00000-of-00001
+# github_repo = "https://github.com/rockingdingo/deepnlp/raw/master/deepnlp"
 github_repo = "https://github.com/rockingdingo/deepnlp/raw/master/deepnlp"
 deepnlp_repo = "http://deepnlp.org/downloads/?"
 
 folder = os.path.dirname(os.path.abspath(__file__))
-
-segment_model_list = registered_models[0]['segment']
-ner_model_list = registered_models[0]['ner']
-pos_model_list = registered_models[0]['pos']
-parse_model_list = registered_models[0]['parse']
 
 def get_deepnlp_model_url(relative_file_path):
     """ Args: rel_path: ner/data/zh_entertainment/word_to_id
@@ -225,38 +221,66 @@ def download(module = None, name = None):
     """ Args: module: e.g. POS, NER, Parse, ....
             name: model name , e.g. zh, zh_o2o, zh_entertainment
     """
+    # import lasted registered_models from module_util
+    try:
+        from deepnlp.model_util import registered_models
+        print ("NOTICE: Registered models are: %s" % str(registered_models))
+    except Exception as e:
+        print (e)
+    # model_list
+    segment_model_list = registered_models[0]['segment']
+    ner_model_list = registered_models[0]['ner']
+    pos_model_list = registered_models[0]['pos']
+    parse_model_list = registered_models[0]['parse']
     if module is not None:
         if (module.lower() == "segment"):
             if name is not None:    # Download Specific Model
-                cur_model_segment = get_model_segment([name])
-                download_model(cur_model_segment)
+                if name in segment_model_list:
+                    print ("NOTICE: Downloading Segment module %s" % name)
+                    cur_model_segment = get_model_segment([name])
+                    download_model(cur_model_segment)
+                else:
+                    print ("WARNING: Input name %s is not in registered module %s" % (name, module))
+                    print ("WARNING: Please use deepnlp.register_model('%s', '%s') ..." % (module, name))
             else:
                 print ("NOTICE: Downloading Segment module all ...")
                 model_segment = get_model_segment(segment_model_list)
                 download_model(model_segment)
         elif (module.lower() == "pos"):
             if name is not None:
-                print ("NOTICE: Downloading POS module %s" % name)
-                cur_model_pos = get_model_pos([name])
-                download_model(cur_model_pos)
+                if name in pos_model_list:
+                    print ("NOTICE: Downloading POS module %s" % name)
+                    cur_model_pos = get_model_pos([name])
+                    download_model(cur_model_pos)
+                else:
+                    print ("WARNING: Input name %s is not in registered module %s" % (name, module))
+                    print ("WARNING: Please use deepnlp.register_model('%s', '%s') ..." % (module, name))
             else:
                 print ("NOTICE: Downloading POS module All ...")
                 model_pos = get_model_pos(pos_model_list)
                 download_model(model_pos)
         elif (module.lower() == "ner"):
             if name is not None:
-                print ("NOTICE: Downloading NER module %s" % name)
-                cur_model_ner = get_model_ner([name])
-                download_model(cur_model_ner)
+                if name in ner_model_list:
+                    print ("NOTICE: Downloading NER module %s" % name)
+                    cur_model_ner = get_model_ner([name])
+                    download_model(cur_model_ner)
+                else:
+                    print ("WARNING: Input name %s is not in registered module %s" % (name, module))
+                    print ("WARNING: Please use deepnlp.register_model('%s', '%s') ..." % (module, name))
             else:
                 print ("NOTICE: Downloading NER module All ...")
                 model_ner = get_model_ner(ner_model_list)
                 download_model(model_ner)
         elif (module.lower() == "parse"):
             if name is not None:
-                print ("NOTICE: Downloading Parse module %s" % name)
-                cur_model_parse = get_model_parse([name])
-                download_model(cur_model_parse)
+                if name in parse_model_list:
+                    print ("NOTICE: Downloading Parse module %s" % name)
+                    cur_model_parse = get_model_parse([name])
+                    download_model(cur_model_parse)
+                else:
+                    print ("WARNING: Input name %s is not in registered module %s" % (name, module))
+                    print ("WARNING: Please use deepnlp.register_model('%s', '%s') ..." % (module, name))
             else:
                 print ("NOTICE: Downloading Parse module All ...")
                 model_parse = get_model_parse(parse_model_list)

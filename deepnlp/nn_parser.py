@@ -27,24 +27,25 @@ from parse.transition_system import Configuration
 from parse.reader import Sentence
 from parse.reader import DependencyTree
 from model_util import get_model_var_scope
+from model_util import get_config, load_config
 from model_util import _parse_scope_name
-from model_util import registered_models
 from pos_tagger import ModelLoader as PosModelLoader
 
 UNKNOWN = "*"
 
 class ModelLoader(object):
     
-    def __init__(self, name, data_path, ckpt_path):
+    def __init__(self, name, data_path, ckpt_path, conf_path):
         self.name = name
         self.data_path = data_path
-        self.ckpt_path = ckpt_path  # the path of the ckpt file, e.g. ./ckpt/zh/pos.ckpt
+        self.ckpt_path = ckpt_path
+        self.model_config_path = conf_path                  #./data/models.conf
         print("NOTICE: Starting new Tensorflow session...")
         self.session = tf.Session()
         print("NOTICE: Initializing nn_parser class...")
         self.var_scope = _parse_scope_name
         self.model = None
-        self._init_model(self.session, self.ckpt_path)
+        self._init_model(self.session)
 
         # data utils for parsing: 
         vocab_dict_path = os.path.join(self.data_path, "vocab_dict")
@@ -72,7 +73,8 @@ class ModelLoader(object):
         # Load Default Pos Model for Input Pos Tags
         pos_data_path = os.path.join(pkg_path, "pos/data", name) # POS vocabulary data path
         pos_ckpt_path = os.path.join(pkg_path, "pos/ckpt", name, "pos.ckpt") # POS model checkpoint path
-        self.pos_tagger_model = PosModelLoader(name, pos_data_path, pos_ckpt_path)
+        pos_model_conf_path = os.path.join(pkg_path, "pos/data", "models.conf") # POS model checkpoint path
+        self.pos_tagger_model = PosModelLoader(name, pos_data_path, pos_ckpt_path, pos_model_conf_path)
 
     def predict(self, words, tags = None):
         ''' Main function to make prediction of a sentence with words and tags as input
@@ -97,20 +99,21 @@ class ModelLoader(object):
             return dep_tree
     
     ## Initialize and Instance, Define Config Parameters
-    def _init_model(self, session, ckpt_path):
+    def _init_model(self, session):
         """Create Parser model and initialize with random or load parameters in session."""
-        config = parse_model.get_config(self.name)
+        config_dict = load_config(self.model_config_path)
+        config = get_config(config_dict, self.name)
         model_var_scope = get_model_var_scope(self.var_scope, self.name)
         print ("NOTICE: Initializing model var scope '%s'" % model_var_scope)
         # Check if self.model already exist
         if self.model is None:   # Create Graph Only once
             with tf.variable_scope(model_var_scope, reuse = tf.AUTO_REUSE):
                 self.model = parse_model.NNParser(config=config)
-        if len(glob.glob(ckpt_path + '.data*')) > 0: # file exist with pattern: 'parser.ckpt.data*'
-            print("NOTICE: Loading model parameters from %s" % ckpt_path)
+        if len(glob.glob(self.ckpt_path + '.data*')) > 0: # file exist with pattern: 'parser.ckpt.data*'
+            print("NOTICE: Loading model parameters from %s" % self.ckpt_path)
             all_vars = tf.global_variables()
             model_vars = [k for k in all_vars if model_var_scope in k.name.split("/")]   # Only Restore the Variable in Graph begin with parser/....
-            tf.train.Saver(model_vars).restore(session, ckpt_path)
+            tf.train.Saver(model_vars).restore(session, self.ckpt_path)
         else:
             print("NOTICE: Model not found, Try to run method: deepnlp.download('parse')")
             print("NOTICE: Created with fresh parameters.")
@@ -183,11 +186,16 @@ def load_model(name = 'zh'):
         ckpt_path e.g.: ./deepnlp/parser/ckpt/zh
         ckpt_file e.g.: ./deepnlp/parser/ckpt/zh/parser.ckpt.data-00000-of-00001
     '''
+    try:
+        from deepnlp.model_util import registered_models
+    except Exception as e:
+        print (e)   
     registered_model_list = registered_models[0]['parse']
     if name not in registered_model_list:
         print ("WARNING: Input model name '%s' is not registered..." % name)
-        print ("WARNING: Please register the name in model_util.registered_models...")
+        print ("WARNING: Please use deepnlp.register_model('%s', '%s') ..." % ("parse", name))
         return None
     data_path = os.path.join(pkg_path, "parse/data", name)   # Parser util data path
     ckpt_path = os.path.join(pkg_path, "parse/ckpt", name, 'parser.ckpt')   # Parser model checkpoint path
-    return ModelLoader(name, data_path, ckpt_path)
+    conf_path = os.path.join(pkg_path, "parse/data", "models.conf")
+    return ModelLoader(name, data_path, ckpt_path, conf_path)

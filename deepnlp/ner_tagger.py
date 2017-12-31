@@ -26,8 +26,8 @@ sys.path.append(pkg_path)
 from ner import ner_model as ner_model
 from ner import reader as ner_reader
 from model_util import get_model_var_scope
+from model_util import get_config, load_config
 from model_util import _ner_scope_name
-from model_util import registered_models
 
 ### Define Constant
 TAG_NONE_ENTITY = "nt"
@@ -101,17 +101,17 @@ def ensemble_udf(udfs, word, tags, *args):
 
 class ModelLoader(object):
 
-    def __init__(self, name, data_path, ckpt_path):
+    def __init__(self, name, data_path, ckpt_path, conf_path):
         self.name = name
         self.data_path = data_path
         self.ckpt_path = ckpt_path
-        self.model_config_path = os.path.join(os.path.dirname(data_path), "models.conf")  #./data/models.conf
+        self.model_config_path = conf_path                  #./data/models.conf
         print("NOTICE: Starting new Tensorflow session...")
         print("NOTICE: Initializing ner_tagger model...")
         self.session = tf.Session()
         self.model = None
         self.var_scope = _ner_scope_name
-        self._init_ner_model(self.session, self.data_path, self.ckpt_path)  # Initialization model
+        self._init_ner_model(self.session)                  # Initialization model
         self.__prefix_dict = {}                             # private member variable
         self._load_dict(name)                               # load model dict zh + dict_name
     
@@ -127,11 +127,11 @@ class ModelLoader(object):
         return dict_tagging
     
     ## Define Config Parameters for NER Tagger
-    def _init_ner_model(self, session, data_path, ckpt_path):
+    def _init_ner_model(self, session):
         """Create ner Tagger model and initialize or load parameters in session."""
         # initilize config
-        config_dict = ner_reader.load_config(self.model_config_path)
-        config = ner_model.get_config(config_dict, self.name)
+        config_dict = load_config(self.model_config_path)
+        config = get_config(config_dict, self.name)
         if config is None:
             print ("WARNING: Input model name %s has no configuration..." % self.name)
         config.batch_size = 1
@@ -145,11 +145,11 @@ class ModelLoader(object):
         #else:   # Model Graph Def already exist
         #    print ("DEBUG: Model Def already exists")
         # update model parameters
-        if len(glob.glob(ckpt_path + '.data*')) > 0: # file exist with pattern: 'ner.ckpt.data*'
-            print("NOTICE: Loading model parameters from %s" % ckpt_path)
+        if len(glob.glob(self.ckpt_path + '.data*')) > 0: # file exist with pattern: 'ner.ckpt.data*'
+            print("NOTICE: Loading model parameters from %s" % self.ckpt_path)
             all_vars = tf.global_variables()
             model_vars = [k for k in all_vars if model_var_scope in k.name.split("/")]   # e.g. ner_var_scope_zh
-            tf.train.Saver(model_vars).restore(session, ckpt_path)
+            tf.train.Saver(model_vars).restore(session, self.ckpt_path)
         else:
             print("NOTICE: Model not found, Try to run method: deepnlp.download(module='ner', name='%s')" % self.name)
             print("NOTICE: Created with fresh parameters.")
@@ -362,11 +362,16 @@ def load_model(name = 'zh'):
         ckpt_path e.g.: ./deepnlp/ner/ckpt/zh/ner.ckpt
         ckpt_file e.g.: ./deepnlp/ner/ckpt/zh/ner.ckpt.data-00000-of-00001
     '''
+    try:
+        from deepnlp.model_util import registered_models
+    except Exception as e:
+        print (e)   
     registered_model_list = registered_models[0]['ner']
     if name not in registered_model_list:
         print ("WARNING: Input model name '%s' is not registered..." % name)
-        print ("WARNING: Please register the name in model_util.registered_models...")
+        print ("WARNING: Please use deepnlp.register_model('%s', '%s') ..." % ("ner", name))
         return None
     data_path = os.path.join(pkg_path, "ner/data", name) # NER vocabulary data path
     ckpt_path = os.path.join(pkg_path, "ner/ckpt", name, "ner.ckpt") # NER model checkpoint path
-    return ModelLoader(name, data_path, ckpt_path)
+    conf_path = os.path.join(pkg_path, "ner/data", "models.conf")
+    return ModelLoader(name, data_path, ckpt_path, conf_path)

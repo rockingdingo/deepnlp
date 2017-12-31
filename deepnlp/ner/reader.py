@@ -172,45 +172,6 @@ def iterator(word_data, tag_data, batch_size, num_steps):
     y = yArray[:, i*num_steps:(i+1)*num_steps]
     yield (x, y)
 
-def load_config(filepath):
-  """ Load Conf from filepath
-  """
-  file = codecs.open(filepath, encoding='utf-8')
-  lines = []
-  for line in file:
-    line = line.strip()
-    lines.append(line)
-  model_config_dict = {}            # config map for all models
-  model_name = None
-  model_config = {}                 # config for one model
-  for line in lines:
-    line = line.strip()
-    if (line.startswith("[")):      # [model_config_name=zh]
-      model_config = {}             # create new empty config dict
-      model_config_names = line.replace("[","").replace("]","").split("=")
-      if (len(model_config_names) == 2):
-        model_name = model_config_names[1]
-    elif (line.startswith("#")):    # comments
-      continue
-    elif (line.strip() == ""):      # Blank line, Previous Config is finished, Adding current config
-      if (len(model_config) > 0 and model_name is not None):
-        model_config_dict[model_name] = model_config
-    else:
-      items = line.split("=")
-      if (len(items) == 2):
-        key = items[0].strip()
-        value = items[1].strip()
-        model_config[key]= value
-  # Add last config
-  if (len(model_config) > 0 and model_name is not None):
-    model_config_dict[model_name] = model_config
-  # find results
-  print ("NOTICE: LOADING Model Config number %d ..." % len(model_config_dict))
-  return model_config_dict
-
-# model_config_path="./data/models.conf"
-# config_dict = load_config(model_config_path)
-
 def main():
   """
   Test load_data method and iterator method

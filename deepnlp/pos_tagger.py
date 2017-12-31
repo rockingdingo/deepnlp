@@ -22,21 +22,22 @@ sys.path.append(pkg_path)
 from pos import pos_model as pos_model
 from pos import reader as pos_reader
 from model_util import get_model_var_scope
+from model_util import get_config, load_config
 from model_util import _pos_scope_name
-from model_util import registered_models
 
 class ModelLoader(object):
     
-    def __init__(self, name, data_path, ckpt_path):
+    def __init__(self, name, data_path, ckpt_path, conf_path):
         self.name = name   # model name
         self.data_path = data_path
         self.ckpt_path = ckpt_path  # the path of the ckpt file, e.g. ./ckpt/zh/pos.ckpt
+        self.model_config_path = conf_path
         print("NOTICE: Starting new Tensorflow session...")
         self.session = tf.Session()
         print("NOTICE: Initializing pos_tagger class...")
         self.model = None
         self.var_scope = _pos_scope_name
-        self._init_pos_model(self.session, self.ckpt_path)  # Initialization model
+        self._init_pos_model(self.session)  # Initialization model
 
     def predict(self, words):
         '''
@@ -47,11 +48,11 @@ class ModelLoader(object):
         return tagging
     
     ## Initialize and Instance, Define Config Parameters for POS Tagger
-    def _init_pos_model(self, session, ckpt_path):
+    def _init_pos_model(self, session):
         """Create POS Tagger model and initialize with random or load parameters in session."""
         # initilize config
-        # config = POSConfig()   # Choose the config of language option
-        config = pos_model.get_config(self.name)
+        config_dict = load_config(self.model_config_path)
+        config = get_config(config_dict, self.name)
         config.batch_size = 1
         config.num_steps = 1 # iterator one token per time
         model_var_scope = get_model_var_scope(self.var_scope, self.name)
@@ -61,11 +62,11 @@ class ModelLoader(object):
             with tf.variable_scope(model_var_scope, tf.AUTO_REUSE):
                 self.model = pos_model.POSTagger(is_training=False, config=config) # save object after is_training
         # Load Specific .data* ckpt file
-        if len(glob.glob(ckpt_path + '.data*')) > 0: # file exist with pattern: 'pos.ckpt.data*'
-            print("NOTICE: Loading model parameters from %s" % ckpt_path)
+        if len(glob.glob(self.ckpt_path + '.data*')) > 0: # file exist with pattern: 'pos.ckpt.data*'
+            print("NOTICE: Loading model parameters from %s" % self.ckpt_path)
             all_vars = tf.global_variables()
             model_vars = [k for k in all_vars if model_var_scope in k.name.split("/")]
-            tf.train.Saver(model_vars).restore(session, ckpt_path)
+            tf.train.Saver(model_vars).restore(session, self.ckpt_path)
         else:
             print("NOTICE: Model not found, Try to run method: deepnlp.download(module='pos', name='%s')" % self.name)
             print("NOTICE: Created with fresh parameters.")
@@ -102,11 +103,16 @@ def load_model(name = 'zh'):
         ckpt_path e.g.: ./deepnlp/pos/ckpt/zh/pos.ckpt
         ckpt_file e.g.: ./deepnlp/pos/ckpt/zh/pos.ckpt.data-00000-of-00001
     '''
+    try:
+        from deepnlp.model_util import registered_models
+    except Exception as e:
+        print (e)
     registered_model_list = registered_models[0]['pos']
     if name not in registered_model_list:
         print ("WARNING: Input model name '%s' is not registered..." % name)
-        print ("WARNING: Please register the name in model_util.registered_models...")
+        print ("WARNING: Please use deepnlp.register_model('%s', '%s') ..." % ("pos", name))
         return None
     data_path = os.path.join(pkg_path, "pos/data", name) # POS vocabulary data path
     ckpt_path = os.path.join(pkg_path, "pos/ckpt", name, "pos.ckpt") # POS model checkpoint path
-    return ModelLoader(name, data_path, ckpt_path)
+    conf_path = os.path.join(pkg_path, "pos/data", "models.conf")
+    return ModelLoader(name, data_path, ckpt_path, conf_path)

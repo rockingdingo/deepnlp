@@ -20,6 +20,7 @@ sys.path.append(pkg_path)
 
 from pos import reader # absolute import
 from model_util import get_model_var_scope
+from model_util import get_config, load_config
 from model_util import _pos_variables_namescope
 from model_util import _pos_scope_name
 
@@ -29,6 +30,7 @@ file_path = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(file_path, "data", lang)
 train_dir = os.path.join(file_path, "ckpt", lang)
 model_dir = os.path.join(file_path, "models", lang)   # save the graph
+modle_config_path = os.path.join(file_path, "data", "models.conf")
 
 flags = tf.flags
 logging = tf.logging
@@ -38,6 +40,7 @@ flags.DEFINE_string("pos_data_path", data_path, "data_path")
 flags.DEFINE_string("pos_train_dir", train_dir, "Training directory.")
 flags.DEFINE_string("pos_model_dir", model_dir, "Models dir for protobuf graph file")
 flags.DEFINE_string("pos_scope_name", _pos_scope_name, "Variable scope of pos Model")
+flags.DEFINE_string("pos_model_config_path", modle_config_path, "Model hyper parameters configuration path")
 
 FLAGS = flags.FLAGS
 
@@ -154,50 +157,6 @@ class POSTagger(object):
   def train_op(self):
     return self._train_op
 
-# pos model configuration, set target num, and input vocab_size
-class LargeConfigChinese(object):
-  """Large config."""
-  init_scale = 0.04
-  learning_rate = 0.1
-  max_grad_norm = 10
-  num_layers = 2
-  num_steps = 30
-  hidden_size = 128
-  max_epoch = 5
-  max_max_epoch = 10
-  keep_prob = 1.0
-  lr_decay = 1 / 1.15
-  batch_size = 1 # single sample batch
-  vocab_size = 50000
-  target_num = 44  # POS tagging for Chinese
-
-class LargeConfigEnglish(object):
-  """Large config for English"""
-  init_scale = 0.04
-  learning_rate = 0.1
-  max_grad_norm = 10
-  num_layers = 2
-  num_steps = 30
-  hidden_size = 128
-  max_epoch = 5
-  max_max_epoch = 10
-  keep_prob = 1.0 # There is one dropout layer on input tensor also, don't set lower than 0.9
-  lr_decay = 1 / 1.15
-  batch_size = 1 # single sample batch
-  vocab_size = 44000
-  target_num = 81  # English: Brown Corpus tags
-
-def get_config(name):
-  if (name == 'zh'):
-    config = LargeConfigChinese()
-    return config
-  elif (name == 'en'):
-    config = LargeConfigEnglish()
-    return config
-  # other lang options
-  else :
-    return None
-
 def run_epoch(session, model, word_data, tag_data, eval_op, verbose=False):
   """Runs the model on the given data."""
   epoch_size = ((len(word_data) // model.batch_size) - 1) // model.num_steps
@@ -270,16 +229,17 @@ def freeze_graph():
 def main(_):
   if not FLAGS.pos_data_path:
     raise ValueError("No data files found in 'data_path' folder")
-  
+  # Load Data
   raw_data = reader.load_data(FLAGS.pos_data_path)
-  # train_data, valid_data, test_data, _ = raw_data
   train_word, train_tag, dev_word, dev_tag, test_word, test_tag, vocab_size = raw_data
   
-  config = get_config(FLAGS.pos_lang)
-  eval_config = get_config(FLAGS.pos_lang)
+  # Load Config
+  config_dict = load_config(FLAGS.pos_model_config_path)
+  config = get_config(config_dict, FLAGS.pos_lang)
+  eval_config = get_config(config_dict, FLAGS.pos_lang)
   eval_config.batch_size = 1
   eval_config.num_steps = 1
-
+  
   # Define Variable Scope
   model_var_scope = get_model_var_scope(FLAGS.pos_scope_name, FLAGS.pos_lang)
 
