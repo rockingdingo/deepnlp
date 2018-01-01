@@ -84,8 +84,16 @@ model files: ../pos/ckpt/en/pos.ckpt  ; ../ner/ckpt/zh/ner.ckpt
 ```python
     # install crf++0.58 package using the script
     sh ./deepnlp/segment/install_crfpp.sh
-    # download all the pre-trained models
+    # Download all the pre-trained models
     python ./test/test_install.py
+    
+    # Or Download pre-trained models from below command lines
+    import deepnlp
+    deepnlp.download('segment')
+    deepnlp.download('pos')
+    deepnlp.download('ner')
+    deepnlp.download('parse')
+
 ```
 
 * Running Examples
