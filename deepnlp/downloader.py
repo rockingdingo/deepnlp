@@ -90,7 +90,7 @@ def get_model_ner(model_name_list):
             model_ner.append((relative_ckpt_file_path, relative_ckpt_file_path))
         for dict_file in dict_files:
             relative_dict_file_path = dict_path + model_name + "/" + dict_file
-            model_ner.append((relative_ckpt_file_path, relative_dict_file_path))
+            model_ner.append((relative_dict_file_path, relative_dict_file_path))
     return model_ner
 
 def get_model_pos(model_name_list):
