@@ -332,19 +332,19 @@ TextCNN (WIP)
 Train your model
 --------------------
 自己训练模型
-###Segment model
+### Segment model
 See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/segment)
 
-###POS model
+### POS model
 See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/pos)
 
-###NER model
+### NER model
 See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/ner)
 
-###Parsing model
+### Parsing model
 See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/parse)
 
-###Textsum model
+### Textsum model
 See instructions: [README](https://github.com/rockingdingo/deepnlp/tree/master/deepnlp/textsum)
 
 Web API Service
