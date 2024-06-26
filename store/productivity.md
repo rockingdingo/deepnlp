@@ -30,6 +30,7 @@ e.g.
 
 
 #### ShowCase
+![image text](./ai_productivity_comments.jpg "AI Productivity Tool")
 
 ##### Programming
 [Gemini for Programming](http://www.deepnlp.org/store/productivity-tool/programming/pub-gemini-google/gemini-for-programming)
