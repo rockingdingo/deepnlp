@@ -4,12 +4,12 @@
 [AI For Law and Legal User Rating and Reviews](http://www.deepnlp.org/store/law) <br>
 
 
-![image text](./ai_for_law.jpeg "AI for Law and Legal Reviews and Ratings")
+![image text](./ai_for_law.jpg "AI for Law and Legal Reviews and Ratings")
 
 
 #### List of AI for Law Use Cases
 
-![image text](./ai_for_law_comments "AI for Law User Reviews, Ratings and Comments")
+![image text](./ai_for_law_comments.jpg "AI for Law User Reviews, Ratings and Comments")
 
 
 Prompts (Questions) exmaples include "How do I file divorce in California and I want my 3 years old son's custody" and 
