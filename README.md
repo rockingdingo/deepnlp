@@ -77,6 +77,123 @@ such as Midjourney, Canva, Stable Diffusion, etc. People can write reviews about
 ![image text](./store/image_generator_example_1.jpg "AI Image Generator Reviews and Ratings Comments 1")
 ![image text](./store/image_generator_example_2.jpg "AI Image Generator Reviews and Ratings Comments 2")
 
+
+
+### AI Image Generator ShowCases
+
+#### AI Image Generator of FOOD
+[AI Image Generator of FOOD](http://www.deepnlp.org/store/image-generator/food) <br>
+[Ask Midjourney to generate FOOD related images](http://www.deepnlp.org/store/image-generator/food/pub-midjourney/ask-midjourney-to-generate-food-related-images) <br>
+[Ask Stable Diffusion to generate FOOD related images](http://www.deepnlp.org/store/image-generator/food/pub-stable-diffusion/ask-stable-diffusion-to-generate-food-related-images) <br>
+[Ask Canva to generate FOOD related images](http://www.deepnlp.org/store/image-generator/food/pub-canva/ask-canva-to-generate-food-related-images) <br>
+[Ask Doubao to generate FOOD related images](http://www.deepnlp.org/store/image-generator/food/pub-doubao-douyin/ask-doubao-to-generate-food-related-images) <br>
+[Ask Dreamina to generate FOOD related images](http://www.deepnlp.org/store/image-generator/food/pub-dreamina/ask-dreamina-to-generate-food-related-images) <br>
+[Ask Zhipu AI to generate FOOD related images](http://www.deepnlp.org/store/image-generator/food/pub-cogvlm-zhipu-ai/ask-zhipu-ai-to-generate-food-related-images) <br>
+[Ask Qwen to generate FOOD related images](http://www.deepnlp.org/store/image-generator/food/pub-qwen-alibaba/ask-qwen-to-generate-food-related-images) <br>
+
+
+
+#### AI Image Generator of ANIMAL
+
+[AI Image Generator of ANIMAL](http://www.deepnlp.org/store/image-generator/animal) <br>
+[Ask Midjourney to generate ANIMAL related images](http://www.deepnlp.org/store/image-generator/animal/pub-midjourney/ask-midjourney-to-generate-animal-related-images) <br>
+[Ask Stable Diffusion to generate ANIMAL related images](http://www.deepnlp.org/store/image-generator/animal/pub-stable-diffusion/ask-stable-diffusion-to-generate-animal-related-images) <br>
+[Ask Canva to generate ANIMAL related images](http://www.deepnlp.org/store/image-generator/animal/pub-canva/ask-canva-to-generate-animal-related-images) <br>
+[Ask Doubao to generate ANIMAL related images](http://www.deepnlp.org/store/image-generator/animal/pub-doubao-douyin/ask-doubao-to-generate-animal-related-images) <br>
+[Ask Dreamina to generate ANIMAL related images](http://www.deepnlp.org/store/image-generator/animal/pub-dreamina/ask-dreamina-to-generate-animal-related-images) <br>
+[Ask Zhipu AI to generate ANIMAL related images](http://www.deepnlp.org/store/image-generator/animal/pub-cogvlm-zhipu-ai/ask-zhipu-ai-to-generate-animal-related-images) <br>
+[Ask Qwen to generate ANIMAL related images](http://www.deepnlp.org/store/image-generator/animal/pub-qwen-alibaba/ask-qwen-to-generate-animal-related-images) <br>
+
+
+#### AI Image Generator of CELEBRITY
+
+[AI Image Generator of CELEBRITY](http://www.deepnlp.org/store/image-generator/celebrity) <br>
+[Ask Midjourney to generate CELEBRITY related images](http://www.deepnlp.org/store/image-generator/celebrity/pub-midjourney/ask-midjourney-to-generate-celebrity-related-images) <br>
+[Ask Stable Diffusion to generate CELEBRITY related images](http://www.deepnlp.org/store/image-generator/celebrity/pub-stable-diffusion/ask-stable-diffusion-to-generate-celebrity-related-images) <br>
+[Ask Canva to generate CELEBRITY related images](http://www.deepnlp.org/store/image-generator/celebrity/pub-canva/ask-canva-to-generate-celebrity-related-images) <br>
+[Ask Doubao to generate CELEBRITY related images](http://www.deepnlp.org/store/image-generator/celebrity/pub-doubao-douyin/ask-doubao-to-generate-celebrity-related-images) <br>
+[Ask Dreamina to generate CELEBRITY related images](http://www.deepnlp.org/store/image-generator/celebrity/pub-dreamina/ask-dreamina-to-generate-celebrity-related-images) <br>
+[Ask Zhipu AI to generate CELEBRITY related images](http://www.deepnlp.org/store/image-generator/celebrity/pub-cogvlm-zhipu-ai/ask-zhipu-ai-to-generate-celebrity-related-images) <br>
+[Ask Qwen to generate CELEBRITY related images](http://www.deepnlp.org/store/image-generator/celebrity/pub-qwen-alibaba/ask-qwen-to-generate-celebrity-related-images) <br>
+
+
+
+#### AI Image Generator of SELFIES
+
+[AI Image Generator of SELFIES](http://www.deepnlp.org/store/image-generator/selfies) <br>
+[Ask Midjourney to generate SELFIES related images](http://www.deepnlp.org/store/image-generator/selfies/pub-midjourney/ask-midjourney-to-generate-selfies-related-images) <br>
+[Ask Stable Diffusion to generate SELFIES related images](http://www.deepnlp.org/store/image-generator/selfies/pub-stable-diffusion/ask-stable-diffusion-to-generate-selfies-related-images) <br>
+[Ask Canva to generate SELFIES related images](http://www.deepnlp.org/store/image-generator/selfies/pub-canva/ask-canva-to-generate-selfies-related-images) <br>
+[Ask Doubao to generate SELFIES related images](http://www.deepnlp.org/store/image-generator/selfies/pub-doubao-douyin/ask-doubao-to-generate-selfies-related-images) <br>
+[Ask Dreamina to generate SELFIES related images](http://www.deepnlp.org/store/image-generator/selfies/pub-dreamina/ask-dreamina-to-generate-selfies-related-images) <br>
+[Ask Zhipu AI to generate SELFIES related images](http://www.deepnlp.org/store/image-generator/selfies/pub-cogvlm-zhipu-ai/ask-zhipu-ai-to-generate-selfies-related-images) <br>
+[Ask Qwen to generate SELFIES related images](http://www.deepnlp.org/store/image-generator/selfies/pub-qwen-alibaba/ask-qwen-to-generate-selfies-related-images) <br>
+
+
+#### AI Image Generator of SPORTS
+
+
+[AI Image Generator of SPORTS](http://www.deepnlp.org/store/image-generator/sports) <br>
+[Ask Midjourney to generate SPORTS related images](http://www.deepnlp.org/store/image-generator/sports/pub-midjourney/ask-midjourney-to-generate-sports-related-images) <br>
+[Ask Stable Diffusion to generate SPORTS related images](http://www.deepnlp.org/store/image-generator/sports/pub-stable-diffusion/ask-stable-diffusion-to-generate-sports-related-images) <br>
+[Ask Canva to generate SPORTS related images](http://www.deepnlp.org/store/image-generator/sports/pub-canva/ask-canva-to-generate-sports-related-images) <br>
+[Ask Doubao to generate SPORTS related images](http://www.deepnlp.org/store/image-generator/sports/pub-doubao-douyin/ask-doubao-to-generate-sports-related-images) <br>
+[Ask Dreamina to generate SPORTS related images](http://www.deepnlp.org/store/image-generator/sports/pub-dreamina/ask-dreamina-to-generate-sports-related-images) <br>
+[Ask Zhipu AI to generate SPORTS related images](http://www.deepnlp.org/store/image-generator/sports/pub-cogvlm-zhipu-ai/ask-zhipu-ai-to-generate-sports-related-images) <br>
+[Ask Qwen to generate SPORTS related images](http://www.deepnlp.org/store/image-generator/sports/pub-qwen-alibaba/ask-qwen-to-generate-sports-related-images) <br>
+
+
+#### AI Image Generator of TECHNOLOGY
+
+[AI Image Generator of TECHNOLOGY](http://www.deepnlp.org/store/image-generator/technology) <br>
+[Ask Midjourney to generate TECHNOLOGY related images](http://www.deepnlp.org/store/image-generator/technology/pub-midjourney/ask-midjourney-to-generate-technology-related-images) <br>
+[Ask Stable Diffusion to generate TECHNOLOGY related images](http://www.deepnlp.org/store/image-generator/technology/pub-stable-diffusion/ask-stable-diffusion-to-generate-technology-related-images) <br>
+[Ask Canva to generate TECHNOLOGY related images](http://www.deepnlp.org/store/image-generator/technology/pub-canva/ask-canva-to-generate-technology-related-images) <br>
+[Ask Doubao to generate TECHNOLOGY related images](http://www.deepnlp.org/store/image-generator/technology/pub-doubao-douyin/ask-doubao-to-generate-technology-related-images) <br>
+[Ask Dreamina to generate TECHNOLOGY related images](http://www.deepnlp.org/store/image-generator/technology/pub-dreamina/ask-dreamina-to-generate-technology-related-images) <br>
+[Ask Zhipu AI to generate TECHNOLOGY related images](http://www.deepnlp.org/store/image-generator/technology/pub-cogvlm-zhipu-ai/ask-zhipu-ai-to-generate-technology-related-images) <br>
+[Ask Qwen to generate TECHNOLOGY related images](http://www.deepnlp.org/store/image-generator/technology/pub-qwen-alibaba/ask-qwen-to-generate-technology-related-images) <br>
+
+
+#### AI Image Generator of TRAVEL
+
+[AI Image Generator of TRAVEL](http://www.deepnlp.org/store/image-generator/travel) <br>
+
+[Ask Midjourney to generate TRAVEL related images](http://www.deepnlp.org/store/image-generator/travel/pub-midjourney/ask-midjourney-to-generate-travel-related-images) <br>
+[Ask Stable Diffusion to generate TRAVEL related images](http://www.deepnlp.org/store/image-generator/travel/pub-stable-diffusion/ask-stable-diffusion-to-generate-travel-related-images) <br>
+[Ask Canva to generate TRAVEL related images](http://www.deepnlp.org/store/image-generator/travel/pub-canva/ask-canva-to-generate-travel-related-images) <br>
+[Ask Doubao to generate TRAVEL related images](http://www.deepnlp.org/store/image-generator/travel/pub-doubao-douyin/ask-doubao-to-generate-travel-related-images) <br>
+[Ask Dreamina to generate TRAVEL related images](http://www.deepnlp.org/store/image-generator/travel/pub-dreamina/ask-dreamina-to-generate-travel-related-images) <br>
+[Ask Zhipu AI to generate TRAVEL related images](http://www.deepnlp.org/store/image-generator/travel/pub-cogvlm-zhipu-ai/ask-zhipu-ai-to-generate-travel-related-images) <br>
+[Ask Qwen to generate TRAVEL related images](http://www.deepnlp.org/store/image-generator/travel/pub-qwen-alibaba/ask-qwen-to-generate-travel-related-images) <br>
+
+
+#### AI Image Generator of NATURE
+
+[AI Image Generator of NATURE](http://www.deepnlp.org/store/image-generator/nature) <br>
+[Ask Midjourney to generate NATURE related images](http://www.deepnlp.org/store/image-generator/nature/pub-midjourney/ask-midjourney-to-generate-nature-related-images) <br>
+[Ask Stable Diffusion to generate NATURE related images](http://www.deepnlp.org/store/image-generator/nature/pub-stable-diffusion/ask-stable-diffusion-to-generate-nature-related-images) <br>
+[Ask Canva to generate NATURE related images](http://www.deepnlp.org/store/image-generator/nature/pub-canva/ask-canva-to-generate-nature-related-images) <br>
+[Ask Doubao to generate NATURE related images](http://www.deepnlp.org/store/image-generator/nature/pub-doubao-douyin/ask-doubao-to-generate-nature-related-images) <br>
+[Ask Dreamina to generate NATURE related images](http://www.deepnlp.org/store/image-generator/nature/pub-dreamina/ask-dreamina-to-generate-nature-related-images) <br>
+[Ask Zhipu AI to generate NATURE related images](http://www.deepnlp.org/store/image-generator/nature/pub-cogvlm-zhipu-ai/ask-zhipu-ai-to-generate-nature-related-images) <br>
+[Ask Qwen to generate NATURE related images](http://www.deepnlp.org/store/image-generator/nature/pub-qwen-alibaba/ask-qwen-to-generate-nature-related-images) <br>
+
+
+
+#### AI Image Generator of DAILY LIFE
+
+[AI Image Generator of DAILY LIFE](http://www.deepnlp.org/store/image-generator/daily-life) <br>
+[Ask Midjourney to generate DAILY LIFE related images](http://www.deepnlp.org/store/image-generator/daily-life/pub-midjourney/ask-midjourney-to-generate-daily-life-related-images) <br>
+[Ask Stable Diffusion to generate DAILY LIFE related images](http://www.deepnlp.org/store/image-generator/daily-life/pub-stable-diffusion/ask-stable-diffusion-to-generate-daily-life-related-images) <br>
+[Ask Canva to generate DAILY LIFE related images](http://www.deepnlp.org/store/image-generator/daily-life/pub-canva/ask-canva-to-generate-daily-life-related-images) <br>
+[Ask Doubao to generate DAILY LIFE related images](http://www.deepnlp.org/store/image-generator/daily-life/pub-doubao-douyin/ask-doubao-to-generate-daily-life-related-images) <br>
+[Ask Dreamina to generate DAILY LIFE related images](http://www.deepnlp.org/store/image-generator/daily-life/pub-dreamina/ask-dreamina-to-generate-daily-life-related-images) <br>
+[Ask Zhipu AI to generate DAILY LIFE related images](http://www.deepnlp.org/store/image-generator/daily-life/pub-cogvlm-zhipu-ai/ask-zhipu-ai-to-generate-daily-life-related-images) <br>
+[Ask Qwen to generate DAILY LIFE related images](http://www.deepnlp.org/store/image-generator/daily-life/pub-qwen-alibaba/ask-qwen-to-generate-daily-life-related-images) <br>
+
+
+
 ### ShowCases
 [Use Midjourney to Generate Cartoon Characters](http://www.deepnlp.org/store/image-generator/cartoon-character/pub-midjourney/use-midjourney-to-generate-cartoon-characters) <br>
 [Use Midjourney to Draw Fantacy and Humanoids](http://www.deepnlp.org/store/image-generator/fantacy/pub-midjourney/use-midjourney-to-draw-fantacy-and-humanoids) <br>
@@ -84,6 +201,12 @@ such as Midjourney, Canva, Stable Diffusion, etc. People can write reviews about
 [Use Stable Diffusion to Generate Cartoon Characters](http://www.deepnlp.org/store/image-generator/cartoon-character/pub-stable-diffusion/use-stable-diffusion-to-generate-cartoon-characters)
 [Use Stable Diffusion to Generate Fantacy and Humanoids](http://www.deepnlp.org/store/image-generator/fantacy/pub-stable-diffusion/use-stable-diffusion-to-generate-fantacy-and-humanoids)
 [Use Canva to Draw Fantacy and Humanoids](http://www.deepnlp.org/store/image-generator/fantacy/pub-canva/use-canva-to-draw-fantacy-and-humanoids)
+
+
+
+
+
+
 
 
 
@@ -224,32 +347,74 @@ Prompts (Questions)
 [Ask Perplexity AI DEBT Related Questions](http://www.deepnlp.org/store/finance/debt/pub-perplexity/ask-perplexity-ai-debt-related-questions) <br>
 
 
+
+
 ## AI in Healthcare
 [Best AI in Healthcare User Ratings Reviews and Showcase](http://www.deepnlp.org/store/healthcare/) <br>
 
 ### HOSPITAL APPOINTMENT
-[Best AI in HOSPITAL APPOINTMENT](http://www.deepnlp.org/store/healthcare/hospital-appointment)
+[Best AI in HOSPITAL APPOINTMENT](http://www.deepnlp.org/store/healthcare/hospital-appointment) <br>
+[Ask Gemini HOSPITAL APPOINTMENT Related Questions](http://www.deepnlp.org/store/healthcare/hospital-appointment/pub-gemini-google/ask-gemini-hospital-appointment-related-questions) <br>
+[Ask ChatGPT HOSPITAL APPOINTMENT Related Questions](http://www.deepnlp.org/store/healthcare/hospital-appointment/pub-chatgpt-openai/ask-chatgpt-hospital-appointment-related-questions) <br>
+[Ask Perplexity AI HOSPITAL APPOINTMENT Related Questions](http://www.deepnlp.org/store/healthcare/hospital-appointment/pub-perplexity/ask-perplexity-ai-hospital-appointment-related-questions) <br>
+[Ask Claude HOSPITAL APPOINTMENT Related Questions](http://www.deepnlp.org/store/healthcare/hospital-appointment/pub-claude-anthropic/ask-claude-hospital-appointment-related-questions) <br>
+
 
 ### HOSPITAL
-[Best AI in Hospital Healthcare](http://www.deepnlp.org/store/healthcare/hospital)
+[Best AI in Hospital Healthcare](http://www.deepnlp.org/store/healthcare/hospital) <br>
+
 
 ### AI in ILLNESS
-[Best AI in ILLNESS Healthcare](http://www.deepnlp.org/store/healthcare/illness)
+[Best AI in ILLNESS Healthcare](http://www.deepnlp.org/store/healthcare/illness) <br>
+[Seeing Doctors about Illness](http://www.deepnlp.org/store/healthcare/illness/pub-chatgpt-openai/seeing-doctors-about-illness) <br>
+[Ask Gemini Food to Avoid About Illness](http://www.deepnlp.org/store/healthcare/illness/pub-gemini-google/ask-gemini-food-to-avoid-about-illness) <br>
+[Ask Perplexity AI ILLNESS Related Questions](http://www.deepnlp.org/store/healthcare/illness/pub-perplexity/ask-perplexity-ai-illness-related-questions) <br>
+[Ask ChatGPT ILLNESS Related Questions](http://www.deepnlp.org/store/healthcare/illness/pub-chatgpt-openai/ask-chatgpt-illness-related-questions) <br>
+[Ask Claude ILLNESS Related Questions](http://www.deepnlp.org/store/healthcare/illness/pub-claude-anthropic/ask-claude-illness-related-questions) <br>
+
 
 ### MEDICINE
-[Best AI in Medicine Healthcare](http://www.deepnlp.org/store/healthcare/medicine)
+[Best AI in Medicine Healthcare](http://www.deepnlp.org/store/healthcare/medicine) <br>
+[Ask ChatGPT MEDICINE Related Questions](http://www.deepnlp.org/store/healthcare/medicine/pub-chatgpt-openai/ask-chatgpt-medicine-related-questions) <br>
+[Ask Perplexity AI MEDICINE Related Questions](http://www.deepnlp.org/store/healthcare/medicine/pub-perplexity/ask-perplexity-ai-medicine-related-questions) <br>
+[Ask Gemini MEDICINE Related Questions](http://www.deepnlp.org/store/healthcare/medicine/pub-gemini-google/ask-gemini-medicine-related-questions) <br>
+[Ask Claude MEDICINE Related Questions](http://www.deepnlp.org/store/healthcare/medicine/pub-claude-anthropic/ask-claude-medicine-related-questions) <br>
+
 
 ### NURSING
-[Best AI in NURSING Healthcare](http://www.deepnlp.org/store/healthcare/nursing)
+[Best AI in NURSING Healthcare](http://www.deepnlp.org/store/healthcare/nursing) <br>
+[Ask Gemini NURSING Related Questions](http://www.deepnlp.org/store/healthcare/nursing/pub-gemini-google/ask-gemini-nursing-related-questions) <br>
+[Ask Claude NURSING Related Questions](http://www.deepnlp.org/store/healthcare/nursing/pub-claude-anthropic/ask-claude-nursing-related-questions) <br>
+[Ask Perplexity AI NURSING Related Questions](http://www.deepnlp.org/store/healthcare/nursing/pub-perplexity/ask-perplexity-ai-nursing-related-questions) <br>
+[Ask ChatGPT NURSING Related Questions](http://www.deepnlp.org/store/healthcare/nursing/pub-chatgpt-openai/ask-chatgpt-nursing-related-questions) <br>
+
+
 
 ### BEAUTY
-[Best AI in BEAUTY Healthcare](http://www.deepnlp.org/store/healthcare/nursing)
+[Best AI in BEAUTY Healthcare](http://www.deepnlp.org/store/healthcare/nursing) <br>
+[Ask Gemini NURSING Related Questions](http://www.deepnlp.org/store/healthcare/nursing/pub-gemini-google/ask-gemini-nursing-related-questions) <br>
+[Ask Claude NURSING Related Questions](http://www.deepnlp.org/store/healthcare/nursing/pub-claude-anthropic/ask-claude-nursing-related-questions) <br>
+[Ask Perplexity AI NURSING Related Questions](http://www.deepnlp.org/store/healthcare/nursing/pub-perplexity/ask-perplexity-ai-nursing-related-questions) <br>
+[Ask ChatGPT NURSING Related Questions](http://www.deepnlp.org/store/healthcare/nursing/pub-chatgpt-openai/ask-chatgpt-nursing-related-questions) <br>
+
+
 
 ### ELDERLY CARE
-[Best AI in ELDERLY CARE](http://www.deepnlp.org/store/healthcare/elderly-care)
+[Best AI in ELDERLY CARE](http://www.deepnlp.org/store/healthcare/elderly-care) <br>
+[Ask Perplexity AI ELDERLY CARE Related Questions](http://www.deepnlp.org/store/healthcare/elderly-care/pub-perplexity/ask-perplexity-ai-elderly-care-related-questions) <br>
+[Ask Gemini ELDERLY CARE Related Questions](http://www.deepnlp.org/store/healthcare/elderly-care/pub-gemini-google/ask-gemini-elderly-care-related-questions) <br>
+[Ask ChatGPT ELDERLY CARE Related Questions](http://www.deepnlp.org/store/healthcare/elderly-care/pub-chatgpt-openai/ask-chatgpt-elderly-care-related-questions) <br>
+[Ask Claude ELDERLY CARE Related Questions](http://www.deepnlp.org/store/healthcare/elderly-care/pub-claude-anthropic/ask-claude-elderly-care-related-questions) <br>
+
+
 
 ### MEDICAL INSTRUMENT
-[Best AI in MEDICAL INSTRUMENT](http://www.deepnlp.org/store/healthcare/medical-instrument)
+[Best AI in MEDICAL INSTRUMENT](http://www.deepnlp.org/store/healthcare/medical-instrument) <br>
+[Ask ChatGPT MEDICAL INSTRUMENT Related Questions](http://www.deepnlp.org/store/healthcare/medical-instrument/pub-chatgpt-openai/ask-chatgpt-medical-instrument-related-questions) <br>
+[Ask Claude MEDICAL INSTRUMENT Related Questions](http://www.deepnlp.org/store/healthcare/medical-instrument/pub-claude-anthropic/ask-claude-medical-instrument-related-questions) <br>
+[Ask Perplexity AI MEDICAL INSTRUMENT Related Questions](http://www.deepnlp.org/store/healthcare/medical-instrument/pub-perplexity/ask-perplexity-ai-medical-instrument-related-questions) <br>
+[Ask Gemini MEDICAL INSTRUMENT Related Questions](http://www.deepnlp.org/store/healthcare/medical-instrument/pub-gemini-google/ask-gemini-medical-instrument-related-questions) <br>
+
 
 
 ## AI for Elderly: User Ratings, Reviews and Showcase
@@ -349,7 +514,7 @@ e.g.
 
 
 
-## Related
+## Related Blog
 http://www.deepnlp.org/blog/ <br>
 http://www.deepnlp.org/equation/ <br>
 http://www.deepnlp.org/search/ <br>
@@ -357,6 +522,22 @@ http://www.deepnlp.org/workspace/ai_courses/ <br>
 http://www.deepnlp.org/workspace/aigc_chart/ <br>
 http://www.deepnlp.org/workspace/ai_writer/ <br>
 http://www.deepnlp.org/workspace/detail/ <br>
+[Statistics Equation Formula](http://www.deepnlp.org/blog/statistics-equations-latex-code) <br>
+[Machine Learning Equation Formula](http://www.deepnlp.org/blog/latex-code-machine-learning-equations) <br>
+[Introduction to multimodal generative models](http://www.deepnlp.org/blog/introduction-to-multimodal-generative-models) <br>
+[AI Courses for Kids](http://www.deepnlp.org/blog/how-to-use-generative-ai-to-draw-paw-patrol-dog-skye) <br>
+[AI in Fashion: Tell IWC Schaffhausen Watches Real or Fake](http://www.deepnlp.org/blog/how-to-tell-iwc-schaffhausen-watches-real-or-fake-20-steps) <br>
+[AI in Fashion: Tell Fendi bags real or fake](http://www.deepnlp.org/blog/how-to-tell-fendi-bags-real-or-fake-20-steps) <br>
+[AI in Fashion: Tell Coach bags real or fake](http://www.deepnlp.org/blog/how-to-tell-coach-bags-real-or-fake-20-steps) <br>
+[AI in Fashion: Tell Prada bags real or fake](http://www.deepnlp.org/blog/how-to-tell-prada-bags-real-or-fake-20-steps) <br>
+[AI in Fashion: Tell Gucci bags real or fake](http://www.deepnlp.org/blog/20-tricks-to-tell-gucci-bags-real-or-fake) <br>
+[AI in Fashion: Tell Dior bags real or fake](http://www.deepnlp.org/blog/tell-dior-bags-real-or-fake-20-steps) <br>
+[AI in Fashion: Tell Hermes bags real or fake](http://www.deepnlp.org/blog/20-tricks-to-tell-hermes-bags-real-or-fake) <br>
+[AI in Fashion: Tell Chanel bags real or fake](http://www.deepnlp.org/blog/20-tricks-to-tell-chanel-bags-real-or-fake) <br>
+[AI in Fashion: Tell Louis Vuitton bags real or fake](http://www.deepnlp.org/blog/20-tricks-to-tell-louis-vuitton-bags-real-or-fake) <br>
+[AI in Fashion: Tell Omega Watches real or fake](http://www.deepnlp.org/blog/20-tricks-to-tell-if-omega-watch-is-real-or-fake) <br>
+[AI in Fashion: Tell Rolex Watches real or fake](http://www.deepnlp.org/blog/20-tricks-to-tell-if-rolex-watch-is-real-or-fake) <br>
+
 
 ======================================================================================================================================================================================================
 # By End of 2020, deepnlp lib is archived and only support TF to 1.13
