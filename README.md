@@ -63,6 +63,64 @@ AI in PUBLIC SERVICE, AI in HOUSING, AI in LAW, AI in COMMUNICATION, AI in FOOD
 [AI in FOOD](http://www.deepnlp.org/store/food) <br>
 
 
+## AI App Store Major AI Service Publisher
+
+[ChatGPT User Reviews](http://www.deepnlp.org/store/pub/pub-chatgpt-openai) <br>
+[Gemini User Reviews](http://www.deepnlp.org/store/pub/pub-gemini-google) <br>
+[Perplexity User Reviews](http://www.deepnlp.org/store/pub/pub-perplexity) <br>
+[Claude Anthropic User Reviews](http://www.deepnlp.org/store/pub/pub-claude-anthropic) <br>
+[Midjourney User Reviews](http://www.deepnlp.org/store/pub/pub-midjourney) <br>
+[Stable Diffusion User Reviews](http://www.deepnlp.org/store/pub/pub-stable-diffusion) <br>
+[Canva User Reviews](http://www.deepnlp.org/store/pub/pub-canva) <br>
+[Doubao User Reviews](http://www.deepnlp.org/store/pub/pub-doubao-douyin) <br>
+[Qwen User Reviews](http://www.deepnlp.org/store/pub/pub-qwen-alibaba) <br>
+[Zhipu AI User Reviews](http://www.deepnlp.org/store/pub/pub-zhipu-ai) <br>
+[Zhipu CogVLM AI](http://www.deepnlp.org/store/pub/pub-cogvlm-zhipu-ai) <br>
+[Grammarly User Reviews](http://www.deepnlp.org/store/pub/pub-grammarly) <br>
+[Character.AI User Reviews](http://www.deepnlp.org/store/pub/pub-character-ai) <br>
+[Xinye User Reviews](http://www.deepnlp.org/store/pub/pub-xingye-minimax) <br>
+
+
+### Comparison of AI Services Reviews and Ratings in Multiple Aspects
+#### AI Chatbot Assistant
+[ChatGPT vs Gemini](http://www.deepnlp.org/store/compare/pub-chatgpt-openai-vs-pub-gemini-google) <br>
+[Gemini vs ChatGPT](http://www.deepnlp.org/store/compare/pub-gemini-google-vs-pub-chatgpt-openai) <br>
+[ChatGPT vs Perplexity](http://www.deepnlp.org/store/compare/pub-chatgpt-openai-vs-pub-perplexity) <br>
+[Perplexity vs ChatGPT](http://www.deepnlp.org/store/compare/pub-perplexity-vs-pub-chatgpt-openai) <br>
+[ChatGPT vs Claude](http://www.deepnlp.org/store/compare/pub-chatgpt-openai-vs-pub-claude-anthropic) <br>
+[Claude vs ChatGPT](http://www.deepnlp.org/store/compare/pub-claude-anthropic-vs-pub-chatgpt-openai) <br>
+[Gemini vs Perplexity](http://www.deepnlp.org/store/compare/pub-gemini-google-vs-pub-perplexity) <br>
+[Perplexity vs Gemini](http://www.deepnlp.org/store/compare/pub-perplexity-vs-pub-gemini-google) <br>
+[Gemini vs Claude](http://www.deepnlp.org/store/compare/pub-gemini-google-vs-pub-claude-anthropic) <br>
+[Claude vs Gemini](http://www.deepnlp.org/store/compare/pub-claude-anthropic-vs-pub-gemini-google) <br>
+[Perplexity vs Claude](http://www.deepnlp.org/store/compare/pub-perplexity-vs-pub-claude-anthropic) <br>
+[Claude vs Perplexity](http://www.deepnlp.org/store/compare/pub-claude-anthropic-vs-pub-perplexity) <br>
+[doubao vs chatgpt](http://www.deepnlp.org/store/compare/pub-doubao-douyin-vs-pub-chatgpt-openai) <br>
+[qwen vs chatgpt](http://www.deepnlp.org/store/compare/pub-qwen-alibaba-vs-pub-chatgpt-openai) <br>
+[zhipu vs chatgpt](http://www.deepnlp.org/store/compare/pub-zhipu-ai-vs-pub-chatgpt-openai) <br>
+[chatgpt vs zhupu](http://www.deepnlp.org/store/compare/pub-cogvlm-zhipu-ai-vs-pub-chatgpt-openai) <br>
+[doubao vs qwen](http://www.deepnlp.org/store/compare/pub-doubao-douyin-vs-pub-qwen-alibaba) <br>
+[doubao vs zhipu ai](http://www.deepnlp.org/store/compare/pub-doubao-douyin-vs-pub-zhipu-ai) <br>
+
+#### AI Image Generator Comparison
+[midjourney vs stable diffusion](http://www.deepnlp.org/store/compare/pub-midjourney-vs-pub-stable-diffusion) <br>
+[stable diffusion vs midjourney](http://www.deepnlp.org/store/compare/pub-stable-diffusion-vs-pub-midjourney) <br>
+[midjourney vs Canva](http://www.deepnlp.org/store/compare/pub-midjourney-vs-pub-canva) <br>
+[Canva vs midjourney](http://www.deepnlp.org/store/compare/pub-canva-vs-pub-midjourney) <br>
+[midjourney vs chatgpt](http://www.deepnlp.org/store/compare/pub-midjourney-vs-pub-chatgpt-openai) <br>
+[chatgpt vs midjourney](http://www.deepnlp.org/store/compare/pub-chatgpt-openai-vs-pub-midjourney) <br>
+
+#### AI Chatbot
+[character ai vs Chatgpt](http://www.deepnlp.org/store/compare/pub-character-ai-vs-pub-chatgpt-openai) <br>
+[character ai vs Gemini](http://www.deepnlp.org/store/compare/pub-character-ai-vs-pub-gemini-google) <br>
+
+#### AI Writing
+[Grammarly vs Chatgpt](http://www.deepnlp.org/store/compare/pub-grammarly-vs-pub-gemini-google)  <br>
+[​Grammarly vs Gemini Google](http://www.deepnlp.org/store/compare/pub-grammarly-vs-pub-gemini-google) <br>
+
+#### Robotaxi
+[Baidu VS Waymo Robotaxi Reviews](http://www.deepnlp.org/store/compare/pub-baidu-apollo-vs-pub-waymo-google) <br>
+[Waymo vs Baidu User Reviews](http://www.deepnlp.org/store/compare/pub-waymo-google-vs-pub-baidu-apollo) <br>
 
 
 ## AI Store of Image Generator
