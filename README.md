@@ -1,7 +1,7 @@
 # DeepNLP AI APP Store
 DeepNLP AI Store (http://www.deepnlp.org/store) is a newly released website to let users write genuine reviews, ratings, human evaluation, prompts and share use cases
 about detailed aspects of AI services from users' perspective (different from researchers' perspective like the LLM/MultiModal benchmarks). 
-We want to build the "Yelp" for AI and Robotics community and ease the burden of customers choosing various AI services. 
+DeepNLP wants to build the platform and DeepNLP is the "Yelp" of AI Apps, Services, and Robotics community and ease the burden of customers choosing various AI services. 
 
 ![image text](./store/image_generator.jpg "AI Image Generator Reviews and Ratings")
 
