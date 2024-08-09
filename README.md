@@ -35,6 +35,7 @@ AI in PUBLIC SERVICE, AI in HOUSING, AI in LAW, AI in COMMUNICATION, AI in FOOD
 [AI IMAGE GENERATOR](http://www.deepnlp.org/store/image-generator) <br>
 [AI Search Engine](http://www.deepnlp.org/store/search-engine)  <br>
 [AI Chatbot Assistant](http://www.deepnlp.org/store/chatbot-assistant)  <br>
+[AI VIDEO GENERATOR Reviews](http://www.deepnlp.org/store/video-generator) <br>
 [AI for ELDERLY](http://www.deepnlp.org/store/elderly)  <br>
 [AI for KIDS](http://www.deepnlp.org/store/kids)  <br>
 [AI in LAW](http://www.deepnlp.org/store/law) <br>
@@ -61,25 +62,45 @@ AI in PUBLIC SERVICE, AI in HOUSING, AI in LAW, AI in COMMUNICATION, AI in FOOD
 [AI in HOUSING](http://www.deepnlp.org/store/housing) <br>
 [AI in COMMUNICATION](http://www.deepnlp.org/store/communication) <br>
 [AI in FOOD](http://www.deepnlp.org/store/food) <br>
+[Robot Quadruped Robot Reviews](http://www.deepnlp.org/store/quadruped-robot) <br>
+[Robot Humanoid Robot Reviews](http://www.deepnlp.org/store/humanoid-robot) <br>
+[Robotaxi Reviews](http://www.deepnlp.org/store/robotaxi) <br>
+[Electric Vehicle Reviews](http://www.deepnlp.org/store/electric-vehicle) <br>
 
 
 ## AI App Store Major AI Service Publisher
-
+### Chatbot Assistant
 [ChatGPT User Reviews](http://www.deepnlp.org/store/pub/pub-chatgpt-openai) <br>
 [Gemini User Reviews](http://www.deepnlp.org/store/pub/pub-gemini-google) <br>
 [Perplexity User Reviews](http://www.deepnlp.org/store/pub/pub-perplexity) <br>
 [Claude Anthropic User Reviews](http://www.deepnlp.org/store/pub/pub-claude-anthropic) <br>
-[Midjourney User Reviews](http://www.deepnlp.org/store/pub/pub-midjourney) <br>
-[Stable Diffusion User Reviews](http://www.deepnlp.org/store/pub/pub-stable-diffusion) <br>
-[Canva User Reviews](http://www.deepnlp.org/store/pub/pub-canva) <br>
 [Doubao User Reviews](http://www.deepnlp.org/store/pub/pub-doubao-douyin) <br>
 [Qwen User Reviews](http://www.deepnlp.org/store/pub/pub-qwen-alibaba) <br>
 [Zhipu AI User Reviews](http://www.deepnlp.org/store/pub/pub-zhipu-ai) <br>
 [Zhipu CogVLM AI](http://www.deepnlp.org/store/pub/pub-cogvlm-zhipu-ai) <br>
-[Grammarly User Reviews](http://www.deepnlp.org/store/pub/pub-grammarly) <br>
 [Character.AI User Reviews](http://www.deepnlp.org/store/pub/pub-character-ai) <br>
 [Xinye User Reviews](http://www.deepnlp.org/store/pub/pub-xingye-minimax) <br>
-
+### Image Generator
+[Midjourney User Reviews](http://www.deepnlp.org/store/pub/pub-midjourney) <br>
+[Stable Diffusion User Reviews](http://www.deepnlp.org/store/pub/pub-stable-diffusion) <br>
+[Canva User Reviews](http://www.deepnlp.org/store/pub/pub-canva) <br>
+### AI Writer
+[Grammarly User Reviews](http://www.deepnlp.org/store/pub/pub-grammarly) <br>
+### Robots Humanoid Quadruped
+[Figure ai User Reviews](http://www.deepnlp.org/store/pub/pub-figure-ai) <br>
+[Unitree User Reviews](http://www.deepnlp.org/store/pub/pub-unitree) <br>
+[Boston Dynamics Reviews](http://www.deepnlp.org/store/pub/pub-boston-dynamics) <br>
+[Anybotics Reviews](http://www.deepnlp.org/store/pub/pub-anybotics) <br>
+[Tesla Reviews](http://www.deepnlp.org/store/pub/pub-tesla) <br>
+### Electric Vehicle
+[Bmw i4 Reviews](http://www.deepnlp.org/store/pub/pub-bmw-i4) <br>
+[Hyundai ioniq 6 Reviews](http://www.deepnlp.org/store/pub/pub-hyundai-ioniq-6) <br>
+[Byd seal Reviews](http://www.deepnlp.org/store/pub/pub-byd-seal) <br>
+[Tesla Model 3 Reviews](http://www.deepnlp.org/store/pub/pub-tesla-model-3) <br>
+### Video Generator
+[Kling AI Reviews](http://www.deepnlp.org/store/pub/pub-kling-kwai) <br>
+[Dreamina Douyin Reviews](http://www.deepnlp.org/store/compare/pub-dreamina-douyin) <br>
+[Sora Openai Reviews](http://www.deepnlp.org/store/pub/pub-sora-openai) <br>
 
 ### Comparison of AI Services Reviews and Ratings in Multiple Aspects
 #### AI Chatbot Assistant
@@ -110,6 +131,18 @@ AI in PUBLIC SERVICE, AI in HOUSING, AI in LAW, AI in COMMUNICATION, AI in FOOD
 [midjourney vs chatgpt](http://www.deepnlp.org/store/compare/pub-midjourney-vs-pub-chatgpt-openai) <br>
 [chatgpt vs midjourney](http://www.deepnlp.org/store/compare/pub-chatgpt-openai-vs-pub-midjourney) <br>
 
+#### AI Video Generator Comparison
+[Runway vs Pika](http://www.deepnlp.org/store/compare/pub-runway-vs-pub-pika) <br>
+[Runway vs Kling](http://www.deepnlp.org/store/compare/pub-runway-vs-pub-kling-kwai) <br>
+[Runway vs Dreamina](http://www.deepnlp.org/store/compare/pub-runway-vs-pub-dreamina-douyin) <br>
+[Kling AI vs Runway](http://www.deepnlp.org/store/compare/pub-kling-kwai-vs-pub-runway) <br>
+[Kling AI vs Pika](http://www.deepnlp.org/store/compare/pub-kling-kwai-vs-pub-pika) <br>
+[Kling AI vs Dreamina](http://www.deepnlp.org/store/compare/pub-kling-kwai-vs-pub-dreamina-douyin) <br>
+[Dreamina vs Kling AI](http://www.deepnlp.org/store/compare/pub-dreamina-douyin-vs-pub-kling-kwai) <br>
+[Dreamina vs Runway](http://www.deepnlp.org/store/compare/pub-dreamina-douyin-vs-pub-runway) <br>
+[Dreamina vs Pika](http://www.deepnlp.org/store/compare/pub-dreamina-douyin-vs-pub-pika) <br>
+
+
 #### AI Chatbot
 [character ai vs Chatgpt](http://www.deepnlp.org/store/compare/pub-character-ai-vs-pub-chatgpt-openai) <br>
 [character ai vs Gemini](http://www.deepnlp.org/store/compare/pub-character-ai-vs-pub-gemini-google) <br>
@@ -121,6 +154,16 @@ AI in PUBLIC SERVICE, AI in HOUSING, AI in LAW, AI in COMMUNICATION, AI in FOOD
 #### Robotaxi
 [Baidu VS Waymo Robotaxi Reviews](http://www.deepnlp.org/store/compare/pub-baidu-apollo-vs-pub-waymo-google) <br>
 [Waymo vs Baidu User Reviews](http://www.deepnlp.org/store/compare/pub-waymo-google-vs-pub-baidu-apollo) <br>
+
+#### Robots
+[Figure AI vs Tesla](http://www.deepnlp.org/store/compare/pub-figure-ai-vs-pub-tesla) <br>
+[Tesla vs Figure AI](http://www.deepnlp.org/store/compare/pub-tesla-vs-pub-figure-ai) <br>
+[Figure AI vs Boston Dynamics](http://www.deepnlp.org/store/compare/pub-figure-ai-vs-pub-boston-dynamics) <br>
+[Boston Dynamics vs Figure AI](http://www.deepnlp.org/store/compare/pub-boston-dynamics-vs-pub-figure-ai) <br>
+[Tesla vs Boston Dynamics](http://www.deepnlp.org/store/compare/pub-tesla-vs-pub-boston-dynamics) <br>
+[Boston Dynamics vs Tesla](http://www.deepnlp.org/store/compare/pub-boston-dynamics-vs-pub-tesla) <br>
+[Unitree vs Boston Dynamics](http://www.deepnlp.org/store/compare/pub-unitree-vs-pub-boston-dynamics) <br>
+[Anybotics vs Boston Dynamics](http://www.deepnlp.org/store/compare/pub-anybotics-vs-pub-boston-dynamics) <br>
 
 
 ## AI Store of Image Generator
@@ -261,11 +304,13 @@ such as Midjourney, Canva, Stable Diffusion, etc. People can write reviews about
 [Use Canva to Draw Fantacy and Humanoids](http://www.deepnlp.org/store/image-generator/fantacy/pub-canva/use-canva-to-draw-fantacy-and-humanoids)
 
 
-
-
-
-
-
+## AI Store of AI Video Generator
+[AI Video Generator Reviews](http://www.deepnlp.org/store/video-generator) <br>
+[Use Sora to generate FANTASY related Videos](http://www.deepnlp.org/store/video-generator/fantasy/pub-sora-openai/use-sora-to-generate-fantasy-related-videos) <br>
+[Use Pika to generate ALL related Videos](http://www.deepnlp.org/store/video-generator/all/pub-pika/use-pika-to-generate-all-related-videos) <br>
+[Use Kling to generate FANTASY related Videos](http://www.deepnlp.org/store/video-generator/fantasy/pub-kling-kwai/use-kling-to-generate-fantasy-related-videos) <br>
+[Use Runway to generate FANTASY related Videos](http://www.deepnlp.org/store/video-generator/fantasy/pub-runway/use-runway-to-generate-fantasy-related-videos) <br>
+[Use Sora to generate FANTASY related Videos](http://www.deepnlp.org/store/video-generator/fantasy/pub-sora-openai/use-sora-to-generate-fantasy-related-videos) <br>
 
 
 ## AI Store in Law
@@ -572,6 +617,32 @@ e.g.
 
 
 
+
+## Quadruped Robot Reviews
+[Quadruped Robot Review](http://www.deepnlp.org/store/quadruped-robot) <br>
+[Boston Dynamics Spot Robot Dog Customer Reviews](http://www.deepnlp.org/store/quadruped-robot/quadruped-robot/pub-boston-dynamics/boston-dynamics-spot-robot-dog-customer-reviews) <br>
+[Unitree Go2 Robot Dog Customer Reviews](http://www.deepnlp.org/store/quadruped-robot/quadruped-robot/pub-unitree/unitree-go2-robot-dog-customer-reviews) <br>
+[Anybotics Robot Dog Customer Reviews](http://www.deepnlp.org/store/quadruped-robot/quadruped-robot/pub-anybotics/anybotics-robot-dog-customer-reviews) <br>
+
+
+## Humanoid Robot Reviews
+[Humanoid Robot Reviews](http://www.deepnlp.org/store/humanoid-robot) <br>
+[Figure 02 Humanoid Robots Reviews](http://www.deepnlp.org/store/humanoid-robot/humanoid-robot/pub-figure-ai/figure-02-humanoid-robots-user-reviews) <br>
+
+## Robotaxi Reviews
+[Robotaxi Reviews](http://www.deepnlp.org/store/robotaxi) <br>
+[Take a Ride in Waymo ROBOTAXI And Write Your Reviews](http://www.deepnlp.org/store/robotaxi/robotaxi/pub-waymo-google/take-a-ride-in-waymo-robotaxi-and-write-your-reviews) <br>
+[Take a Ride in Baidu Apollo ROBOTAXI And Write Your Reviews](http://www.deepnlp.org/store/robotaxi/robotaxi/pub-baidu-apollo/take-a-ride-in-baidu-apollo-robotaxi-and-write-your-reviews) <br>
+[Take a Ride using Full Self-Driving FSD ability of Tesla](http://www.deepnlp.org/store/robotaxi/robotaxi/pub-tesla/take-a-ride-using-full-self-driving-fsd-ability-of-tesla) <br>
+
+## Electric Vehicle Reviews
+[Electric Vehicle Reviews](http://www.deepnlp.org/store/electric-vehicle) <br>
+[BMW i4 EV Reviews By Car Owners](http://www.deepnlp.org/store/electric-vehicle/electric-vehicle/pub-bmw-i4/bmw-i4-ev-reviews-by-car-owners) <br>
+[Hyundai IONIQ 6 EV Reviews By Car Owners](http://www.deepnlp.org/store/electric-vehicle/electric-vehicle/pub-hyundai-ioniq-6/hyundai-ioniq-6-ev-reviews-by-car-owners) <br>
+[BYD Seal EV Reviews By Car Owners](http://www.deepnlp.org/store/electric-vehicle/electric-vehicle/pub-byd-seal/byd-seal-ev-reviews-by-car-owners) <br>
+[Tesla Model 3 EV Reviews By Car Owners](http://www.deepnlp.org/store/electric-vehicle/electric-vehicle/pub-tesla-model-3/tesla-model-3-ev-reviews-by-car-owners) <br>
+
+
 ## Related Blog
 http://www.deepnlp.org/blog/ <br>
 http://www.deepnlp.org/equation/ <br>
@@ -583,6 +654,7 @@ http://www.deepnlp.org/workspace/detail/ <br>
 [Statistics Equation Formula](http://www.deepnlp.org/blog/statistics-equations-latex-code) <br>
 [Machine Learning Equation Formula](http://www.deepnlp.org/blog/latex-code-machine-learning-equations) <br>
 [Introduction to multimodal generative models](http://www.deepnlp.org/blog/introduction-to-multimodal-generative-models) <br>
+[Generative AI Search Engine Optimization: How to Improve Your Content](http://www.deepnlp.org/blog/generative-ai-search-engine-optimization-how-to-improve-your-content) <br>
 [AI Courses for Kids](http://www.deepnlp.org/blog/how-to-use-generative-ai-to-draw-paw-patrol-dog-skye) <br>
 [AI in Fashion: Tell IWC Schaffhausen Watches Real or Fake](http://www.deepnlp.org/blog/how-to-tell-iwc-schaffhausen-watches-real-or-fake-20-steps) <br>
 [AI in Fashion: Tell Fendi bags real or fake](http://www.deepnlp.org/blog/how-to-tell-fendi-bags-real-or-fake-20-steps) <br>
