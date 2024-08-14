@@ -80,6 +80,8 @@ AI in PUBLIC SERVICE, AI in HOUSING, AI in LAW, AI in COMMUNICATION, AI in FOOD
 [Zhipu CogVLM AI](http://www.deepnlp.org/store/pub/pub-cogvlm-zhipu-ai) <br>
 [Character.AI User Reviews](http://www.deepnlp.org/store/pub/pub-character-ai) <br>
 [Xinye User Reviews](http://www.deepnlp.org/store/pub/pub-xingye-minimax) <br>
+[GPT-5 Forecast Reviews](http://www.deepnlp.org/store/pub/pub-gpt-5) <br>
+
 ### Image Generator
 [Midjourney User Reviews](http://www.deepnlp.org/store/pub/pub-midjourney) <br>
 [Stable Diffusion User Reviews](http://www.deepnlp.org/store/pub/pub-stable-diffusion) <br>
