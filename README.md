@@ -645,6 +645,23 @@ e.g.
 [Tesla Model 3 EV Reviews By Car Owners](http://www.deepnlp.org/store/electric-vehicle/electric-vehicle/pub-tesla-model-3/tesla-model-3-ev-reviews-by-car-owners) <br>
 
 
+## DeepNLP AI & Robots Community
+
+[DeepNLP AI & Robots Community for AI Practitioner](http://www.deepnlp.org/question) <br>
+[Would you share your experience using AI Productivity Tools such as AI Writing Coding CoPilot](http://www.deepnlp.org/question/would-you-share-your-experience-using-ai-productivity-tools-such-as-ai-writing-coding-copilot) <br>
+[What are the features you need for AI Video Generator apps and tools](http://www.deepnlp.org/question/what-are-the-features-you-need-for-ai-video-generator-apps-and-tools) <br>
+[Which one is the best AI Video Generator Runway Luma Pika Kling and Why](http://www.deepnlp.org/question/which-one-is-the-best-ai-video-generator-runway-luma-pika-kling-and-why) <br>
+[What are the typical use scenarios of Quadruped Robot Dogs](http://www.deepnlp.org/question/what-are-the-typical-use-scenarios-of-quadruped-robot-dogs) <br>
+[Humanoid Robot Husband Vote for the most popular appearance of Humanoid Robot Husband](http://www.deepnlp.org/question/humanoid-robot-husband-vote-for-the-most-popular-appearance-of-humanoid-robot-husband) <br>
+[Humanoid Robot Wife Who would you choose your humanoid robot wife to look like human females](http://www.deepnlp.org/question/humanoid-robot-wife-who-would-you-choose-your-humanoid-robot-wife-to-look-like-human-females) <br>
+[What are the most important features Humanoid Robot should have in the future](http://www.deepnlp.org/question/what-are-the-most-important-features-humanoid-robot-should-have-in-the-future) <br>
+[What are the typical use cases of Humanoid Robots](http://www.deepnlp.org/question/what-are-the-typical-use-cases-of-humanoid-robots) <br>
+
+
+
+
+
+
 ## Related Blog
 http://www.deepnlp.org/blog/ <br>
 http://www.deepnlp.org/equation/ <br>
@@ -669,6 +686,13 @@ http://www.deepnlp.org/workspace/detail/ <br>
 [AI in Fashion: Tell Louis Vuitton bags real or fake](http://www.deepnlp.org/blog/20-tricks-to-tell-louis-vuitton-bags-real-or-fake) <br>
 [AI in Fashion: Tell Omega Watches real or fake](http://www.deepnlp.org/blog/20-tricks-to-tell-if-omega-watch-is-real-or-fake) <br>
 [AI in Fashion: Tell Rolex Watches real or fake](http://www.deepnlp.org/blog/20-tricks-to-tell-if-rolex-watch-is-real-or-fake) <br>
+[DeepNLP Review Panel](http://www.deepnlp.org/review) <br>
+[DeepNLP Car Review Panel](http://www.deepnlp.org/review/car) <br>
+[DeepNLP Ecommerce Review Panel](http://www.deepnlp.org/review/ecommerce) <br>
+[DeepNLP Ecommerce Bags Review Panel](http://www.deepnlp.org/review/ecommerce/bag) <br>
+[DeepNLP Watch Bags Review Panel](http://www.deepnlp.org/review/ecommerce/watch) <br>
+[DeepNLP Review Ecommerce Brand List](http://www.deepnlp.org/review/ecommerce/pub) <br>
+[DeepNLP Review Car Brand List](http://www.deepnlp.org/review/car/pub) <br>
 
 
 ======================================================================================================================================================================================================
