@@ -740,7 +740,7 @@ Modules
     * NER: LSTM/BI-LSTM/LSTM-CRF network, based on Tensorflow
     * Parse: Arc-Standard System with Feed Forward Neural Network
     * Textsum: Seq2Seq with attention mechanism
-    * Texncnn: CNN
+    * Textcnn: CNN
 
 * Pre-trained Model
     * Chinese: Segmentation, POS, NER, Parse (1998 china daily corpus)
