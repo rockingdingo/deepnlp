@@ -658,7 +658,9 @@ e.g.
 [What are the typical use cases of Humanoid Robots](http://www.deepnlp.org/question/what-are-the-typical-use-cases-of-humanoid-robots) <br>
 
 
-
+## DeepNLP Agent Tools
+[AI Agent Visualization Review Asynchronous Multi-Agent Simulation](http://www.deepnlp.org/blog/ai-agent-visualization-review-asynchronous-multi-agent-simulation) <br>
+[Dialogue Visualization Agent Multimodal Visualization Tools for AI Systems A Review](http://www.deepnlp.org/blog/dialogue-agent-multimodal-visualization-tools-for-ai-systems) <br>
 
 
 
@@ -693,6 +695,8 @@ http://www.deepnlp.org/workspace/detail/ <br>
 [DeepNLP Watch Bags Review Panel](http://www.deepnlp.org/review/ecommerce/watch) <br>
 [DeepNLP Review Ecommerce Brand List](http://www.deepnlp.org/review/ecommerce/pub) <br>
 [DeepNLP Review Car Brand List](http://www.deepnlp.org/review/car/pub) <br>
+[AI Agent Visualization Review Asynchronous Multi-Agent Simulation](http://www.deepnlp.org/blog/ai-agent-visualization-review-asynchronous-multi-agent-simulation) <br>
+[Dialogue Visualization Agent Multimodal Visualization Tools for AI Systems A Review](http://www.deepnlp.org/blog/dialogue-agent-multimodal-visualization-tools-for-ai-systems) <br>
 
 
 ======================================================================================================================================================================================================
