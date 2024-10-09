@@ -81,28 +81,48 @@ AI in PUBLIC SERVICE, AI in HOUSING, AI in LAW, AI in COMMUNICATION, AI in FOOD
 [Character.AI User Reviews](http://www.deepnlp.org/store/pub/pub-character-ai) <br>
 [Xinye User Reviews](http://www.deepnlp.org/store/pub/pub-xingye-minimax) <br>
 [GPT-5 Forecast Reviews](http://www.deepnlp.org/store/pub/pub-gpt-5) <br>
+### Social AI
+[Character AI](http://www.deepnlp.org/store/pub/pub-character-ai) <br>
 
 ### Image Generator
 [Midjourney User Reviews](http://www.deepnlp.org/store/pub/pub-midjourney) <br>
 [Stable Diffusion User Reviews](http://www.deepnlp.org/store/pub/pub-stable-diffusion) <br>
 [Canva User Reviews](http://www.deepnlp.org/store/pub/pub-canva) <br>
+[Flux AI Review](http://www.deepnlp.org/store/pub/pub-flux-1-black-forest-lab) <br>
 ### AI Writer
 [Grammarly User Reviews](http://www.deepnlp.org/store/pub/pub-grammarly) <br>
+
 ### Robots Humanoid Quadruped
 [Figure ai User Reviews](http://www.deepnlp.org/store/pub/pub-figure-ai) <br>
-[Unitree User Reviews](http://www.deepnlp.org/store/pub/pub-unitree) <br>
+[Unitree Robotics](http://www.deepnlp.org/store/pub/pub-unitree-robotics) <br>
 [Boston Dynamics Reviews](http://www.deepnlp.org/store/pub/pub-boston-dynamics) <br>
 [Anybotics Reviews](http://www.deepnlp.org/store/pub/pub-anybotics) <br>
 [Tesla Reviews](http://www.deepnlp.org/store/pub/pub-tesla) <br>
+
 ### Electric Vehicle
 [Bmw i4 Reviews](http://www.deepnlp.org/store/pub/pub-bmw-i4) <br>
 [Hyundai ioniq 6 Reviews](http://www.deepnlp.org/store/pub/pub-hyundai-ioniq-6) <br>
 [Byd seal Reviews](http://www.deepnlp.org/store/pub/pub-byd-seal) <br>
 [Tesla Model 3 Reviews](http://www.deepnlp.org/store/pub/pub-tesla-model-3) <br>
+
 ### Video Generator
 [Kling AI Reviews](http://www.deepnlp.org/store/pub/pub-kling-kwai) <br>
 [Dreamina Douyin Reviews](http://www.deepnlp.org/store/compare/pub-dreamina-douyin) <br>
 [Sora Openai Reviews](http://www.deepnlp.org/store/pub/pub-sora-openai) <br>
+## VR Headset/AI Glasses
+[Apple Glasses Review](http://www.deepnlp.org/store/pub/pub-apple-glasses) <br>
+[Apple VR Headset Review](http://www.deepnlp.org/store/pub/pub-apple-ar-vr-headset) <br>
+[Meta VR HeadSet Review](http://www.deepnlp.org/store/pub/pub-meta-vr-headset) <br>
+[Meta Glasses Review](http://www.deepnlp.org/store/pub/pub-meta-glasses) <br>
+[Google VR Review](http://www.deepnlp.org/store/pub/pub-google-ar-vr-headset) <br>
+[Google Glasses](http://www.deepnlp.org/store/pub/pub-google-glass) <br>
+### LLM Reasoning
+[ChatGPT Strawberry](http://www.deepnlp.org/store/pub/pub-chatgpt-strawberry) <br>
+[OpenAI o1](http://www.deepnlp.org/store/pub/pub-openai-o1) <br>
+### AI Education
+[Coursera Courses Reviews](http://www.deepnlp.org/store/pub/pub-coursera) <br>
+[Udacity Courses Reviews](http://www.deepnlp.org/store/pub/pub-udacity) <br>
+[Grammarly Reviews](http://www.deepnlp.org/store/pub/pub-grammarly) <br>
 
 ### Comparison of AI Services Reviews and Ratings in Multiple Aspects
 #### AI Chatbot Assistant
@@ -697,6 +717,8 @@ http://www.deepnlp.org/workspace/detail/ <br>
 [DeepNLP Review Car Brand List](http://www.deepnlp.org/review/car/pub) <br>
 [AI Agent Visualization Review Asynchronous Multi-Agent Simulation](http://www.deepnlp.org/blog/ai-agent-visualization-review-asynchronous-multi-agent-simulation) <br>
 [Dialogue Visualization Agent Multimodal Visualization Tools for AI Systems A Review](http://www.deepnlp.org/blog/dialogue-agent-multimodal-visualization-tools-for-ai-systems) <br>
+[Dialogue Visualization Tools](http://www.deepnlp.org/workspace/dialogue_visualization) <br>
+[Agent Visualization Tools](http://www.deepnlp.org/workspace/agent_visualization) <br>
 
 
 ======================================================================================================================================================================================================
