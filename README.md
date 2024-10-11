@@ -98,6 +98,8 @@ AI in PUBLIC SERVICE, AI in HOUSING, AI in LAW, AI in COMMUNICATION, AI in FOOD
 [Boston Dynamics Reviews](http://www.deepnlp.org/store/pub/pub-boston-dynamics) <br>
 [Anybotics Reviews](http://www.deepnlp.org/store/pub/pub-anybotics) <br>
 [Tesla Reviews](http://www.deepnlp.org/store/pub/pub-tesla) <br>
+[Tesla Cybercab Robotaxi](http://www.deepnlp.org/store/pub/pub-tesla-cybercab) <br>
+[Tesla Optimus|pub-tesla-optimus](http://www.deepnlp.org/store/pub/pub-tesla-optimus) <br>
 
 ### Electric Vehicle
 [Bmw i4 Reviews](http://www.deepnlp.org/store/pub/pub-bmw-i4) <br>
@@ -176,6 +178,8 @@ AI in PUBLIC SERVICE, AI in HOUSING, AI in LAW, AI in COMMUNICATION, AI in FOOD
 #### Robotaxi
 [Baidu VS Waymo Robotaxi Reviews](http://www.deepnlp.org/store/compare/pub-baidu-apollo-vs-pub-waymo-google) <br>
 [Waymo vs Baidu User Reviews](http://www.deepnlp.org/store/compare/pub-waymo-google-vs-pub-baidu-apollo) <br>
+[Tesla Cybercab vs Waymo](http://www.deepnlp.org/store/compare/pub-tesla-cybercab-vs-pub-waymo-google) <br>
+[Tesla Cybercab vs Baidu Apollo](http://www.deepnlp.org/store/compare/pub-tesla-cybercab-vs-pub-baidu-apollo) <br>
 
 #### Robots
 [Figure AI vs Tesla](http://www.deepnlp.org/store/compare/pub-figure-ai-vs-pub-tesla) <br>
@@ -650,6 +654,8 @@ e.g.
 ## Humanoid Robot Reviews
 [Humanoid Robot Reviews](http://www.deepnlp.org/store/humanoid-robot) <br>
 [Figure 02 Humanoid Robots Reviews](http://www.deepnlp.org/store/humanoid-robot/humanoid-robot/pub-figure-ai/figure-02-humanoid-robots-user-reviews) <br>
+[Tesla Cybercab Robotaxi User Reviews from Earlybirds](http://www.deepnlp.org/store/robotaxi/robotaxi/pub-tesla-cybercab/tesla-cybercab-robotaxi-user-reviews-from-earlybirds) <br>
+[Tesla Optimus Humanoid Robots Reviews](http://www.deepnlp.org/store/humanoid-robot/humanoid-robot/pub-tesla-optimus/tesla-optimus-humanoid-robots-reviews) <br>
 
 ## Robotaxi Reviews
 [Robotaxi Reviews](http://www.deepnlp.org/store/robotaxi) <br>
